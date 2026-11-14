@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
+import HeroSlider from "./HeroSlider";
 
 const PHONE = process.env.NEXT_PUBLIC_WHATSAPP || "234XXXXXXXXXX"; // set NEXT_PUBLIC_WHATSAPP in .env.local (no +, no spaces)
 const REG = 5000;
@@ -15,6 +17,14 @@ const COURSES = [
   { n: "Digital Marketing", w: 6, p: 100000, o: 70000, i: [50000, 50000], d: "Facebook Ads, Instagram, TikTok, content creation" },
   { n: "Graphic Design", w: 6, p: 100000, o: 70000, i: [50000, 50000], d: "Canva, Photoshop, CorelDraw, logo design" },
   { n: "Web Development", w: 12, p: 200000, o: 150000, i: [70000, 65000, 65000], d: "HTML, CSS, JavaScript, WordPress" },
+];
+const COURSE_IMG = [
+  ["/courses/computer-basics.svg", "Illustration of a computer showing Word and Excel with a keyboard and mouse"],
+  ["/courses/digital-literacy.svg", "Illustration of a web browser, email, chat and online safety shield"],
+  ["/courses/data-analytics.svg", "Illustration of a dashboard with bar, donut and line charts and an SQL query"],
+  ["/courses/digital-marketing.svg", "Illustration of a social media post on a phone, a megaphone and a growth chart"],
+  ["/courses/graphic-design.svg", "Illustration of a logo on a design canvas with colour swatches and a pen"],
+  ["/courses/web-development.svg", "Illustration of code beside the web page it builds"],
 ];
 const COMBOS = [
   ["Beginner Combo", "Computer Basics + Digital Literacy", 65000, 80000],
@@ -46,16 +56,6 @@ const MORE = [
   ["Online courses", "Learn from any city with live classes and recorded lessons at the online fee.", null, "Check online fees"],
   ["Course + laptop + accessories", "Join a course and take a laptop, mouse, flash drive and bag in one deal. Ask for today’s laptop prices.", "I want the course + laptop + accessories combo", "Ask about the combo"],
 ];
-const PLATFORM = [
-  ["Video lessons", [["Excel pivot tables", "14 min"], ["SQL joins", "22 min"], ["Power BI basics", "18 min"]]],
-  ["Quizzes", [["Excel quiz", "9/10"], ["SQL quiz", "7/10"]]],
-  ["Payment history", [["Registration", "₦5,000"], ["Seat fee", "₦50,000"], ["Balance", "₦50,000 due"]]],
-];
-const STUDENTS = [
-  ["Amina", "Data Analytics", "92%", "Part paid", "Pending"],
-  ["Chidi", "Web Development", "85%", "Paid", "Pending"],
-  ["Tolu", "Digital Marketing", "100%", "Paid", "Issued"],
-];
 const PLANS = [
   ["Starter", "₦20,000", ["Up to 50 students", "Student login and attendance", "Certificates"], "I want the Starter school plan", "Choose Starter"],
   ["Growth", "₦50,000", ["Up to 300 students", "Video lessons and quizzes", "Online payments"], "I want the Growth school plan", "Choose Growth", true],
@@ -81,15 +81,6 @@ const REVIEWS = [
   ["I now run ads for three shops in my area. The classes were practical from day one.", "Tolu", "Digital Marketing", null],
 ];
 const SHOP = [["Wireless mouse", 7000], ["Keyboard", 10000], ["64GB flash drive", 10000], ["Laptop charger", 15000], ["Laptop bag", 14000], ["Headphones", 9000]];
-
-function Logo({ size = 30 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 30 30" aria-hidden="true" style={{ verticalAlign: -8, marginRight: 8 }}>
-      <rect width="30" height="30" rx="8" fill="#F2B705" />
-      <path d="M6 22V8l9 9 9-9v14" fill="none" stroke="#102019" strokeWidth="3.2" strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function Section({ id, title, sub, children }) {
   return (
@@ -165,22 +156,20 @@ function EnrollForm() {
 export default function App() {
   const [idx, setIdx] = useState(2);
   const [mode, setMode] = useState("p");
-  const pick = (k) => { setIdx(k); document.getElementById("top").scrollIntoView(); };
+  const pick = (k) => { setIdx(k); document.getElementById("fees").scrollIntoView({ behavior: "smooth", block: "center" }); };
 
   return (
     <>
       <Navbar />
+      <HeroSlider>
+        <h1>Learn. Build. Earn.</h1>
+        <p>Computer, data, marketing, design and web development. Learn in class or online, then get a certificate and a job-ready portfolio.</p>
+        <div className="hero-cta">
+          <a className="btn" href="#courses">See all courses</a>
+          <Link className="btn ghost-light" href="/portal">Preview student portal</Link>
+        </div>
+      </HeroSlider>
       <div className="wrap">
-        <header className="hero" id="top">
-          <div>
-            <h1>Learn. Build. Earn.</h1>
-            <p>Computer, data, marketing, design and web development. Learn in class or online, then get a certificate and a job-ready portfolio.</p>
-            <a className="btn" href="#courses">See all courses</a>{" "}
-            <a className="btn ghost" href="#portal">Preview student portal</a>
-          </div>
-          <FeeChecker idx={idx} setIdx={setIdx} mode={mode} setMode={setMode} />
-        </header>
-
         <Section id="about" title="About the academy" sub="MAFIANA Tech Academy teaches practical skills you can use for work the same month you learn them. Small classes, real projects and a certificate at the end.">
           <div className="grid">{ABOUT.map(([t, d]) => <div className="card" key={t}><h3>{t}</h3><p className="m">{d}</p></div>)}</div>
         </Section>
@@ -190,14 +179,21 @@ export default function App() {
           <div className="grid" style={{ marginTop: 16 }}>{SERVICES.map(([t, d]) => <div className="card alt" key={t}><h3>{t}</h3><p className="m">{d}</p></div>)}</div>
         </Section>
 
-        <Section id="courses" title="Courses" sub="Tap a course to see its fee above. Combo deals save you up to ₦30,000.">
-          <div className="grid">
+        <Section id="courses" title="Courses" sub="Pick a course to see its fee. Combo deals save you up to ₦30,000.">
+          <div className="grid courses-grid">
             {COURSES.map((c, k) => (
-              <button key={c.n} className="card course" onClick={() => pick(k)}>
-                <h3>{c.n}</h3><div className="m">{c.d}</div>
-                <span className="tag">{c.w} weeks</span>
-                <b>{naira(c.o)} online</b><span className="m">{naira(c.p)} physical</span>
-              </button>
+              <article key={c.n} className="card course-card">
+                <div className="course-img">
+                  <img src={COURSE_IMG[k][0]} alt={COURSE_IMG[k][1]} width="800" height="500" loading="lazy" />
+                  <span className="tag-float">{c.w} weeks</span>
+                </div>
+                <div className="course-body">
+                  <h3>{c.n}</h3>
+                  <p className="m">{c.d}</p>
+                  <div className="course-price"><b>{naira(c.o)}</b><span className="m"> online</span><span className="m"> · {naira(c.p)} physical</span></div>
+                  <button className="btn ghost course-btn" onClick={() => pick(k)}>Check fee</button>
+                </div>
+              </article>
             ))}
           </div>
           <div className="grid" style={{ marginTop: 16 }}>
@@ -208,54 +204,24 @@ export default function App() {
           <p className="sub" style={{ marginTop: 20 }}>Early bird: first 10 students who pay in full get ₦10,000 off. Bring a friend and you both get ₦5,000 off.</p>
         </Section>
 
+        <section id="fees" className="fees">
+          <div className="fees-text">
+            <h2>Check your fee</h2>
+            <p className="sub">Choose a course and class type. You see the full cost, the installment plan and can book your seat on WhatsApp.</p>
+          </div>
+          <FeeChecker idx={idx} setIdx={setIdx} mode={mode} setMode={setMode} />
+        </section>
+
         <Section id="more" title="More ways to learn with us">
           <div className="grid">
             {MORE.map(([t, d, text, label]) => (
               <div className="card" key={t}><h3>{t}</h3><p className="m">{d}</p>
-                {text ? <WaLink text={text}>{label}</WaLink> : <a className="btn ghost" href="#top">{label}</a>}
+                {text ? <WaLink text={text}>{label}</WaLink> : <a className="btn ghost" href="#fees">{label}</a>}
               </div>
             ))}
           </div>
         </Section>
 
-        <Section id="portal" title="Your student portal" sub="Watch lessons, submit assignments, track attendance and download your certificate from one place.">
-          <div className="portal">
-            <aside>{["Dashboard", "Lessons", "Assignments", "Attendance", "Certificates"].map((x, k) => <div key={x} className={k === 0 ? "on" : ""}>{x}</div>)}</aside>
-            <main>
-              <div>
-                <h3>Welcome back, Amina</h3>
-                <span className="m" style={{ color: "var(--mute)" }}>Data Analytics · Week 5 of 8</span>
-                <div className="bar"><i style={{ width: "62%" }} /></div>
-              </div>
-              <div className="grid">
-                <div className="card"><div className="m">Next class</div><h3>SQL joins</h3><div className="m">Tuesday, 10:00 AM</div></div>
-                <div className="card"><div className="m">Attendance</div><h3>92%</h3><div className="m">11 of 12 classes</div></div>
-                <div className="card"><div className="m">Fees</div><h3>₦100,000 paid</h3><div className="m">₦50,000 due before week 3 balance</div></div>
-              </div>
-              <div className="card"><h3>Assignments</h3>
-                {[["Excel pivot tables", "Graded: 18/20"], ["SQL practice set", "Submitted"], ["Power BI dashboard", "Due Friday"]].map(([a, b]) => (
-                  <div className="stat" key={a}><span>{a}</span><b>{b}</b></div>
-                ))}
-              </div>
-            </main>
-          </div>
-        </Section>
-
-        <Section id="platform" title="Inside the platform" sub="Design preview of what students and admins will use. Logins and data come with the backend build.">
-          <div className="grid">
-            {PLATFORM.map(([t, rows]) => (
-              <div className="card" key={t}><h3>{t}</h3>{rows.map(([a, b]) => <div className="stat" key={a}><span>{a}</span><b>{b}</b></div>)}</div>
-            ))}
-          </div>
-          <div className="card" style={{ marginTop: 16, overflowX: "auto" }}>
-            <h3>Admin: student records</h3>
-            <table className="tbl">
-              <thead><tr>{["Student", "Course", "Attendance", "Fees", "Certificate"].map((h) => <th key={h}>{h}</th>)}</tr></thead>
-              <tbody>{STUDENTS.map((r) => <tr key={r[0]}>{r.map((c, k) => <td key={k}>{c}</td>)}</tr>)}</tbody>
-            </table>
-            <p className="m" style={{ margin: "12px 0 0" }}>Instructors: 3 active. Sample data.</p>
-          </div>
-        </Section>
 
         <Section id="schools" title="Run your own academy on MAFIANA" sub="Other computer schools can use our system to manage students, fees and certificates. Sample monthly pricing.">
           <div className="grid">
@@ -301,17 +267,6 @@ export default function App() {
           </div>
         </Section>
 
-        <Section id="flyer" title="Price flyer" sub="Screenshot this and post it on WhatsApp status or Instagram.">
-          <div className="flyer">
-            <div className="fh"><Logo size={44} /><div><h3>MAFIANA Tech Academy</h3><span>Now enrolling. Physical and online classes.</span></div></div>
-            {COURSES.map((c) => (
-              <div className="fr" key={c.n}><span>{c.n} ({c.w} wks)</span><span>{naira(c.o)} online / {naira(c.p)}</span></div>
-            ))}
-            <p className="fn">Registration ₦5,000 (ID card, certificate, materials). Pay half to book your seat. Early bird: first 10 students save ₦10,000.</p>
-            <WaLink ghost={false} text="Hello MAFIANA Tech Academy, I saw your flyer and want to enroll.">Chat with us on WhatsApp</WaLink>
-          </div>
-        </Section>
-
         <Section id="shop" title="Student shop" sub="Everything you need for class, bought at the academy. Add a mouse and flash drive to your fee for ₦7,000.">
           <div className="grid">
             {SHOP.map(([n, p]) => (
@@ -329,16 +284,7 @@ export default function App() {
         </section>
       </div>
 
-      <footer>
-        <div className="wrap">
-          <b>MAFIANA Tech Academy</b><br />
-          Address: add your address here<br />
-          Phone / WhatsApp: add your number here<br />
-          Instagram, TikTok, Facebook: add your handles here<br />
-          <span>Registration is ₦5,000 and covers ID card, certificate and materials.</span><br />
-          <Link href="/privacy">Privacy Policy</Link> · <Link href="/terms">Terms and Conditions</Link>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }

@@ -1,4 +1,5 @@
 import "./globals.css";
+import RevealObserver from "../components/RevealObserver";
 
 export const metadata = {
   title: "MAFIANA Tech Academy | Computer, Data, Marketing, Design and Web Development",
@@ -17,7 +18,10 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <RevealObserver />
+      </body>
     </html>
   );
 }

@@ -13,10 +13,6 @@ nav .links{display:flex;gap:20px;font-size:15px}nav .links a{text-decoration:non
 .btn{display:inline-block;background:var(--gold);color:#102019;font-weight:700;padding:12px 20px;border-radius:10px;text-decoration:none;border:0;cursor:pointer;font-size:16px;font-family:inherit}
 .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding:36px 0 64px}
-@media(max-width:860px){.hero{grid-template-columns:1fr}}
-.hero h1{font-size:clamp(38px,6vw,62px);font-weight:800;letter-spacing:-.02em}
-.hero p{color:var(--mute);font-size:18px;max-width:46ch;margin:18px 0 24px}
 .pay{background:var(--green);color:var(--on-green);border-radius:20px;padding:24px}
 .pay h3{font-size:22px;margin-bottom:14px}
 .pay label{font-size:14px;opacity:.8;display:block;margin:12px 0 6px}
@@ -31,20 +27,14 @@ section{padding:56px 0}section h2{font-size:clamp(28px,4vw,40px);font-weight:800
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
 .card h3{font-size:20px;margin-bottom:6px}.card .m{color:var(--mute);font-size:14px}
 .tag{display:inline-block;background:var(--mint);padding:2px 10px;border-radius:99px;font-size:13px;margin-top:10px}
-.course{cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}.course:hover{border-color:var(--green)}
-.course b{font:800 22px "Bricolage Grotesque",sans-serif;display:block;margin-top:10px}
 .portal{display:grid;grid-template-columns:200px 1fr;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
 .portal aside{background:var(--green);color:var(--on-green);padding:20px;font-size:14px}.portal aside div{padding:8px 0;opacity:.8}.portal aside .on{opacity:1;font-weight:700}
 .portal main{padding:22px;display:grid;gap:16px}
 @media(max-width:700px){.portal{grid-template-columns:1fr}.portal aside{display:flex;gap:14px;overflow-x:auto}}
-.bar{height:10px;background:var(--mint);border-radius:9px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--green)}
+.pbar{height:10px;background:var(--mint);border-radius:9px;overflow:hidden;margin-top:6px}.pbar i{display:block;height:100%;background:var(--green);border-radius:9px}
 .stat{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:8px 0;border-bottom:1px solid var(--line)}
 .plan .price{font:800 32px "Bricolage Grotesque",sans-serif;margin:8px 0}.plan ul{padding-left:18px;margin:10px 0 16px;color:var(--mute);font-size:15px}
 .plan.best{border:2px solid var(--gold)}
-.flyer{background:var(--green);color:var(--on-green);border-radius:20px;padding:28px;max-width:520px}
-.fh{display:flex;gap:14px;align-items:center;margin-bottom:18px}.fh h3{font-size:24px}.fh span{font-size:14px;opacity:.85}
-.fr{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.18)}.fr span:last-child{font-weight:700;white-space:nowrap}
-.fn{font-size:13px;opacity:.85;margin:14px 0 18px}
 blockquote{font-size:17px}
 .card.alt{background:var(--mint)}details.card{margin-bottom:10px;padding:14px 18px}summary{cursor:pointer;font-weight:700}details p{margin:8px 0 0}
 .tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px;min-width:480px}.tbl th,.tbl td{text-align:left;padding:8px;border-bottom:1px solid var(--line)}
@@ -142,3 +132,186 @@ footer a{color:inherit}
 .sf-bottom{border-top:1px solid rgba(255,255,255,.14);padding:18px 0 22px;display:flex;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;font-size:13px;opacity:.85}
 @media(max-width:860px){.sf-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.sf-grid{grid-template-columns:1fr}.sf-cta{padding:22px}}
+
+
+/* ---- hero: centered text over a fading image slideshow ---- */
+.hero2{position:relative;isolation:isolate;min-height:clamp(520px,82vh,760px);display:grid;place-items:center;text-align:center;overflow:hidden;background:#0A2A21;color:#F2F6F3}
+.hero2-slides,.hero2-shade{position:absolute;inset:0;z-index:-2}
+.hero2-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.02);transition:opacity 1.4s ease}
+.hero2-slide.on{opacity:1;animation:kenburns 8s ease-out forwards}
+.hero2-shade{z-index:-1;background:radial-gradient(ellipse at center,rgba(8,30,23,.70) 0%,rgba(8,30,23,.48) 55%,rgba(8,30,23,.74) 100%)}
+.hero2-content{width:100%;max-width:800px;padding:72px 20px 96px}
+.hero2 h1{font-size:clamp(44px,8vw,86px);font-weight:800;letter-spacing:-.025em;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.hero2 p{color:#DCE9E2;font-size:clamp(17px,2.2vw,21px);max-width:54ch;margin:20px auto 30px;animation:rise .9s .15s cubic-bezier(.2,.7,.2,1) both}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:rise .9s .3s cubic-bezier(.2,.7,.2,1) both}
+.btn.ghost-light{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.55);color:#fff;backdrop-filter:blur(4px)}
+.btn.ghost-light:hover{background:rgba(255,255,255,.18)}
+.hero2-dots{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);display:flex;gap:10px}
+.hero2-dots button{width:11px;height:11px;border-radius:99px;border:0;padding:0;background:rgba(255,255,255,.45);cursor:pointer;transition:width .35s,background .35s}
+.hero2-dots button.on{width:34px;background:var(--gold)}
+@keyframes kenburns{from{transform:scale(1.02)}to{transform:scale(1.09)}}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+/* ---- fee checker section ---- */
+.fees{display:grid;grid-template-columns:1fr minmax(300px,420px);gap:40px;align-items:center}
+.fees .sub{margin-bottom:0}
+@media(max-width:860px){.fees{grid-template-columns:1fr;gap:24px}}
+
+/* ---- course picture cards ---- */
+.courses-grid{grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px}
+.course-card{padding:0;overflow:hidden;display:flex;flex-direction:column;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s}
+.course-card:hover{transform:translateY(-6px);box-shadow:0 18px 38px rgba(16,32,25,.16);border-color:var(--green)}
+.course-img{position:relative;aspect-ratio:8/5;overflow:hidden;background:var(--green)}
+.course-img img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.course-card:hover .course-img img{transform:scale(1.07)}
+.tag-float{position:absolute;top:12px;left:12px;background:var(--gold);color:#102019;font-weight:700;font-size:13px;padding:3px 12px;border-radius:99px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.course-body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+.course-body h3{font-size:21px;margin-bottom:6px}
+.course-body .m{margin:0}
+.course-price{margin:12px 0 16px}.course-price b{font:800 24px "Bricolage Grotesque",sans-serif}
+.course-btn{margin-top:auto;text-align:center}
+.course-btn:hover{background:var(--gold);border-color:var(--gold);color:#102019}
+
+/* ---- motion ---- */
+.page-enter{animation:pagein .55s cubic-bezier(.2,.7,.2,1) backwards}
+@keyframes pagein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.js-reveal .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.2,1) var(--d,0ms),transform .7s cubic-bezier(.2,.7,.2,1) var(--d,0ms)}
+.js-reveal .reveal.in{opacity:1;transform:none}
+.btn{transition:transform .2s,box-shadow .2s,background .25s,border-color .25s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.btn:active{transform:translateY(0)}
+.card{transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s,border-color .3s}
+.grid>.card:hover,.plan:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(16,32,25,.12)}
+.card.form:hover,details.card:hover,.portal .card:hover{transform:none;box-shadow:none}
+.navlinks a{position:relative;transition:color .2s,background .2s}
+.logo svg{transition:transform .4s cubic-bezier(.2,.7,.2,1)}.logo:hover svg{transform:rotate(-8deg) scale(1.08)}
+.mobmenu{animation:pagein .3s ease both}
+details.card summary{transition:color .2s}details.card[open]{border-color:var(--green)}details.card[open] p{animation:pagein .35s ease both}
+.rv-card{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}.rv-card:hover{transform:translateY(-6px);box-shadow:0 16px 38px rgba(16,32,25,.18)}
+.sf-social a{transition:background .2s,color .2s,border-color .2s}.sf-social a:hover{background:rgba(255,255,255,.12);border-color:#F2B705}
+.pbar i{animation:grow 1.2s .3s cubic-bezier(.2,.7,.2,1) backwards}
+@keyframes grow{from{width:0!important}}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .hero2-slide,.hero2-slide.on{transition:none;animation:none}
+  .hero2 h1,.hero2 p,.hero-cta,.page-enter,.mobmenu,.pbar i{animation:none}
+  .card,.btn,.course-card,.course-img img,.rv-card{transition:none}
+  .card:hover,.btn:hover,.course-card:hover,.rv-card:hover{transform:none}
+}
+
+/* ---- portal extras ---- */
+.pill{display:inline-block;background:var(--mint);color:var(--ink);font-size:12px;font-weight:700;padding:2px 10px;border-radius:99px}
+.pill.gold{background:var(--gold);color:#102019}
+.portal main>.card h3{margin-bottom:10px}
+
+/* ---- admin panel ---- */
+.btn.sm{padding:6px 12px;font-size:14px;border-radius:8px}
+.btn.danger{background:transparent;border:1.5px solid #d9534f;color:#c0392b}
+.btn.danger:hover{background:#d9534f;color:#fff}
+@media(prefers-color-scheme:dark){.btn.danger{color:#ff8a80;border-color:#ff8a80}.btn.danger:hover{color:#102019;background:#ff8a80}}
+.adm-msg{margin:12px 0 0;padding:10px 12px;border-radius:10px;font-size:14px;line-height:1.45}
+.adm-msg.ok{background:var(--mint);color:var(--ink)}
+.adm-msg.bad{background:#fde8e8;color:#8a1c1c}
+@media(prefers-color-scheme:dark){.adm-msg.bad{background:#3a1a1a;color:#ffb4ab}}
+.adm-search{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);font:inherit;background:var(--bg);color:var(--ink);margin:6px 0 12px}
+.adm-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.adm-chips button{border:1.5px solid var(--line);background:transparent;color:var(--ink);padding:6px 12px;border-radius:99px;font:inherit;font-size:14px;cursor:pointer}
+.adm-chips button span{opacity:.6;margin-left:4px}
+.adm-chips button[aria-pressed=true]{background:var(--gold);border-color:var(--gold);color:#102019;font-weight:700}
+.adm-list{display:grid;gap:8px}
+.adm-row{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
+.adm-row.open{border-color:var(--green)}
+.adm-head{display:grid;grid-template-columns:1.5fr 1.5fr .8fr auto 58px;gap:12px;align-items:center;width:100%;padding:12px 14px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.adm-head:hover{background:var(--mint)}
+.adm-name b,.adm-money b,.adm-att b{display:block;font-size:15px}
+.adm-name small,.adm-money small,.adm-att small{display:block;color:var(--mute);font-size:12px;overflow-wrap:anywhere}
+.adm-courses{font-size:14px;color:var(--mute)}.adm-courses i{opacity:.7}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.badge.ok{background:#cdeedb;color:#0b4a2a}.badge.warn{background:#fbe9b3;color:#6b4b00}.badge.bad{background:#fbd5d1;color:#8a1c1c}.badge.mute{background:var(--line);color:var(--mute)}
+.adm-detail{padding:4px 14px 16px;border-top:1px solid var(--line);animation:pagein .3s ease both}
+.adm-detail h4,.adm-sub{font:700 15px "Bricolage Grotesque",sans-serif;margin:16px 0 6px}
+.adm-sums{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:12px}
+.adm-sums div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.adm-sums small{display:block;color:var(--mute);font-size:12px}
+.adm-item{border-bottom:1px solid var(--line);padding:8px 0}
+.adm-item-main{display:flex;justify-content:space-between;align-items:center;gap:10px 14px;flex-wrap:wrap;font-size:14px}
+.adm-item-main>span:first-child{flex:1 1 220px}
+.adm-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.adm-inline{display:inline-block}.adm-inline .adm-msg.ok{display:none}.adm-inline .adm-msg.bad{position:absolute;right:12px;max-width:min(320px,80vw);z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.2)}.adm-item-main{position:relative}
+.adm-edit,.adm-quick{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0 4px}
+.adm-quick{margin-top:14px}
+.adm-reg-pick{display:grid;grid-template-columns:1fr 200px;gap:12px;margin-bottom:12px}
+@media(max-width:600px){.adm-reg-pick{grid-template-columns:1fr}}
+.adm-reg-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}
+.adm-seg{flex:none;width:190px}
+.adm-seg button{padding:6px;font-size:14px;border-color:var(--line);color:var(--ink)}
+.adm-seg button[aria-pressed=true]{background:var(--green);color:var(--on-green);border-color:var(--green)}
+.adm-seg button.abs[aria-pressed=true]{background:#c0392b;border-color:#c0392b;color:#fff}
+#attendance input[type=date]{width:100%}
+@media(max-width:760px){
+  .adm-head{grid-template-columns:1fr auto;grid-template-areas:"name badge" "courses courses" "money att";row-gap:6px}
+  .adm-name{grid-area:name}.adm-head .badge{grid-area:badge;justify-self:end}.adm-courses{grid-area:courses}.adm-money{grid-area:money}.adm-att{grid-area:att;text-align:right}
+  .adm-seg{width:100%}
+}
+
+/* ---- certificate ---- */
+.cert-page{padding-top:24px}
+.cert-bar{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+.cert{background:#fff;color:#102019;border-radius:6px;padding:14px;box-shadow:0 14px 40px rgba(16,32,25,.18);max-width:900px;margin:0 auto;border:10px solid #0E3B2E}
+.cert-in{border:3px solid #F2B705;padding:clamp(22px,5vw,52px) clamp(16px,4vw,48px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.cert-org{font:800 18px "Bricolage Grotesque",sans-serif;letter-spacing:.14em;text-transform:uppercase;margin:8px 0 0}
+.cert h1{font-size:clamp(28px,6vw,50px);font-weight:800;color:#0E3B2E;margin:8px 0 16px}
+.cert-small{margin:0;color:#52645a;font-size:16px}
+.cert-name{font:800 clamp(28px,6vw,48px) "Bricolage Grotesque",sans-serif;margin:8px 0;border-bottom:3px solid #F2B705;padding:0 24px 6px;overflow-wrap:anywhere}
+.cert-course{font:800 clamp(20px,4vw,30px) "Bricolage Grotesque",sans-serif;color:#0E3B2E;margin:8px 0 4px}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;width:100%;margin-top:36px;text-align:center}
+.cert-foot small{display:block;color:#52645a;font-size:13px}.cert-foot b{font-size:18px;letter-spacing:.06em}
+.cert-line{display:block;width:200px;max-width:100%;border-top:2px solid #102019;margin:0 auto 6px}
+@media print{
+  .topbar,.sf,.no-print{display:none!important}
+  body{background:#fff}.wrap{max-width:none;padding:0}
+  .cert-page{padding:0}.cert{box-shadow:none;max-width:none;margin:0}
+  .page-enter{animation:none}
+  @page{size:A4 landscape;margin:12mm}
+}
+
+/* ---- student portal ---- */
+.portal .pnav a{padding:9px 10px;border-radius:8px}
+.portal .pnav a.on{background:rgba(255,255,255,.14)}
+@media(max-width:700px){.portal .pnav{flex-wrap:nowrap!important;overflow-x:auto;gap:6px!important;padding:12px}.portal .pnav a,.portal .pnav .lnk{white-space:nowrap;flex:none;padding:8px 14px}.portal .pnav .side-title{display:none}.portal .pnav form{flex:none}}
+.p-hero{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;background:linear-gradient(120deg,var(--green),#14573F);color:#F2F6F3;border-radius:16px;padding:22px 24px}
+.p-hero h3{font-size:clamp(24px,4vw,32px)}.p-hero p{margin:6px 0 0;opacity:.9}
+.p-stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.ann{border-top:1px solid var(--line);padding:12px 0 2px}.ann:first-of-type{border-top:0}
+.ann b{display:block}.ann .m{display:block;font-size:13px}.ann p{margin:6px 0 0;white-space:pre-wrap}
+.portal main>.card .pbar{margin-top:0}
+
+/* ---- password eye, greeting ---- */
+.pw{position:relative}
+.pw input{padding-right:50px!important}
+.pw-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:42px;height:42px;display:grid;place-items:center;border:0;background:transparent;color:var(--mute);cursor:pointer;border-radius:10px}
+.pw-eye:hover{color:var(--ink);background:var(--mint)}
+.pw-eye:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.greet h3{font-size:clamp(24px,4vw,32px)}
+.greet p{margin:6px 0 0;opacity:.9}
+.greet .pill{margin-top:10px}
+.greet-sub{margin:10px 0 0;opacity:.95}
+
+/* ---- lessons and quizzes ---- */
+.lesson{display:grid;grid-template-columns:34px 1fr auto 28px;gap:12px;align-items:center;padding:12px 8px;border-top:1px solid var(--line);color:inherit;text-decoration:none;border-radius:8px;transition:background .2s}
+.lesson:first-of-type{border-top:0}.lesson:hover{background:var(--mint)}
+.lesson-n{width:30px;height:30px;border-radius:99px;background:var(--mint);display:grid;place-items:center;font-weight:700;font-size:14px}
+.lesson-t{font-weight:600}.lesson-go{color:var(--green)}
+.video{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 10px 30px rgba(16,32,25,.2)}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.qz{display:grid;gap:14px}
+.qz-q{border:1px solid var(--line);min-width:0}.qz-q legend{float:left;width:100%;padding:0;margin-bottom:4px;font-weight:700;font-size:17px}.qz-q legend+*{clear:both}
+.qz-opt{display:flex;align-items:center;gap:10px;padding:11px 12px;margin-top:8px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;transition:border-color .2s,background .2s}
+.qz-opt:hover{border-color:var(--green)}.qz-opt input{width:18px;height:18px;accent-color:var(--green);flex:none}
+.qz-opt.on{border-color:var(--green);background:var(--mint)}
+.qz-opt.right{border-color:#1E9E5A;background:#cdeedb;color:#0b4a2a}.qz-opt.wrong{border-color:#c0392b;background:#fbd5d1;color:#8a1c1c}
+.qz-tag{margin-left:auto;font-size:12px}
+.qz-score{background:var(--mint)}
+.qb{border:1px solid var(--line);border-radius:12px;padding:12px;margin:14px 0 0;min-width:0}.qb legend{font-weight:700;padding:0 6px}
+.qb-opt{display:flex;gap:8px;align-items:center;margin-top:8px}.qb-opt input[type=radio]{width:20px;height:20px;flex:none;accent-color:var(--green)}
+fieldset{min-width:0}

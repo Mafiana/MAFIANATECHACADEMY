@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PasswordInput from "../../components/PasswordInput";
 import AuthShell from "../../components/AuthShell";
 import { createClient } from "../../lib/supabase/client";
 
@@ -22,7 +23,7 @@ export default function UpdatePassword() {
     <AuthShell title="Choose a new password" subtitle="Enter a new password for your account">
       <form className="form auth-form" onSubmit={submit}>
         <label htmlFor="np">New password</label>
-        <input id="np" type="password" minLength={6} required autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <PasswordInput id="np" minLength={6} required autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <button className="btn auth-btn" disabled={busy}>{busy ? <><span className="spin" aria-hidden="true" /> Saving</> : "Save password"}</button>
         {msg && <p className="auth-msg" role="alert">{msg}</p>}
       </form>

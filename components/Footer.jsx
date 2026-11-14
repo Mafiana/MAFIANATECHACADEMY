@@ -40,7 +40,7 @@ export default function Footer() {
             <Link href="/#about">About</Link><Link href="/#courses">Courses</Link><Link href="/blog">Blog</Link><Link href="/#shop">Shop</Link><Link href="/#faq">FAQ</Link>
           </div>
           <div><h4>Students</h4>
-            <Link href="/login">Student login</Link><Link href="/#contact">Enroll</Link><Link href="/privacy">Privacy Policy</Link><Link href="/terms">Terms and Conditions</Link>
+            <Link href="/login">Student login</Link><Link href="/admin">Admin login</Link><Link href="/#contact">Enroll</Link><Link href="/privacy">Privacy Policy</Link><Link href="/terms">Terms and Conditions</Link>
           </div>
           <div><h4>Contact</h4>
             <p>{CONTACT.address}</p><p>{CONTACT.phone}</p><p>{CONTACT.email}</p>
