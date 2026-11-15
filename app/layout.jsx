@@ -2,9 +2,9 @@ import "./globals.css";
 import RevealObserver from "../components/RevealObserver";
 
 export const metadata = {
-  title: "MAFIANA Tech Academy | Computer, Data, Marketing, Design and Web Development",
+  title: "MAFIANA Tech Academy | Computer, Data, Design and Web Development",
   description:
-    "Learn computer basics, data analytics, digital marketing, graphic design and web development in class or online. Pay in installments and get a certificate.",
+    "Learn computer basics, data analytics, graphic design and web development in class or online. Pay in installments and get a certificate.",
 };
 
 export const viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };

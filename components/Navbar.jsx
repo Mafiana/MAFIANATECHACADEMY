@@ -5,7 +5,7 @@ import Link from "next/link";
 // third value true = shown only in the mobile menu
 const LINKS = [
   ["About", "/#about", true],
-  ["Courses", "/#courses", true],
+  ["Courses", "/courses"],
   ["Blog", "/blog"],
   ["Shop", "/#shop"],
   ["Contact", "/#contact"],
@@ -34,7 +34,7 @@ export default function Navbar() {
     <header className="topbar">
       <div className="wrap bar">
         <Link className="logo" href="/" onClick={close}>
-          <Mark />MAFIANA<span className="lg-long">&nbsp;Tech Academy</span>
+          <Mark />MAF<span className="lg-long">&nbsp;Tech Academy</span>
         </Link>
         <div className="navlinks" role="navigation" aria-label="Main">
           {LINKS.filter((x) => !x[2]).map(([l, h]) => <Link key={l} href={h}>{l}</Link>)}

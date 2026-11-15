@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const TARGETS = [
   "main section > h2", "main section > .sub", ".fees-text", ".fees > .pay",
   ".grid > *", ".rv-panel", ".rv-card", "details.card", ".portal", ".card.form",
-  ".prose > *", ".sf-cta",
+  ".prose > *",
 ].join(",");
 
 export default function RevealObserver() {

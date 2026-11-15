@@ -34,7 +34,7 @@ export default function AuthShell({ title, subtitle, children }) {
           <circle cx="500" cy="230" r="8" /><circle cx="60" cy="250" r="6" /><circle cx="520" cy="330" r="5" />
           <path d="M40 330l12 12M52 330l-12 12M510 190l10 10M520 190l-10 10M300 80l10 10M310 80l-10 10" />
         </svg>
-        <div className="auth-quote"><b>Learn. Build. Earn.</b><span>Join students building real skills in computer, data, marketing, design and web development.</span></div>
+        <div className="auth-quote"><b>Learn. Build. Earn.</b><span>Join students building real skills in computer, data, design and web development.</span></div>
       </div>
     </div>
   );

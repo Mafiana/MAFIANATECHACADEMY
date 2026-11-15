@@ -7,8 +7,9 @@ export const metadata = {
 
 const sections = [
   ["Information we collect", [
-    "When you create an account we collect your full name and email address. When you enroll we also keep your course, class type (physical or online), the fees agreed, payments you make and your class attendance.",
-    "If you contact us on WhatsApp we see your phone number and the messages you send. If you use Google sign-in we receive your name and email from Google. We do not collect your Google password.",
+    "The academy creates your student account for you. We collect your full name and, if you give it, your phone number. We also keep your course and class type, the fees agreed, the payments you make, your class attendance, and your progress in lessons and quizzes.",
+    "You do not need an email address or a password. You sign in with an Access PIN that the academy issues to you. We never store your PIN in a readable form: our login provider keeps only a protected one-way version, so nobody, including the academy, can read it back. If you lose it, we issue a new one.",
+    "If you contact us on WhatsApp we see your phone number and the messages you send.",
   ]],
   ["How we use your information", [
     "We use your information to create and run your student account, enroll you in courses, record payments and attendance, issue your ID card and certificate, answer your questions and send important notices about your classes.",

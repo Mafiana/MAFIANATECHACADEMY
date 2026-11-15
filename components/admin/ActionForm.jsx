@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
+import PinCard from "./PinCard";
 
 function Submit({ label, busy, cls }) {
   const { pending } = useFormStatus();
@@ -32,6 +33,7 @@ export default function ActionForm({ action, children, label = "Save", busy = "S
       {children}
       <Submit label={label} busy={busy} cls={cls} />
       {state.msg && !hideMsg && <p className={"adm-msg " + (state.ok ? "ok" : "bad")} role={state.ok ? "status" : "alert"}>{state.msg}</p>}
+      {state.ok && state.card && <PinCard card={state.card} />}
     </form>
   );
 }

@@ -29,7 +29,7 @@ export default function Footer() {
         <div className="sf-grid">
           <div>
             <Link className="logo sf-logo" href="/"><Mark />MAFIANA Tech Academy</Link>
-            <p>Practical computer, data, marketing, design and web development training. Learn in class or online and graduate with a certificate.</p>
+            <p>Practical computer, data, design and web development training. Learn in class or online and graduate with a certificate.</p>
             {social.length > 0 && (
               <div className="sf-social">
                 {social.map(([n, u]) => <a key={n} href={u} target="_blank" rel="noopener noreferrer">{n}</a>)}
@@ -37,10 +37,10 @@ export default function Footer() {
             )}
           </div>
           <div><h4>Explore</h4>
-            <Link href="/#about">About</Link><Link href="/#courses">Courses</Link><Link href="/blog">Blog</Link><Link href="/#shop">Shop</Link><Link href="/#faq">FAQ</Link>
+            <Link href="/#about">About</Link><Link href="/courses">Courses</Link><Link href="/blog">Blog</Link><Link href="/#shop">Shop</Link><Link href="/#faq">FAQ</Link>
           </div>
           <div><h4>Students</h4>
-            <Link href="/login">Student login</Link><Link href="/admin">Admin login</Link><Link href="/#contact">Enroll</Link><Link href="/privacy">Privacy Policy</Link><Link href="/terms">Terms and Conditions</Link>
+            <Link href="/login">Student login</Link><Link href="/verify">Verify a certificate</Link><Link href="/admin">Admin login</Link><Link href="/#contact">Enroll</Link><Link href="/privacy">Privacy Policy</Link><Link href="/terms">Terms and Conditions</Link>
           </div>
           <div><h4>Contact</h4>
             <p>{CONTACT.address}</p><p>{CONTACT.phone}</p><p>{CONTACT.email}</p>

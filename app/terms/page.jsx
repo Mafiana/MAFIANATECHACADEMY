@@ -6,8 +6,9 @@ export const metadata = {
 };
 
 const sections = [
-  ["Using this website", [
-    "By using this website or creating a student account you agree to these terms. If you do not agree, please do not use the site. You must give correct information when you register and keep your password private. You are responsible for activity on your account.",
+  ["Using this website and your Access PIN", [
+    "By using this website or signing in to your student account you agree to these terms. The academy issues you an Access PIN when you enroll. Keep it private and do not share it. You are responsible for everything done with your PIN. If you think someone else knows it, tell us and we will issue a new one.",
+    "Your PIN works for the period shown on your plan. The academy may renew, replace or pause a PIN, for example when fees are overdue or the PIN has been shared. When a PIN ends or is paused you cannot sign in until it is renewed or restored.",
   ]],
   ["Enrollment and registration fee", [
     "Your seat is confirmed after you pay the registration fee of ₦5,000 and at least the first part of the course fee. The registration fee covers your academy ID card, learning materials and certificate.",
