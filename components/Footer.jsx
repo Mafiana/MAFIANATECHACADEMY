@@ -36,19 +36,33 @@ export default function Footer() {
               </div>
             )}
           </div>
-          <div><h4>Explore</h4>
-            <Link href="/#about">About</Link><Link href="/courses">Courses</Link><Link href="/blog">Blog</Link><Link href="/#shop">Shop</Link><Link href="/#faq">FAQ</Link>
+          <div>
+            <h4>Explore</h4>
+            <Link href="/#about">About</Link>
+            <Link href="/courses">Courses</Link>
+            <Link href="/blog">Blog</Link>
+            <Link href="/#shop">Shop</Link>
+            <Link href="/#faq">FAQ</Link>
           </div>
-          <div><h4>Students</h4>
-            <Link href="/login">Student login</Link><Link href="/verify">Verify a certificate</Link><Link href="/admin">Admin login</Link><Link href="/#contact">Enroll</Link><Link href="/privacy">Privacy Policy</Link><Link href="/terms">Terms and Conditions</Link>
+          <div>
+            <h4>Students</h4>
+            <Link href="/verify">Verify a certificate</Link>
+            <Link href="/#contact">Enroll</Link>
+            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/terms">Terms and Conditions</Link>
           </div>
-          <div><h4>Contact</h4>
-            <p>{CONTACT.address}</p><p>{CONTACT.phone}</p><p>{CONTACT.email}</p>
+          <div>
+            <h4>Contact</h4>
+            {CONTACT.email && <p>{CONTACT.email}</p>}
+            {wa && (
+              <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer">
+                Chat on WhatsApp
+              </a>
+            )}
           </div>
         </div>
         <div className="sf-bottom">
           <span>© {new Date().getFullYear()} MAFIANA Tech Academy. All rights reserved.</span>
-          <span>Registration ₦5,000 covers ID card, certificate and materials.</span>
         </div>
       </div>
     </footer>

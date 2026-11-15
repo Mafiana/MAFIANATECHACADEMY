@@ -486,3 +486,35 @@ fieldset{min-width:0}
 
 .bl-prose,.cd-main,.bl-side,.cd-side{min-width:0}
 .bl-code{max-width:100%}
+
+/* ---- student shop (product cards) ---- */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.shop-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s,border-color .25s}
+.shop-card:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(16,32,25,.14);border-color:var(--green)}
+.shop-img{aspect-ratio:1;background:linear-gradient(145deg,var(--mint),#e8f0ec);display:grid;place-items:center;overflow:hidden}
+.shop-img img{width:100%;height:100%;object-fit:cover;display:block}
+.shop-img-fallback::after{content:"📦";font-size:48px}
+.shop-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.shop-body h3{font-size:17px;margin:0;line-height:1.3}
+.shop-body .m{margin:0;font-size:13.5px}
+.shop-foot{margin-top:auto;padding-top:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line)}
+.shop-foot b{font:800 18px "Bricolage Grotesque",sans-serif}
+.btn.sm{padding:8px 14px;font-size:14px}
+
+/* shop categories + pagination */
+.shop-tools{display:grid;gap:14px;margin:0 0 20px}
+.shop-pager{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:24px;flex-wrap:wrap}
+.shop-pager .btn{min-width:44px}
+.shop-pager span{color:var(--mute);font-size:14px}
+
+/* course search with icon */
+.cat-search-wrap{position:relative}
+.cat-search-wrap .cat-search{padding-left:48px}
+.cat-search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--mute);pointer-events:none;display:grid;place-items:center}
+
+/* Keep "Learn. Practice. Grow." on one line on all screens */
+.hero2 h1{
+  white-space:nowrap;
+  font-size:clamp(22px,6.5vw,86px);
+  letter-spacing:-.03em;
+}

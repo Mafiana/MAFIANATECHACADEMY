@@ -41,7 +41,6 @@ export default function Navbar() {
         </div>
         <div className="navcta">
           <Link className="btn ghost" href="/login">Login</Link>
-          <Link className="btn" href="/#contact">Enroll</Link>
         </div>
         <button className="burger" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="mobmenu" onClick={() => setOpen(!open)}>
           <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
@@ -55,7 +54,6 @@ export default function Navbar() {
         <div id="mobmenu" className="mobmenu wrap" role="navigation" aria-label="Mobile">
           {LINKS.map(([l, h]) => <Link key={l} href={h} onClick={close}>{l}</Link>)}
           <Link href="/login" onClick={close}>Login</Link>
-          <Link className="btn" href="/#contact" onClick={close}>Enroll</Link>
         </div>
       )}
     </header>
