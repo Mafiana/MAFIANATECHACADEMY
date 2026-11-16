@@ -1,8 +1,8 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 const PHONE = process.env.NEXT_PUBLIC_WHATSAPP || "234XXXXXXXXXX";
-const naira = (x) => "₦" + Number(x).toLocaleString("en-NG");
+const naira = (x) => "₦" + x.toLocaleString("en-NG");
 const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 
 const PER_PAGE = 6;
@@ -16,28 +16,30 @@ const SHOP = [
   { name: "Laptop charger", price: 15000, img: "/shop/charger.jpeg", desc: "Compatible with common models", cat: "Charger" },
   { name: "Laptop bag", price: 14000, img: "/shop/bag.jpeg", desc: "Padded, fits 15.6 inch", cat: "Bag" },
   { name: "Headphones", price: 9000, img: "/shop/headphones.jpeg", desc: "Over-ear, for class & calls", cat: "Audio" },
-  { name: "USB mouse (wired)", price: 4500, img: "/shop/mouse.jpeg", desc: "Simple and reliable", cat: "Mouse" },
-  { name: "128GB flash drive", price: 16000, img: "/shop/flash.jpeg", desc: "More space for projects", cat: "Flash" },
-  { name: "Laptop stand", price: 12000, img: "/shop/bag.jpeg", desc: "Raises the screen to eye level", cat: "Laptop" },
 ];
 
 export default function ShopSection() {
   const [cat, setCat] = useState("All");
   const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState(null);
 
-  const list = useMemo(
-    () => (cat === "All" ? SHOP : SHOP.filter((p) => p.cat === cat)),
-    [cat]
-  );
-
+  const list = useMemo(() => (cat === "All" ? SHOP : SHOP.filter((p) => p.cat === cat)), [cat]);
   const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const slice = list.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
 
-  function pickCat(c) {
+  const pickCat = (c) => {
     setCat(c);
     setPage(1);
-  }
+  };
+
+  // Close modal on Escape
+  useEffect(() => {
+    if (!selected) return;
+    const onKey = (e) => e.key === "Escape" && setSelected(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selected]);
 
   return (
     <section id="shop">
@@ -58,14 +60,18 @@ export default function ShopSection() {
 
       <p className="m cat-count" aria-live="polite">
         {list.length} item{list.length === 1 ? "" : "s"}
-        {totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ""}
       </p>
 
       {!list.length && <p className="m">No products in this category yet.</p>}
 
       <div className="shop-grid">
         {slice.map((item) => (
-          <article className="shop-card" key={item.name}>
+          <article
+            className="shop-card"
+            key={item.name}
+            onClick={() => setSelected(item)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="shop-img">
               <img
                 src={item.img}
@@ -84,14 +90,7 @@ export default function ShopSection() {
               <p className="m">{item.desc}</p>
               <div className="shop-foot">
                 <b>{naira(item.price)}</b>
-                <a
-                  className="btn ghost sm"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={wa("Hello, I want to buy: " + item.name)}
-                >
-                  Order
-                </a>
+                <span className="btn ghost sm">View</span>
               </div>
             </div>
           </article>
@@ -119,6 +118,36 @@ export default function ShopSection() {
           >
             Next
           </button>
+        </div>
+      )}
+
+      {/* ===== Product Modal ===== */}
+      {selected && (
+        <div className="shop-modal-overlay" onClick={() => setSelected(null)}>
+          <div className="shop-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="shop-modal-close" onClick={() => setSelected(null)} aria-label="Close">
+              ×
+            </button>
+
+            <div className="shop-modal-img">
+              <img src={selected.img} alt={selected.name} />
+            </div>
+
+            <div className="shop-modal-body">
+              <h3>{selected.name}</h3>
+              <p className="m">{selected.desc}</p>
+              <div className="shop-modal-price">{naira(selected.price)}</div>
+
+              <a
+                className="btn"
+                target="_blank"
+                rel="noopener noreferrer"
+                href={wa("Hello, I want to buy: " + selected.name)}
+              >
+                Order on WhatsApp
+              </a>
+            </div>
+          </div>
         </div>
       )}
     </section>

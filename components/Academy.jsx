@@ -36,17 +36,12 @@ const SERVICES = [
   ["Training hall and computer lab", "Practise on a computer during every class."],
   ["Online class studio", "Live and recorded classes for students outside town."],
   ["Certificates and exams", "Final test and a certificate you can show employers."],
-  ["Career support", "Guidance on jobs, freelancing and your first clients."],
+  ["Career support", "Guidance on jobs, freelancing and finding your first clients."],
 ];
 const MORE = [
   ["Corporate training", "We train your staff in Office, data, design or web, at your office or in our lab. Tell us the team size and we send a quote.", "I want corporate training for my company", "Request a quote"],
   ["Online courses", "Learn from any city with live classes and recorded lessons at the online fee.", null, "See courses"],
   ["Course + laptop + accessories", "Join a course and take a laptop, mouse, flash drive and bag in one deal. Ask for today’s laptop prices.", "I want the course + laptop + accessories combo", "Ask about the combo"],
-];
-const PLANS = [
-  ["Starter", "₦20,000", ["Up to 50 students", "Student login and attendance", "Certificates"], "I want the Starter school plan", "Choose Starter"],
-  ["Growth", "₦50,000", ["Up to 300 students", "Video lessons and quizzes", "Online payments"], "I want the Growth school plan", "Choose Growth", true],
-  ["Network", "Custom", ["Many branches", "Your own branding", "Priority support"], "I want to talk about the Network school plan", "Talk to us"],
 ];
 const FAQ = [
   ["Can I pay in installments?", "Yes. Pay half to book your seat and the balance before week 3. Digital Literacy is paid once."],
@@ -59,15 +54,6 @@ const REVIEWS = [
   ["I could not use Excel before. After four weeks I now do the monthly report at my office alone.", "Amina", "Computer Basics + Office", null],
   ["The installment plan helped me a lot. I finished Data Analytics and got an internship offer.", "Chidi", "Data Analytics", null],
   ["I now design logos and flyers for three shops in my area. The classes were practical from day one.", "Tolu", "Graphic Design", null],
-];
-
-const SHOP = [
-  { name: "Wireless mouse", price: 7000, img: "/shop/mouse.jpeg", desc: "Quiet click, long battery" },
-  { name: "Keyboard", price: 10000, img: "/shop/keyboard.jpeg", desc: "Full size, soft keys" },
-  { name: "64GB flash drive", price: 10000, img: "/shop/flash.jpeg", desc: "USB 3.0, metal body" },
-  { name: "Laptop charger", price: 15000, img: "/shop/charger.jpeg", desc: "Compatible with common models" },
-  { name: "Laptop bag", price: 14000, img: "/shop/bag.jpeg", desc: "Padded, fits 15.6 inch" },
-  { name: "Headphones", price: 9000, img: "/shop/headphones.jpeg", desc: "Over-ear, for class & calls" },
 ];
 
 function Section({ id, title, sub, children }) {
@@ -137,45 +123,156 @@ export default function App() {
           </Link>
         </div>
       </HeroSlider>
+
       <div className="wrap">
+        {/* ===== About the academy ===== */}
         <Section
           id="about"
           title="About the academy"
           sub="MAFIANA Tech Academy teaches practical skills you can use for work the same month you learn them. Small classes, real projects and a certificate at the end."
         >
-          <div className="grid">
-            {ABOUT.map(([t, d]) => (
-              <div className="card" key={t}>
+          <div className="about-grid">
+            {ABOUT.map(([t, d], i) => (
+              <article className="about-card" key={t} style={{ "--i": i }}>
+                <div className="about-icon" aria-hidden="true">
+                  {i === 0 && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M12 3l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L7.5 17l.9-5L4.8 8.2l5-.7L12 3z" />
+                      <path d="M12 14v7M8 21h8" />
+                    </svg>
+                  )}
+                  {i === 1 && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <rect x="3" y="4" width="18" height="12" rx="2" />
+                      <path d="M8 20h8M12 16v4" />
+                      <circle cx="8.5" cy="10" r="1.2" fill="currentColor" />
+                      <circle cx="15.5" cy="10" r="1.2" fill="currentColor" />
+                    </svg>
+                  )}
+                  {i === 2 && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" />
+                      <circle cx="12" cy="12" r="4" />
+                    </svg>
+                  )}
+                  {i === 3 && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <rect x="3" y="5" width="18" height="14" rx="2" />
+                      <path d="M7 9h10M7 13h6" />
+                      <circle cx="17" cy="13" r="1.5" fill="currentColor" />
+                    </svg>
+                  )}
+                </div>
                 <h3>{t}</h3>
                 <p className="m">{d}</p>
-              </div>
+              </article>
             ))}
           </div>
         </Section>
 
+        {/* ===== Departments and student services ===== */}
         <Section
           id="departments"
           title="Departments and student services"
           sub="Four departments teach the courses. Five services support you from registration to your first job."
         >
-          <div className="grid">
-            {DEPTS.map(([t, d]) => (
-              <div className="card" key={t}>
-                <h3>{t}</h3>
-                <p className="m">{d}</p>
-              </div>
-            ))}
+          <div className="dept-block">
+            <h3 className="dept-label">Departments</h3>
+            <div className="dept-grid">
+              {DEPTS.map(([t, d], i) => (
+                <article className="dept-card" key={t} style={{ "--i": i }}>
+                  <div className="dept-visual">
+                    <span className="dept-num">0{i + 1}</span>
+                    <div className="dept-icon" aria-hidden="true">
+                      {i === 0 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <rect x="3" y="4" width="18" height="14" rx="2" />
+                          <path d="M7 8h10M7 12h6" />
+                        </svg>
+                      )}
+                      {i === 1 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <path d="M4 19V5l8 4 8-4v14l-8 4-8-4z" />
+                          <path d="M12 9v10" />
+                        </svg>
+                      )}
+                      {i === 2 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <circle cx="12" cy="8" r="3" />
+                          <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6" />
+                          <path d="M16 4l2 2-2 2M8 4L6 6l2 2" />
+                        </svg>
+                      )}
+                      {i === 3 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <path d="M4 6h16v12H4z" />
+                          <path d="M8 10h8M8 14h5" />
+                          <path d="M16 3v3M8 3v3" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="dept-body">
+                    <h3>{t}</h3>
+                    <p className="m">{d}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
-          <div className="grid" style={{ marginTop: 16 }}>
-            {SERVICES.map(([t, d]) => (
-              <div className="card alt" key={t}>
-                <h3>{t}</h3>
-                <p className="m">{d}</p>
-              </div>
-            ))}
+
+          <div className="svc-block">
+            <h3 className="dept-label">Student services</h3>
+            <div className="svc-grid">
+              {SERVICES.map(([t, d], i) => (
+                <article className="svc-card" key={t} style={{ "--i": i }}>
+                  <div className="svc-visual">
+                    <div className="svc-icon" aria-hidden="true">
+                      {i === 0 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+                          <rect x="9" y="3" width="6" height="4" rx="1" />
+                          <path d="M9 12h6M9 16h4" />
+                        </svg>
+                      )}
+                      {i === 1 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <rect x="3" y="4" width="18" height="12" rx="2" />
+                          <path d="M8 20h8M12 16v4" />
+                        </svg>
+                      )}
+                      {i === 2 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <circle cx="12" cy="12" r="2" />
+                          <path d="M16.24 7.76a6 6 0 010 8.49M7.76 7.76a6 6 0 000 8.49M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
+                        </svg>
+                      )}
+                      {i === 3 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <path d="M12 3l9 5-9 5-9-5 9-5z" />
+                          <path d="M3 13v5l9 5 9-5v-5" />
+                          <path d="M12 13v10" />
+                        </svg>
+                      )}
+                      {i === 4 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                          <path d="M5 19l4-8 4 4 6-10" />
+                          <path d="M13 5h6v6" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="svc-body">
+                    <h3>{t}</h3>
+                    <p className="m">{d}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </Section>
 
+        {/* ===== Courses ===== */}
         <Section
           id="courses"
           title="Courses"
@@ -206,6 +303,7 @@ export default function App() {
           </p>
         </Section>
 
+        {/* ===== More ways ===== */}
         <Section id="more" title="More ways to learn with us">
           <div className="grid">
             {MORE.map(([t, d, text, label]) => (
@@ -224,32 +322,99 @@ export default function App() {
           </div>
         </Section>
 
+        {/* ===== Run your own academy (Pricing) ===== */}
         <Section
           id="schools"
           title="Run your own academy on MAFIANA"
           sub="Other computer schools can use our system to manage students, fees and certificates. Sample monthly pricing."
         >
-          <div className="grid">
-            {PLANS.map(([t, price, items, text, label, best]) => (
-              <div className={"card plan" + (best ? " best" : "")} key={t}>
-                <h3>{t}</h3>
-                <div className="price">
-                  {price}
-                  {price !== "Custom" && <span className="m">/month</span>}
+          <div className="plans-grid">
+            {/* Starter */}
+            <article className="plan-card">
+              <div className="plan-top">
+                <div className="plan-icon starter">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                  </svg>
                 </div>
-                <ul>
-                  {items.map((i) => (
-                    <li key={i}>{i}</li>
-                  ))}
-                </ul>
-                <WaLink ghost={!best} text={text}>
-                  {label}
-                </WaLink>
+                <div>
+                  <h3>Starter</h3>
+                  <p className="plan-desc">Perfect for small schools and training centers.</p>
+                </div>
               </div>
-            ))}
+              <div className="plan-price">
+                ₦20,000<span>/month</span>
+              </div>
+              <ul className="plan-features">
+                <li>Up to 50 students</li>
+                <li>Student login and attendance</li>
+                <li>Certificates</li>
+              </ul>
+              <WaLink text="I want the Starter school plan" ghost>
+                Choose Starter →
+              </WaLink>
+            </article>
+
+            {/* Growth (Most Popular) */}
+            <article className="plan-card popular">
+              <div className="popular-badge">★ Most Popular</div>
+              <div className="plan-top dark">
+                <div className="plan-icon growth">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M3 17l6-6 4 4 8-8" />
+                    <path d="M14 7h7v7" />
+                  </svg>
+                </div>
+                <div>
+                  <h3>Growth</h3>
+                  <p className="plan-desc">Ideal for growing institutions.</p>
+                </div>
+              </div>
+              <div className="plan-price">
+                ₦50,000<span>/month</span>
+              </div>
+              <ul className="plan-features">
+                <li>Up to 300 students</li>
+                <li>Video lessons and quizzes</li>
+                <li>Online payments</li>
+              </ul>
+              <WaLink text="I want the Growth school plan" ghost={false}>
+                Choose Growth →
+              </WaLink>
+            </article>
+
+            {/* Network */}
+            <article className="plan-card">
+              <div className="plan-top">
+                <div className="plan-icon network">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <circle cx="12" cy="5" r="2" />
+                    <circle cx="5" cy="19" r="2" />
+                    <circle cx="19" cy="19" r="2" />
+                    <path d="M12 7v4M12 11l-5 6M12 11l5 6" />
+                  </svg>
+                </div>
+                <div>
+                  <h3>Network</h3>
+                  <p className="plan-desc">For large institutions and networks.</p>
+                </div>
+              </div>
+              <div className="plan-price custom">Custom</div>
+              <ul className="plan-features">
+                <li>Many branches</li>
+                <li>Your own branding</li>
+                <li>Priority support</li>
+              </ul>
+              <WaLink text="I want to talk about the Network school plan" ghost>
+                Talk to us →
+              </WaLink>
+            </article>
           </div>
         </Section>
 
+        {/* ===== Reviews ===== */}
         <section id="reviews">
           <div className="rv-panel">
             <h2 style={{ textAlign: "center" }}>What our students say</h2>
@@ -279,6 +444,7 @@ export default function App() {
           </div>
         </section>
 
+        {/* ===== Blog ===== */}
         <Section id="blog" title="From the blog" sub="Short, practical guides to help you start and earn.">
           <div className="bl-grid">
             {posts.slice(0, 3).map((p) => (
@@ -292,6 +458,7 @@ export default function App() {
           </p>
         </Section>
 
+        {/* ===== FAQ ===== */}
         <Section id="faq" title="Questions students ask">
           <div style={{ maxWidth: 720 }}>
             {FAQ.map(([q, a]) => (
@@ -303,8 +470,10 @@ export default function App() {
           </div>
         </Section>
 
-      <ShopSection />
+        {/* ===== Shop ===== */}
+        <ShopSection />
 
+        {/* ===== Contact ===== */}
         <section id="contact">
           <h2>Enroll or ask a question</h2>
           <p className="sub">Fill this in and it opens WhatsApp with your message ready to send.</p>

@@ -23,16 +23,31 @@ export default function Footer() {
     <footer className="sf">
       <div className="wrap">
         <div className="sf-cta">
-          <div><h3>Ready to start learning?</h3><p>Book your seat today and pay small small.</p></div>
-          <Link className="btn" href="/#contact">Enroll now</Link>
+          <div>
+            <h3>Ready to start learning?</h3>
+            <p>Book your seat today and pay small small.</p>
+          </div>
+          <Link className="btn" href="/#contact">
+            Enroll now
+          </Link>
         </div>
         <div className="sf-grid">
           <div>
-            <Link className="logo sf-logo" href="/"><Mark />MAFIANA Tech Academy</Link>
-            <p>Practical computer, data, design and web development training. Learn in class or online and graduate with a certificate.</p>
+            <Link className="logo sf-logo" href="/">
+              <Mark />
+              MAFIANA Tech Academy
+            </Link>
+            <p>
+              Practical computer, data, design and web development training. Learn in class or online and graduate
+              with a certificate.
+            </p>
             {social.length > 0 && (
               <div className="sf-social">
-                {social.map(([n, u]) => <a key={n} href={u} target="_blank" rel="noopener noreferrer">{n}</a>)}
+                {social.map(([n, u]) => (
+                  <a key={n} href={u} target="_blank" rel="noopener noreferrer">
+                    {n}
+                  </a>
+                ))}
               </div>
             )}
           </div>
@@ -46,23 +61,22 @@ export default function Footer() {
           </div>
           <div>
             <h4>Students</h4>
+            <Link href="/login">Student login</Link>
             <Link href="/verify">Verify a certificate</Link>
-            <Link href="/#contact">Enroll</Link>
+            <Link href="/admin">Admin login</Link>
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms and Conditions</Link>
           </div>
           <div>
             <h4>Contact</h4>
-            {CONTACT.email && <p>{CONTACT.email}</p>}
-            {wa && (
-              <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer">
-                Chat on WhatsApp
-              </a>
-            )}
+            <p>{CONTACT.address}</p>
+            <p>{CONTACT.phone}</p>
+            <p>{CONTACT.email}</p>
           </div>
         </div>
         <div className="sf-bottom">
           <span>© {new Date().getFullYear()} MAFIANA Tech Academy. All rights reserved.</span>
+          <span>Registration ₦5,000 covers ID card, certificate and materials.</span>
         </div>
       </div>
     </footer>

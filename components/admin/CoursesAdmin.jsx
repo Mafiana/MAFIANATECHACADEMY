@@ -40,6 +40,7 @@ export default function CoursesAdmin() {
 
   return (
     <div className="card" id="courses-admin">
+      {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
         <h3 style={{ margin: 0 }}>Courses</h3>
         <button
@@ -60,39 +61,71 @@ export default function CoursesAdmin() {
             })
           }
         >
-          Add course
+          + Add course
         </button>
       </div>
 
-      <div className="adm-list" style={{ marginTop: 14 }}>
+      {/* Course list */}
+      <div className="adm-list" style={{ marginTop: 18 }}>
         {courses.map((c) => (
-          <div className="adm-item" key={c.slug}>
-            <div className="adm-item-main">
-              <span>
-                <b>{c.name}</b>{" "}
-                <span className="m">
-                  {c.category} · {c.weeks} wks · from {naira(c.online)}
-                </span>
+          <div className="adm-item course-admin-row" key={c.slug}>
+            <div className="course-admin-info">
+              <b>{c.name}</b>
+              <span className="m">
+                {c.category} · {c.weeks} wks · from {naira(c.online)}
               </span>
-              <button type="button" className="btn ghost sm" onClick={() => setForm({ ...c })}>
-                Edit
-              </button>
             </div>
+            <button type="button" className="btn ghost sm" onClick={() => setForm({ ...c })}>
+              Edit
+            </button>
           </div>
         ))}
       </div>
 
+      {/* Edit / Add form */}
       {form && (
-        <div className="adm-edit" style={{ marginTop: 12 }}>
-          <label>Name</label>
-          <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-          <label>Slug (URL)</label>
-          <input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="computer-basics-office" />
-          <label>Short description</label>
-          <input value={form.short || ""} onChange={(e) => setForm({ ...form, short: e.target.value })} />
-          <label>Tagline</label>
-          <input value={form.tagline || ""} onChange={(e) => setForm({ ...form, tagline: e.target.value })} />
-          <div className="grid" style={{ marginTop: 8 }}>
+        <div className="adm-edit course-admin-form" style={{ marginTop: 20 }}>
+          <h4 style={{ margin: "0 0 16px" }}>
+            {courses.some((c) => c.slug === form.slug) ? "Edit course" : "New course"}
+          </h4>
+
+          <div className="course-form-grid">
+            <div>
+              <label>Name</label>
+              <input
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="e.g. Graphic Design"
+              />
+            </div>
+
+            <div>
+              <label>Slug (URL)</label>
+              <input
+                value={form.slug}
+                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                placeholder="graphic-design"
+              />
+            </div>
+
+            <div className="full">
+              <label>Short description</label>
+              <input
+                value={form.short || ""}
+                onChange={(e) => setForm({ ...form, short: e.target.value })}
+                placeholder="Canva, Photoshop, CorelDraw..."
+              />
+            </div>
+
+            <div className="full">
+              <label>Tagline</label>
+              <input
+                value={form.tagline || ""}
+                onChange={(e) => setForm({ ...form, tagline: e.target.value })}
+                placeholder="Design logos, posters and flyers"
+              />
+            </div>
+
             <div>
               <label>Category</label>
               <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
@@ -101,6 +134,7 @@ export default function CoursesAdmin() {
                 ))}
               </select>
             </div>
+
             <div>
               <label>Level</label>
               <select value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })}>
@@ -109,20 +143,36 @@ export default function CoursesAdmin() {
                 ))}
               </select>
             </div>
+
             <div>
               <label>Weeks</label>
-              <input type="number" value={form.weeks} onChange={(e) => setForm({ ...form, weeks: e.target.value })} />
+              <input
+                type="number"
+                value={form.weeks}
+                onChange={(e) => setForm({ ...form, weeks: e.target.value })}
+              />
             </div>
+
             <div>
-              <label>Physical fee</label>
-              <input type="number" value={form.physical} onChange={(e) => setForm({ ...form, physical: e.target.value })} />
+              <label>Physical fee (₦)</label>
+              <input
+                type="number"
+                value={form.physical}
+                onChange={(e) => setForm({ ...form, physical: e.target.value })}
+              />
             </div>
+
             <div>
-              <label>Online fee</label>
-              <input type="number" value={form.online} onChange={(e) => setForm({ ...form, online: e.target.value })} />
+              <label>Online fee (₦)</label>
+              <input
+                type="number"
+                value={form.online}
+                onChange={(e) => setForm({ ...form, online: e.target.value })}
+              />
             </div>
           </div>
-          <div className="adm-acts" style={{ marginTop: 12 }}>
+
+          <div className="adm-acts" style={{ marginTop: 18 }}>
             <button type="button" className="btn" onClick={save}>
               Save course
             </button>
@@ -130,7 +180,8 @@ export default function CoursesAdmin() {
               Cancel
             </button>
           </div>
-          <p className="m" style={{ marginTop: 10 }}>
+
+          <p className="m" style={{ marginTop: 12, fontSize: 13 }}>
             Design mode stores edits in this browser only. Wire to Supabase when you are ready.
           </p>
         </div>

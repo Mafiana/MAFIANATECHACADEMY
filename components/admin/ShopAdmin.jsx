@@ -51,7 +51,7 @@ export default function ShopAdmin() {
         <h3 style={{ margin: 0 }}>Student shop</h3>
         <div className="adm-acts">
           <button type="button" className="btn sm" onClick={() => setForm(blank())}>
-            Add product
+            + Add product
           </button>
           <button type="button" className="btn ghost sm" onClick={resetDefaults}>
             Reset defaults
@@ -59,45 +59,38 @@ export default function ShopAdmin() {
         </div>
       </div>
 
-      <div className="adm-list" style={{ marginTop: 14 }}>
+      <div className="adm-list" style={{ marginTop: 18 }}>
         {items.map((p) => (
-          <div className="adm-item" key={p.id}>
-            <div className="adm-item-main">
-              <span>
-                <b>{p.name}</b>{" "}
-                <span className="m">
-                  {p.cat} · {naira(p.price)} · stock {p.stock}
-                </span>
+          <div className="adm-item shop-admin-row" key={p.id}>
+            <div className="shop-admin-thumb">
+              <img src={p.img} alt="" onError={(e) => (e.currentTarget.style.display = "none")} />
+            </div>
+            <div className="shop-admin-info">
+              <b>{p.name}</b>
+              <span className="m">
+                {p.cat} · {naira(p.price)} · stock {p.stock}
               </span>
-              <span className="adm-acts">
-                <button type="button" className="btn ghost sm" onClick={() => setForm({ ...p })}>
-                  Edit
-                </button>
-                <button type="button" className="btn danger sm" onClick={() => remove(p.id)}>
-                  Delete
-                </button>
-              </span>
+            </div>
+            <div className="adm-acts">
+              <button type="button" className="btn ghost sm" onClick={() => setForm({ ...p })}>
+                Edit
+              </button>
+              <button type="button" className="btn danger sm" onClick={() => remove(p.id)}>
+                Delete
+              </button>
             </div>
           </div>
         ))}
       </div>
 
       {form && (
-        <div className="adm-edit" style={{ marginTop: 12 }}>
-          <label>Name</label>
-          <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-          <label>Description</label>
-          <input value={form.desc} onChange={(e) => setForm({ ...form, desc: e.target.value })} />
-          <label>Image path</label>
-          <input value={form.img} onChange={(e) => setForm({ ...form, img: e.target.value })} placeholder="/shop/mouse.jpeg" />
-          <div className="grid" style={{ marginTop: 8 }}>
+        <div className="adm-edit shop-admin-form" style={{ marginTop: 20 }}>
+          <h4 style={{ margin: "0 0 14px" }}>{form.id && items.some((x) => x.id === form.id) ? "Edit product" : "New product"}</h4>
+
+          <div className="shop-form-grid">
             <div>
-              <label>Price (₦)</label>
-              <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
-            </div>
-            <div>
-              <label>Stock</label>
-              <input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
+              <label>Name</label>
+              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Product name" />
             </div>
             <div>
               <label>Category</label>
@@ -107,8 +100,25 @@ export default function ShopAdmin() {
                 ))}
               </select>
             </div>
+            <div>
+              <label>Price (₦)</label>
+              <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
+            </div>
+            <div>
+              <label>Stock</label>
+              <input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
+            </div>
+            <div className="full">
+              <label>Description</label>
+              <input value={form.desc} onChange={(e) => setForm({ ...form, desc: e.target.value })} placeholder="Short description" />
+            </div>
+            <div className="full">
+              <label>Image path</label>
+              <input value={form.img} onChange={(e) => setForm({ ...form, img: e.target.value })} placeholder="/shop/mouse.jpeg" />
+            </div>
           </div>
-          <div className="adm-acts" style={{ marginTop: 12 }}>
+
+          <div className="adm-acts" style={{ marginTop: 16 }}>
             <button type="button" className="btn" onClick={save}>
               Save product
             </button>

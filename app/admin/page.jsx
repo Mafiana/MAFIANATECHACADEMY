@@ -17,30 +17,60 @@ export default function Admin() {
     <Shell>
       <section style={{ paddingTop: 24 }}>
         <div className="portal">
-          <aside>
-            <b className="side-title">Admin panel</b>
-            <a className="on" href="#overview">Overview</a>
-            <a href="#online">Who is online</a>
-            <a href="#blog">Blog</a>
-            <a href="#shop-admin">Student shop</a>
-            <a href="#courses-admin">Courses</a>
-            <a href="#add-student">Add a student</a>
-            <a href="#students">Students</a>
-            <a href="#enroll">Enroll and pay</a>
-            <a href="#attendance">Class register</a>
-            <a href="#payments">Payments</a>
-            <a href="#certificates">Certificates</a>
-            <a href="#lessons">Video lessons</a>
-            <a href="#quizzes">Quizzes</a>
-            <a href="#announcements">Announcements</a>
-            <a href="#instructors">Instructors</a>
-            <a href="#export">Export to Excel</a>
-            <a href="/verify">Verify certificate</a>
-            <a href="/portal">My student view</a>
-            <form action="/api/temp-logout" method="post">
-              <button className="lnk" type="submit">Log out</button>
-            </form>
-          </aside>
+          <aside className="admin-side" id="admin-side">
+  <div className="side-head">
+    <b className="side-title">Admin panel</b>
+    <button type="button" className="side-close" aria-label="Close menu" onClick={() => document.getElementById("admin-side")?.classList.remove("open")}>
+      ×
+    </button>
+  </div>
+
+  <a className="on" href="#overview">
+    <span className="side-icon" aria-hidden="true">📊</span> Overview
+  </a>
+  <a href="#add-student">
+    <span className="side-icon" aria-hidden="true">➕</span> Add a student
+  </a>
+  <a href="#students">
+    <span className="side-icon" aria-hidden="true">👥</span> Students
+  </a>
+  <a href="#enroll">
+    <span className="side-icon" aria-hidden="true">📝</span> Enroll and pay
+  </a>
+  <a href="#attendance">
+    <span className="side-icon" aria-hidden="true">📅</span> Class register
+  </a>
+  <a href="#payments">
+    <span className="side-icon" aria-hidden="true">💰</span> Payments
+  </a>
+  <a href="#certificates">
+    <span className="side-icon" aria-hidden="true">🎓</span> Certificates
+  </a>
+  <a href="#lessons">
+    <span className="side-icon" aria-hidden="true">▶️</span> Video lessons
+  </a>
+  <a href="#quizzes">
+    <span className="side-icon" aria-hidden="true">❓</span> Quizzes
+  </a>
+  <a href="#announcements">
+    <span className="side-icon" aria-hidden="true">📢</span> Announcements
+  </a>
+  <a href="#instructors">
+    <span className="side-icon" aria-hidden="true">🧑‍🏫</span> Instructors
+  </a>
+  <a href="#export">
+    <span className="side-icon" aria-hidden="true">📥</span> Export to Excel
+  </a>
+  <a href="/portal">
+    <span className="side-icon" aria-hidden="true">🏠</span> My student view
+  </a>
+
+  <form action={signOut}>
+    <button className="lnk" type="submit">
+      <span className="side-icon" aria-hidden="true">🚪</span> Log out
+    </button>
+  </form>
+</aside>
 
           <main>
             <div className="adm-msg ok" role="status">
