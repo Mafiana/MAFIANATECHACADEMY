@@ -303,46 +303,7 @@ export default function App() {
           </div>
         </Section>
 
-        <Section
-          id="shop"
-          title="Student shop"
-          sub="Gadgets and accessories for class. Order on WhatsApp and pick up at the academy or arrange delivery."
-        >
-          <div className="shop-grid">
-            {SHOP.map((item) => (
-              <article className="shop-card" key={item.name}>
-                <div className="shop-img">
-                  <img
-                    src={item.img}
-                    alt={item.name}
-                    width="400"
-                    height="400"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      e.currentTarget.parentElement.classList.add("shop-img-fallback");
-                    }}
-                  />
-                </div>
-                <div className="shop-body">
-                  <h3>{item.name}</h3>
-                  <p className="m">{item.desc}</p>
-                  <div className="shop-foot">
-                    <b>{naira(item.price)}</b>
-                    <a
-                      className="btn ghost sm"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={wa("Hello, I want to buy: " + item.name)}
-                    >
-                      Order
-                    </a>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </Section>
+      <ShopSection />
 
         <section id="contact">
           <h2>Enroll or ask a question</h2>

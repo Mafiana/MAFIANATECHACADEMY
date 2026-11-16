@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 
 const PHONE = process.env.NEXT_PUBLIC_WHATSAPP || "234XXXXXXXXXX";
-const naira = (x) => "₦" + x.toLocaleString("en-NG");
+const naira = (x) => "₦" + Number(x).toLocaleString("en-NG");
 const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 
 const PER_PAGE = 6;
@@ -16,33 +16,35 @@ const SHOP = [
   { name: "Laptop charger", price: 15000, img: "/shop/charger.jpeg", desc: "Compatible with common models", cat: "Charger" },
   { name: "Laptop bag", price: 14000, img: "/shop/bag.jpeg", desc: "Padded, fits 15.6 inch", cat: "Bag" },
   { name: "Headphones", price: 9000, img: "/shop/headphones.jpeg", desc: "Over-ear, for class & calls", cat: "Audio" },
-  // Add more products later with the same shape; set cat to one of the CATEGORIES above.
+  { name: "USB mouse (wired)", price: 4500, img: "/shop/mouse.jpeg", desc: "Simple and reliable", cat: "Mouse" },
+  { name: "128GB flash drive", price: 16000, img: "/shop/flash.jpeg", desc: "More space for projects", cat: "Flash" },
+  { name: "Laptop stand", price: 12000, img: "/shop/bag.jpeg", desc: "Raises the screen to eye level", cat: "Laptop" },
 ];
 
 export default function ShopSection() {
   const [cat, setCat] = useState("All");
   const [page, setPage] = useState(1);
 
-  const filtered = useMemo(() => {
-    setPage(1);
-    return cat === "All" ? SHOP : SHOP.filter((p) => p.cat === cat);
-  }, [cat]);
+  const list = useMemo(
+    () => (cat === "All" ? SHOP : SHOP.filter((p) => p.cat === cat)),
+    [cat]
+  );
 
-  // Avoid calling setState during render — recompute page clamp in useMemo only for list slice
-  const list = useMemo(() => (cat === "All" ? SHOP : SHOP.filter((p) => p.cat === cat)), [cat]);
   const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const slice = list.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
 
-  const pickCat = (c) => {
+  function pickCat(c) {
     setCat(c);
     setPage(1);
-  };
+  }
 
   return (
     <section id="shop">
       <h2>Student shop</h2>
-      <p className="sub">Gadgets and accessories for class. Order on WhatsApp and pick up at the academy or arrange delivery.</p>
+      <p className="sub">
+        Gadgets and accessories for class. Order on WhatsApp and pick up at the academy or arrange delivery.
+      </p>
 
       <div className="shop-tools">
         <div className="bl-chips" role="group" aria-label="Filter by category">
@@ -56,6 +58,7 @@ export default function ShopSection() {
 
       <p className="m cat-count" aria-live="polite">
         {list.length} item{list.length === 1 ? "" : "s"}
+        {totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ""}
       </p>
 
       {!list.length && <p className="m">No products in this category yet.</p>}
