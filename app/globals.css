@@ -1197,3 +1197,57 @@ fieldset{min-width:0}
     background:rgba(255,255,255,.12);
   }
 }
+
+/* ---- admin mobile menu ---- */
+.admin-menu-btn {
+  display: none;
+  margin: 0 0 14px;
+  padding: 10px 16px;
+  background: var(--green);
+  color: var(--on-green);
+  border: 0;
+  border-radius: 10px;
+  font: 700 15px "DM Sans", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.side-icon {
+  margin-right: 6px;
+}
+
+@media (max-width: 700px) {
+  .admin-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* hide the sidebar by default on mobile */
+  .portal aside#admin-side {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(280px, 85vw);
+    z-index: 40;
+    flex-direction: column;
+    padding: 24px 20px;
+    overflow-y: auto;
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.25);
+  }
+
+  /* show when the button is clicked */
+  .portal aside#admin-side.open {
+    display: flex;
+  }
+
+  /* optional: click outside to close */
+  .portal aside#admin-side.open::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+  }
+}

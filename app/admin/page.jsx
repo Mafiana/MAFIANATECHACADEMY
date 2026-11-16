@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Shell from "../../components/Shell";
 import Greeting from "../../components/Greeting";
 import BlogAdmin from "../../components/admin/BlogAdmin";
+import AdminMenuButton from "../../components/admin/AdminMenuButton";
 import ShopAdmin from "../../components/admin/ShopAdmin";
 import CoursesAdmin from "../../components/admin/CoursesAdmin";
 import OnlineAdmin from "../../components/admin/OnlineAdmin";
@@ -13,100 +14,94 @@ export default function Admin() {
   const jar = cookies();
   if (jar.get("temp_admin")?.value !== "1") redirect("/login?next=/admin");
 
-  return (
+   return (
     <Shell>
       <section style={{ paddingTop: 24 }}>
+        {/* Mobile menu button – only visible on small screens */}
+        <AdminMenuButton />
+
         <div className="portal">
-          <aside className="admin-side" id="admin-side">
-  <div className="side-head">
-    <b className="side-title">Admin panel</b>
-    <button type="button" className="side-close" aria-label="Close menu" onClick={() => document.getElementById("admin-side")?.classList.remove("open")}>
-      ×
-    </button>
-  </div>
+          <aside id="admin-side">
+            <b className="side-title">Admin panel</b>
+            <a className="on" href="#overview">Overview</a>
+            <a href="#add-student">Add a student</a>
+            <a href="#students">Students</a>
+            <a href="#enroll">Enroll and pay</a>
+            <a href="#attendance">Class register</a>
+            <a href="#payments">Payments</a>
+            <a href="#certificates">Certificates</a>
+            <a href="#lessons">Video lessons</a>
+            <a href="#quizzes">Quizzes</a>
+            <a href="#announcements">Announcements</a>
+            <a href="#instructors">Instructors</a>
+            <a href="#export">Export to Excel</a>
+            <a href="/portal">My student view</a>
 
-  <a className="on" href="#overview">
-    <span className="side-icon" aria-hidden="true">📊</span> Overview
-  </a>
-  <a href="#add-student">
-    <span className="side-icon" aria-hidden="true">➕</span> Add a student
-  </a>
-  <a href="#students">
-    <span className="side-icon" aria-hidden="true">👥</span> Students
-  </a>
-  <a href="#enroll">
-    <span className="side-icon" aria-hidden="true">📝</span> Enroll and pay
-  </a>
-  <a href="#attendance">
-    <span className="side-icon" aria-hidden="true">📅</span> Class register
-  </a>
-  <a href="#payments">
-    <span className="side-icon" aria-hidden="true">💰</span> Payments
-  </a>
-  <a href="#certificates">
-    <span className="side-icon" aria-hidden="true">🎓</span> Certificates
-  </a>
-  <a href="#lessons">
-    <span className="side-icon" aria-hidden="true">▶️</span> Video lessons
-  </a>
-  <a href="#quizzes">
-    <span className="side-icon" aria-hidden="true">❓</span> Quizzes
-  </a>
-  <a href="#announcements">
-    <span className="side-icon" aria-hidden="true">📢</span> Announcements
-  </a>
-  <a href="#instructors">
-    <span className="side-icon" aria-hidden="true">🧑‍🏫</span> Instructors
-  </a>
-  <a href="#export">
-    <span className="side-icon" aria-hidden="true">📥</span> Export to Excel
-  </a>
-  <a href="/portal">
-    <span className="side-icon" aria-hidden="true">🏠</span> My student view
-  </a>
-
-  <form action={signOut}>
-    <button className="lnk" type="submit">
-      <span className="side-icon" aria-hidden="true">🚪</span> Log out
-    </button>
-  </form>
-</aside>
+            <form action={signOut}>
+              <button className="lnk" type="submit">
+                <span className="side-icon" aria-hidden="true">🚪</span> Log out
+              </button>
+            </form>
+          </aside>
 
           <main>
-            <div className="adm-msg ok" role="status">
-              Design mode. Blog, shop and courses save in this browser until Supabase is connected.
-            </div>
-
-            <div className="p-hero" id="overview">
-              <Greeting name="MAFIANA" badge="Admin (design)" />
-            </div>
-
+            {errors.length > 0 && (
+              <div className="adm-msg bad" role="alert">
+                Some data could not be loaded: {errors[0]}. Check that you ran <code>supabase/schema.sql</code> in the Supabase SQL Editor.
+              </div>
+            )}
+            <div className="p-hero" id="overview"><Greeting name="MAFIANA" badge="Admin" /></div>
             <div className="grid">
-              <div className="card"><div className="m">Students</div><h3>0</h3></div>
-              <div className="card"><div className="m">Enrollments</div><h3>0</h3></div>
-              <div className="card"><div className="m">Collected</div><h3>₦0</h3></div>
-              <div className="card"><div className="m">Outstanding</div><h3>₦0</h3></div>
+              <div className="card"><div className="m">Students</div><h3>{rows.length}</h3></div>
+              <div className="card"><div className="m">Enrollments</div><h3>{en.data.length}</h3></div>
+              <div className="card"><div className="m">Collected</div><h3>{naira(collected)}</h3></div>
+              <div className="card"><div className="m">Outstanding</div><h3>{naira(Math.max(owed - collected, 0))}</h3><div className="m">{owing.length} student{owing.length === 1 ? "" : "s"} owing</div></div>
             </div>
 
-            <OnlineAdmin />
-            <BlogAdmin />
-            <ShopAdmin />
-            <CoursesAdmin />
+            {renewals.length > 0 && (
+              <div className="card">
+                <h3>PINs to renew <span className="m">({renewals.length})</span></h3>
+                {renewals.slice(0, 8).map(({ s, a }) => (
+                  <div className="stat" key={s.id}><span>{s.label} <span className="m">{s.courses.join(", ")}</span></span><b>{a.expired ? `ended ${prettyDate(s.accessUntil)}` : a.left === 0 ? "ends today" : `${a.left} day${a.left === 1 ? "" : "s"} left`}</b></div>
+                ))}
+                <p className="m" style={{ margin: "10px 0 0" }}>Open the student below and use Renew.</p>
+              </div>
+            )}
 
-            <div className="card" id="add-student"><h3>Add a student</h3><p className="m">Connect Supabase to enable.</p></div>
-            <div className="card" id="students"><h3>Students</h3><p className="m">Student list loads from the database later.</p></div>
+            <div id="add-student"><AddStudent /></div>
+
+            {owing.length > 0 && (
+              <div className="card">
+                <h3>Who owes the most</h3>
+                {owing.slice(0, 5).map((s) => (
+                  <div className="stat" key={s.id}><span>{s.label} <span className="m">{s.courses.join(", ")}</span></span><b>{naira(s.balance)}</b></div>
+                ))}
+              </div>
+            )}
+
+            <Students students={rows} />
+
             <div className="grid" id="enroll">
-              <div className="card"><h3>Enroll</h3><p className="m">Placeholder.</p></div>
-              <div className="card"><h3>Record payment</h3><p className="m">Placeholder.</p></div>
+              <EnrollForm students={picks} />
+              <PaymentForm students={picks} />
             </div>
-            <div className="card" id="attendance"><h3>Class register</h3><p className="m">Placeholder.</p></div>
-            <div className="card" id="payments"><h3>Payments</h3><p className="m">Placeholder.</p></div>
-            <div className="card" id="certificates"><h3>Certificates</h3><p className="m">Placeholder. Public verify page: <a href="/verify">/verify</a></p></div>
-            <div className="card" id="lessons"><h3>Video lessons</h3><p className="m">Placeholder.</p></div>
-            <div className="card" id="quizzes"><h3>Quizzes</h3><p className="m">Placeholder.</p></div>
-            <div className="card" id="announcements"><h3>Announcements</h3><p className="m">Placeholder.</p></div>
-            <div className="card" id="instructors"><h3>Instructors</h3><p className="m">Placeholder.</p></div>
-            <div className="card" id="export"><h3>Export to Excel</h3><p className="m">Available after Supabase is connected.</p></div>
+
+            <Register students={picks} enrollments={enr} attendance={at.data} today={today} />
+            <Payments payments={payments} />
+            <Certificates pending={certs.filter((c) => !c.issued)} issued={certs.filter((c) => c.issued)} />
+            <Lessons lessons={ls.data} missing={lqMissing} />
+            <Quizzes quizzes={quizzes} missing={lqMissing} />
+            <Announcements items={an.data || []} missing={annMissing} />
+            <Staff instructors={instructors} />
+            <div className="card" id="export">
+              <h3>Export to Excel</h3>
+              <p className="m" style={{ margin: "0 0 12px" }}>Download a CSV file. Excel and Google Sheets open it directly.</p>
+              <div className="adm-acts">
+                {[["students", "Students and fees"], ["payments", "Payments"], ["attendance", "Attendance"], ["enrollments", "Enrollments and certificates"]].map(([k, l]) => (
+                  <a key={k} className="btn ghost sm" href={`/admin/export/${k}`} download>{l}</a>
+                ))}
+              </div>
+            </div>
           </main>
         </div>
       </section>
