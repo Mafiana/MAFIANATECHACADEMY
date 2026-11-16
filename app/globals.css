@@ -1251,3 +1251,99 @@ fieldset{min-width:0}
     z-index: -1;
   }
 }
+/* =========================================================
+   FIXES — shop modal, blog search icon, share buttons
+   ========================================================= */
+
+/* Shop modal: proper centered card (not full-screen), visible X */
+.shop-modal-overlay{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:80 !important;
+  background:rgba(10,30,23,.55) !important;
+  backdrop-filter:blur(6px);
+  display:grid !important;
+  place-items:center !important;
+  padding:20px !important;
+  overflow:auto;
+}
+.shop-modal{
+  position:relative !important;
+  background:var(--surface) !important;
+  border-radius:20px !important;
+  max-width:440px !important;
+  width:100% !important;
+  max-height:min(90vh, 720px) !important;
+  overflow:auto !important;
+  box-shadow:0 24px 60px rgba(0,0,0,.28) !important;
+  margin:auto;
+}
+.shop-modal-close{
+  position:absolute !important;
+  top:12px !important;
+  right:12px !important;
+  width:42px !important;
+  height:42px !important;
+  border:0 !important;
+  border-radius:50% !important;
+  background:rgba(0,0,0,.55) !important;
+  color:#fff !important;
+  font-size:26px !important;
+  line-height:1 !important;
+  cursor:pointer !important;
+  z-index:5 !important;
+  display:grid !important;
+  place-items:center !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+.shop-modal-close:hover{
+  background:rgba(0,0,0,.75) !important;
+}
+.shop-modal-img{
+  aspect-ratio:1;
+  max-height:320px;
+  background:var(--mint);
+  overflow:hidden;
+}
+.shop-modal-img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* Blog search bar with icon */
+.bl-search-wrap{
+  position:relative;
+  width:100%;
+}
+.bl-search-wrap .bl-search{
+  width:100%;
+  padding:15px 18px 15px 48px !important;
+  border-radius:99px;
+  border:1.5px solid var(--line);
+  font:inherit;
+  font-size:17px;
+  background:var(--surface);
+  color:var(--ink);
+}
+.bl-search-icon{
+  position:absolute;
+  left:16px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--mute);
+  pointer-events:none;
+  display:grid;
+  place-items:center;
+}
+
+/* Share buttons with icons */
+.bl-share-btn{
+  display:inline-flex !important;
+  align-items:center;
+  gap:8px;
+}
+.bl-share-btn svg{
+  flex:none;
+}

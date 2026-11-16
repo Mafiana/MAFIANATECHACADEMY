@@ -19,6 +19,11 @@ export default function Footer() {
     ["WhatsApp", wa ? `https://wa.me/${wa}` : ""],
   ].filter(([, u]) => u);
 
+  // Only show real contact lines (skip placeholders)
+  const address = CONTACT.address && !/add your address/i.test(CONTACT.address) ? CONTACT.address : null;
+  const phone = CONTACT.phone && !/add your phone/i.test(CONTACT.phone) ? CONTACT.phone : null;
+  const email = CONTACT.email && !/your-domain|example\.com/i.test(CONTACT.email) ? CONTACT.email : null;
+
   return (
     <footer className="sf">
       <div className="wrap">
@@ -31,6 +36,7 @@ export default function Footer() {
             Enroll now
           </Link>
         </div>
+
         <div className="sf-grid">
           <div>
             <Link className="logo sf-logo" href="/">
@@ -38,8 +44,8 @@ export default function Footer() {
               MAFIANA Tech Academy
             </Link>
             <p>
-              Practical computer, data, design and web development training. Learn in class or online and graduate
-              with a certificate.
+              Practical computer, data, design and web development training. Learn in class or online and graduate with a
+              certificate.
             </p>
             {social.length > 0 && (
               <div className="sf-social">
@@ -51,6 +57,7 @@ export default function Footer() {
               </div>
             )}
           </div>
+
           <div>
             <h4>Explore</h4>
             <Link href="/#about">About</Link>
@@ -59,24 +66,30 @@ export default function Footer() {
             <Link href="/#shop">Shop</Link>
             <Link href="/#faq">FAQ</Link>
           </div>
+
           <div>
             <h4>Students</h4>
-            <Link href="/login">Student login</Link>
+            {/* Student login removed as requested */}
             <Link href="/verify">Verify a certificate</Link>
             <Link href="/admin">Admin login</Link>
+            <Link href="/#contact">Enroll</Link>
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms and Conditions</Link>
           </div>
+
           <div>
             <h4>Contact</h4>
-            <p>{CONTACT.address}</p>
-            <p>{CONTACT.phone}</p>
-            <p>{CONTACT.email}</p>
+            {/* Placeholders removed — only real values show */}
+            {address && <p>{address}</p>}
+            {phone && <p>{phone}</p>}
+            {email && <p>{email}</p>}
+            {!address && !phone && !email && <p>Message us on WhatsApp to enroll.</p>}
           </div>
         </div>
+
         <div className="sf-bottom">
           <span>© {new Date().getFullYear()} MAFIANA Tech Academy. All rights reserved.</span>
-          <span>Registration ₦5,000 covers ID card, certificate and materials.</span>
+          {/* Registration fee line removed as requested */}
         </div>
       </div>
     </footer>

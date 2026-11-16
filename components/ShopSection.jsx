@@ -2,7 +2,7 @@
 import { useMemo, useState, useEffect } from "react";
 
 const PHONE = process.env.NEXT_PUBLIC_WHATSAPP || "234XXXXXXXXXX";
-const naira = (x) => "₦" + x.toLocaleString("en-NG");
+const naira = (x) => "₦" + Number(x).toLocaleString("en-NG");
 const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 
 const PER_PAGE = 6;
@@ -33,12 +33,17 @@ export default function ShopSection() {
     setPage(1);
   };
 
-  // Close modal on Escape
+  // Close modal on Escape + lock body scroll while open
   useEffect(() => {
     if (!selected) return;
     const onKey = (e) => e.key === "Escape" && setSelected(null);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
   }, [selected]);
 
   return (
@@ -60,6 +65,7 @@ export default function ShopSection() {
 
       <p className="m cat-count" aria-live="polite">
         {list.length} item{list.length === 1 ? "" : "s"}
+        {totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ""}
       </p>
 
       {!list.length && <p className="m">No products in this category yet.</p>}
@@ -69,7 +75,15 @@ export default function ShopSection() {
           <article
             className="shop-card"
             key={item.name}
+            role="button"
+            tabIndex={0}
             onClick={() => setSelected(item)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setSelected(item);
+              }
+            }}
             style={{ cursor: "pointer" }}
           >
             <div className="shop-img">
@@ -121,11 +135,22 @@ export default function ShopSection() {
         </div>
       )}
 
-      {/* ===== Product Modal ===== */}
+      {/* Product detail modal — centered card, not full screen */}
       {selected && (
-        <div className="shop-modal-overlay" onClick={() => setSelected(null)}>
+        <div
+          className="shop-modal-overlay"
+          onClick={() => setSelected(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={selected.name}
+        >
           <div className="shop-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="shop-modal-close" onClick={() => setSelected(null)} aria-label="Close">
+            <button
+              type="button"
+              className="shop-modal-close"
+              onClick={() => setSelected(null)}
+              aria-label="Close"
+            >
               ×
             </button>
 
