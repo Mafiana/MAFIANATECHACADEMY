@@ -33,9 +33,19 @@ const SERVICES = [
   ["Career support", "Guidance on jobs, freelancing and finding your first clients."],
 ];
 const MORE = [
-  ["Corporate training", "We train your staff in Office, data, design or web, at your office or in our lab. Tell us the team size and we send a quote.", "I want corporate training for my company", "Request a quote"],
-  ["Online courses", "Learn from any city with live classes and recorded lessons at the online fee.", null, "See courses"],
-  ["Course + laptop + accessories", "Join a course and take a laptop, mouse, flash drive and bag in one deal. Ask for today’s laptop prices.", "I want the course + laptop + accessories combo", "Ask about the combo"],
+  ["Corporate training", "We train your staff in Office, data, design or web, at your office or in our lab. Tell us the team size and we send a quote.", "I want corporate training for my company", "Request a quote", "corp"],
+  ["Online courses", "Learn from any city with live classes and recorded lessons at the online fee.", null, "See courses", "online"],
+  ["Course + laptop + accessories", "Join a course and take a laptop, mouse, flash drive and bag in one deal. Ask for today’s laptop prices.", "I want the course + laptop + accessories combo", "Ask about the combo", "combo"],
+];
+
+const TEAM = [
+  {
+    name: "Stanley Mafiana",
+    role: "Director & Lead Instructor",
+    initials: "SM",
+    twitter: "https://twitter.com/",
+    linkedin: "https://www.linkedin.com/",
+  },
 ];
 const FAQ = [
   ["Can I pay in installments?", "Yes. Pay half to book your seat and the balance before week 3. Digital Literacy is paid once."],
@@ -253,19 +263,67 @@ export default function App() {
 
         {/* ===== More ways ===== */}
         <Section id="more" title="More ways to learn with us">
-          <div className="grid">
-            {MORE.map(([t, d, text, label]) => (
-              <div className="card" key={t}>
-                <h3>{t}</h3>
-                <p className="m">{d}</p>
-                {text ? (
-                  <WaLink text={text}>{label}</WaLink>
-                ) : (
-                  <a className="btn ghost" href="#courses">
-                    {label}
-                  </a>
-                )}
+          <div className="more-list">
+            {MORE.map(([t, d, text, label], i) => (
+              <div className={"more-row" + (i % 2 === 1 ? " reverse" : "")} key={t}>
+                <div className="more-img" aria-hidden="true">
+                  {i === 0 && (
+                    <svg className="more-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
+                    </svg>
+                  )}
+                  {i === 1 && (
+                    <svg className="more-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <rect x="2" y="4" width="20" height="14" rx="2" />
+                      <path d="M8 21h8M12 18v3" />
+                      <circle cx="12" cy="11" r="2.5" />
+                    </svg>
+                  )}
+                  {i === 2 && (
+                    <svg className="more-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <rect x="3" y="4" width="14" height="12" rx="1.5" />
+                      <path d="M7 20h6M10 16v4" />
+                      <path d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2" />
+                    </svg>
+                  )}
+                </div>
+                <div className="more-body">
+                  <h3>{t}</h3>
+                  <p>{d}</p>
+                  {text ? (
+                    <WaLink text={text}>{label}</WaLink>
+                  ) : (
+                    <a className="btn ghost" href="#courses">
+                      {label}
+                    </a>
+                  )}
+                </div>
               </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* ===== Meet the team ===== */}
+        <Section id="team" title="Meet the team" sub="The people who teach and support you at MAF Tech Academy.">
+          <div className="team-grid">
+            {TEAM.map((m) => (
+              <article className="team-card" key={m.name}>
+                <div className="team-avatar" aria-hidden="true">{m.initials}</div>
+                <h3>{m.name}</h3>
+                <p className="team-role">{m.role}</p>
+                <div className="team-social">
+                  <a href={m.twitter} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on Twitter`}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+                    </svg>
+                  </a>
+                  <a href={m.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on LinkedIn`}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                    </svg>
+                  </a>
+                </div>
+              </article>
             ))}
           </div>
         </Section>

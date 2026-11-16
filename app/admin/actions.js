@@ -216,8 +216,10 @@ export const addStudent = admin(async (s, fd) => {
   if (a.err) return bad(a.err);
   const { error } = await s.from("enrollments").insert({ student_id: a.id, course, mode, total_fee: fee });
   if (error) { await a.svc.auth.admin.deleteUser(a.id); return dbErr(error); }
+  const pretty = prettyPin(a.pin);
+  await s.from("profiles").update({ access_pin: pretty }).eq("id", a.id);
   const { data: p } = await s.from("profiles").select("student_code").eq("id", a.id).single();
-  return { ...ok(`${name} was added. Give them the Access PIN below. It is shown only once, so copy or print it now.`), card: cardOf({ full_name: name, access_plan: plan, access_until: until, student_code: p?.student_code }, a.pin) };
+  return { ...ok(`${name} was added. Give them the Access PIN below. It stays on their profile.`), card: cardOf({ full_name: name, access_plan: plan, access_until: until, student_code: p?.student_code }, a.pin) };
 });
 
 export const addInstructor = admin(async (s, fd) => {
@@ -227,8 +229,10 @@ export const addInstructor = admin(async (s, fd) => {
   if (!phoneOk(phone)) return bad("That phone number does not look right.");
   const a = await newAccount({ s, name, phone, role: "instructor", plan: "Instructor", until: null });
   if (a.err) return bad(a.err);
+  const pretty = prettyPin(a.pin);
+  await s.from("profiles").update({ access_pin: pretty }).eq("id", a.id);
   const { data: p } = await s.from("profiles").select("student_code").eq("id", a.id).single();
-  return { ...ok(`${name} was added as an instructor. Give them the Access PIN below. It is shown only once.`), card: cardOf({ full_name: name, access_plan: "Instructor", access_until: null, student_code: p?.student_code }, a.pin, { staff: true }) };
+  return { ...ok(`${name} was added as an instructor. Give them the Access PIN below. It stays on their profile.`), card: cardOf({ full_name: name, access_plan: "Instructor", access_until: null, student_code: p?.student_code }, a.pin, { staff: true }) };
 });
 
 // Extends access from the later of today and the current end date, and switches a paused account back on.
@@ -254,7 +258,9 @@ export const resetPin = admin(async (s, fd, user) => {
   let svc, pin;
   try { svc = serviceClient(); pin = generatePin(); const email = pinEmail(pin); const { error } = await svc.auth.admin.updateUserById(r.t.id, { email, password: pin, email_confirm: true }); if (error) return bad("Could not change the PIN: " + error.message + "."); }
   catch (e) { return bad(setupMsg(e)); }
-  return { ...ok("A new Access PIN was issued. The old one no longer works. It is shown only once."), card: cardOf(r.t, pin, { staff: r.t.role === "instructor", renewed: true }) };
+  const pretty = prettyPin(pin);
+  await s.from("profiles").update({ access_pin: pretty }).eq("id", r.t.id);
+  return { ...ok("A new Access PIN was issued. The old one no longer works. The new PIN is saved on the student profile."), card: cardOf(r.t, pin, { staff: r.t.role === "instructor", renewed: true }) };
 });
 
 // Pause stops the PIN working straight away (use when fees are unpaid or someone leaves). Restore turns it back on.

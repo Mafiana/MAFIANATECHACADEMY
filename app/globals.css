@@ -1417,3 +1417,34 @@ fieldset{min-width:0}
     display:none !important;
   }
 }
+
+/* Certificate director signature */
+.cert-director{display:flex;flex-direction:column;align-items:center;gap:2px}
+.cert-sig{height:56px;width:auto;max-width:180px;object-fit:contain;margin-bottom:2px}
+.cert-director .cert-line{margin-top:0}
+
+/* Meet the team */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.team-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.team-avatar{width:88px;height:88px;border-radius:50%;background:var(--mint);display:grid;place-items:center;font:800 28px "Bricolage Grotesque",sans-serif;color:var(--green)}
+.team-card h3{margin:6px 0 0;font-size:18px}
+.team-role{color:var(--mute);font-size:14px;margin:0}
+.team-social{display:flex;gap:10px;margin-top:8px}
+.team-social a{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--mint);color:var(--green);transition:background .15s,color .15s}
+.team-social a:hover{background:var(--green);color:#fff}
+
+/* More ways alternating layout */
+.more-list{display:flex;flex-direction:column;gap:28px}
+.more-row{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.more-row.reverse{direction:rtl}
+.more-row.reverse > *{direction:ltr}
+.more-img{min-height:200px;background:var(--mint);display:grid;place-items:center}
+.more-img img{width:100%;height:100%;object-fit:cover;min-height:200px}
+.more-img .more-icon{width:72px;height:72px;color:var(--green)}
+.more-body{padding:28px 24px}
+.more-body h3{margin:0 0 8px;font-size:22px}
+.more-body p{margin:0 0 16px;color:var(--mute)}
+@media(max-width:700px){
+  .more-row,.more-row.reverse{grid-template-columns:1fr;direction:ltr}
+  .more-img{min-height:160px}
+}
