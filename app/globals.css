@@ -1347,3 +1347,73 @@ fieldset{min-width:0}
 .bl-share-btn svg{
   flex:none;
 }
+
+/* =========================================================
+   Navbar login icon + Scroll-to-top button
+   ========================================================= */
+
+.nav-login{
+  display:inline-flex !important;
+  align-items:center;
+  gap:8px;
+}
+.nav-login svg{
+  flex:none;
+}
+.mob-login{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* Scroll to top — fixed on the right side */
+.scroll-top{
+  position:fixed;
+  right:20px;
+  bottom:24px;
+  z-index:50;
+  width:48px;
+  height:48px;
+  border:0;
+  border-radius:50%;
+  background:var(--green);
+  color:var(--on-green);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  box-shadow:0 8px 24px rgba(14,59,46,.35);
+  transition:transform .2s, background .2s, opacity .2s;
+}
+.scroll-top:hover{
+  transform:translateY(-3px);
+  background:#14573F;
+}
+.scroll-top:active{
+  transform:translateY(0);
+}
+@media (max-width:520px){
+  .scroll-top{
+    right:14px;
+    bottom:18px;
+    width:44px;
+    height:44px;
+  }
+}
+
+/* =========================================================
+   Logo size (desktop smaller) + hide text on mobile
+   ========================================================= */
+
+.topbar .logo{
+  font-size:17px !important; /* reduced from ~20px on desktop */
+}
+.topbar .logo-text{
+  font:800 17px "Bricolage Grotesque",sans-serif;
+  letter-spacing:-0.01em;
+}
+@media (max-width:960px){
+  /* Hide "MAF Tech Academy" text on mobile — keep mark only */
+  .topbar .logo-text{
+    display:none !important;
+  }
+}

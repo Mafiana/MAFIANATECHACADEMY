@@ -25,12 +25,6 @@ const ABOUT = [
   ["Pay small small", "Book your seat with half the fee and pay the balance in installments. Most courses allow it."],
   ["Certificate and ID card", "Every student gets an academy ID card, learning materials and a certificate on completion."],
 ];
-const DEPTS = [
-  ["Computer Basics & Office", "Windows, Word, Excel, PowerPoint, typing."],
-  ["Data Analytics", "Excel, SQL, Power BI, Python basics."],
-  ["Graphic Design", "Canva, Photoshop, CorelDraw, logos."],
-  ["Web Development", "HTML, CSS, JavaScript, WordPress."],
-];
 const SERVICES = [
   ["Admission office", "Register, pay your seat fee and get your ID card."],
   ["Training hall and computer lab", "Practise on a computer during every class."],
@@ -170,59 +164,13 @@ export default function App() {
           </div>
         </Section>
 
-        {/* ===== Departments and student services ===== */}
+        {/* ===== Student services ===== */}
         <Section
-          id="departments"
-          title="Departments and student services"
-          sub="Four departments teach the courses. Five services support you from registration to your first job."
+          id="services"
+          title="Student services"
+          sub="Five services support you from registration to your first job."
         >
-          <div className="dept-block">
-            <h3 className="dept-label">Departments</h3>
-            <div className="dept-grid">
-              {DEPTS.map(([t, d], i) => (
-                <article className="dept-card" key={t} style={{ "--i": i }}>
-                  <div className="dept-visual">
-                    <span className="dept-num">0{i + 1}</span>
-                    <div className="dept-icon" aria-hidden="true">
-                      {i === 0 && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                          <rect x="3" y="4" width="18" height="14" rx="2" />
-                          <path d="M7 8h10M7 12h6" />
-                        </svg>
-                      )}
-                      {i === 1 && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                          <path d="M4 19V5l8 4 8-4v14l-8 4-8-4z" />
-                          <path d="M12 9v10" />
-                        </svg>
-                      )}
-                      {i === 2 && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                          <circle cx="12" cy="8" r="3" />
-                          <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6" />
-                          <path d="M16 4l2 2-2 2M8 4L6 6l2 2" />
-                        </svg>
-                      )}
-                      {i === 3 && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                          <path d="M4 6h16v12H4z" />
-                          <path d="M8 10h8M8 14h5" />
-                          <path d="M16 3v3M8 3v3" />
-                        </svg>
-                      )}
-                    </div>
-                  </div>
-                  <div className="dept-body">
-                    <h3>{t}</h3>
-                    <p className="m">{d}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-
           <div className="svc-block">
-            <h3 className="dept-label">Student services</h3>
             <div className="svc-grid">
               {SERVICES.map(([t, d], i) => (
                 <article className="svc-card" key={t} style={{ "--i": i }}>

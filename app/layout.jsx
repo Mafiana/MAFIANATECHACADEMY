@@ -1,5 +1,6 @@
 import "./globals.css";
 import RevealObserver from "../components/RevealObserver";
+import ScrollTop from "../components/ScrollTop";
 
 export const metadata = {
   title: "MAFIANA Tech Academy | Computer, Data, Design and Web Development",
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
       <body>
         {children}
         <RevealObserver />
+        <ScrollTop />
       </body>
     </html>
   );
