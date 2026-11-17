@@ -1,14 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ActionForm from "./ActionForm";
 import { COURSE_NAMES } from "../../lib/courses";
 import { createQuiz, deleteQuiz } from "../../app/admin/actions";
+import { parseQuizCsv, QUIZ_CSV_TEMPLATE } from "../../lib/quizCsv";
 
 const blank = () => ({ q: "", options: ["", "", "", ""], answer: 0 });
 const dateOf = (d) => new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
+function downloadTemplate() {
+  const url = URL.createObjectURL(new Blob(["\uFEFF" + QUIZ_CSV_TEMPLATE], { type: "text/csv" }));
+  const a = document.createElement("a");
+  a.href = url; a.download = "quiz-template.csv"; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function Builder() {
   const [qs, setQs] = useState([blank()]);
+  const [imp, setImp] = useState({ ok: null, text: "", errors: [] });
+  const titleRef = useRef(null);
+  async function onFile(e) {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f) return;
+    const { questions, errors } = parseQuizCsv(await f.text());
+    if (!questions.length) return setImp({ ok: false, text: "Nothing was imported.", errors });
+    setQs(questions);
+    if (titleRef.current && !titleRef.current.value) titleRef.current.value = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").slice(0, 120);
+    setImp({ ok: true, text: `Imported ${questions.length} question${questions.length === 1 ? "" : "s"}${errors.length ? `, skipped ${errors.length}` : ""}. Check them below, choose the course, then press Create quiz.`, errors });
+  }
   const set = (i, patch) => setQs(qs.map((q, k) => (k === i ? { ...q, ...patch } : q)));
   const setOpt = (i, j, v) => set(i, { options: qs[i].options.map((o, k) => (k === j ? v : o)) });
   const addOpt = (i) => qs[i].options.length < 6 && set(i, { options: [...qs[i].options, ""] });
@@ -18,12 +38,22 @@ function Builder() {
     set(i, { options: q.options.filter((_, k) => k !== j), answer: q.answer === j ? 0 : q.answer > j ? q.answer - 1 : q.answer });
   };
   return (
-    <ActionForm action={createQuiz} label="Create quiz" busy="Creating..." className="form adm-edit" reset={false} onSuccess={() => setQs([blank()])}>
+    <ActionForm action={createQuiz} label="Create quiz" busy="Creating..." className="form adm-edit" reset={false} onSuccess={() => { setQs([blank()]); setImp({ ok: null, text: "", errors: [] }); if (titleRef.current) titleRef.current.value = ""; }}>
       <input type="hidden" name="payload" value={JSON.stringify(qs)} />
       <label>Course</label>
       <select name="course">{COURSE_NAMES.map((c) => <option key={c}>{c}</option>)}</select>
       <label>Quiz title</label>
-      <input name="title" required maxLength={120} placeholder="Excel quiz" />
+      <input ref={titleRef} name="title" required maxLength={120} placeholder="Excel quiz" />
+      <div className="csv-import">
+        <b>Import questions from a CSV file</b>
+        <p className="m" style={{ margin: "4px 0 10px" }}>Columns: question, option_a, option_b, option_c, option_d, answer (the answer is a letter such as B). Save from Excel or Google Sheets as CSV. Up to 50 questions and 6 options each.</p>
+        <div className="adm-acts">
+          <input type="file" accept=".csv,text/csv,text/plain" onChange={onFile} aria-label="Choose a CSV file of questions" />
+          <button type="button" className="btn ghost sm" onClick={downloadTemplate}>Download template</button>
+        </div>
+        {imp.text && <p className={"adm-msg " + (imp.ok ? "ok" : "bad")} role={imp.ok ? "status" : "alert"} style={{ marginBottom: 0 }}>{imp.text}</p>}
+        {imp.errors.length > 0 && <ul className="m" style={{ margin: "6px 0 0", paddingLeft: 20 }}>{imp.errors.slice(0, 6).map((x, i) => <li key={i}>{x}</li>)}{imp.errors.length > 6 && <li>…and {imp.errors.length - 6} more.</li>}</ul>}
+      </div>
       {qs.map((q, i) => (
         <fieldset className="qb" key={i}>
           <legend>Question {i + 1}</legend>

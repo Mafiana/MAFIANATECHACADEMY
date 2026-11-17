@@ -3,11 +3,11 @@ import PortalShell from "../../../components/portal/PortalShell";
 import { getPortalData, waUrl } from "../../../lib/portalData";
 import { naira, COURSE_IMAGES } from "../../../lib/courses";
 
-export const metadata = { title: "My courses | MAFIANA Tech Academy" };
+export const metadata = { title: "My courses | MAF Tech Academy" };
 
 export default async function Courses() {
   const d = await getPortalData();
-  const join = waUrl(`Hello MAFIANA Tech Academy, I am ${d.name}. I want to enroll in another course.`);
+  const join = waUrl(`Hello MAF Tech Academy, I am ${d.name}. I want to enroll in another course.`);
   return (
     <PortalShell active="courses" role={d.profile?.role}>
       <div><h3 style={{ fontSize: 26 }}>My courses</h3><span className="m" style={{ color: "var(--mute)" }}>The courses you are enrolled in.</span></div>

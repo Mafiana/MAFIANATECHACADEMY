@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Avatar from "./Avatar";
+import { createClient } from "../lib/supabase/client";
 
 // third value true = shown only in the mobile menu
 const LINKS = [
@@ -35,9 +37,37 @@ function UserIcon() {
   );
 }
 
+// Looks up the signed-in person in the browser, so public pages stay fast and cacheable.
+function useViewer() {
+  const [v, setV] = useState({ ready: false, user: null });
+  useEffect(() => {
+    let off = false;
+    let sub;
+    try {
+      const sb = createClient();
+      const load = async () => {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) return !off && setV({ ready: true, user: null });
+        let { data: p, error } = await sb.from("profiles").select("full_name,role,avatar_url").eq("id", user.id).maybeSingle();
+        if (error) ({ data: p } = await sb.from("profiles").select("full_name,role").eq("id", user.id).maybeSingle()); // avatar column not added yet
+        if (off) return;
+        const staff = p?.role === "admin" || p?.role === "instructor";
+        setV({ ready: true, user: { name: p?.full_name || user.email?.split("@")[0] || "Student", avatar: p?.avatar_url || "", href: staff ? "/admin" : "/portal" } });
+      };
+      load().catch(() => !off && setV({ ready: true, user: null }));
+      sub = sb.auth.onAuthStateChange(() => load().catch(() => {})).data.subscription;
+    } catch {
+      setV({ ready: true, user: null });
+    }
+    return () => { off = true; sub?.unsubscribe(); };
+  }, []);
+  return v;
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
+  const { ready, user } = useViewer();
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && close();
@@ -65,11 +95,19 @@ export default function Navbar() {
         </div>
 
         <div className="navcta">
-          {/* Enroll button removed as requested */}
-          <Link className="btn ghost nav-login" href="/login" aria-label="Login">
-            <UserIcon />
-            Login
-          </Link>
+          {!ready ? (
+            <span className="nav-slot" aria-hidden="true" />
+          ) : user ? (
+            <Link className="nav-user" href={user.href} aria-label={`Open dashboard for ${user.name}`}>
+              <Avatar name={user.name} src={user.avatar} size={32} />
+              <span className="nm">{user.name}</span>
+            </Link>
+          ) : (
+            <Link className="btn ghost nav-login" href="/login" aria-label="Login">
+              <UserIcon />
+              Login
+            </Link>
+          )}
         </div>
 
         <button
@@ -96,10 +134,17 @@ export default function Navbar() {
               {l}
             </Link>
           ))}
-          <Link href="/login" onClick={close} className="mob-login">
-            <UserIcon />
-            Login
-          </Link>
+          {ready && user ? (
+            <Link href={user.href} onClick={close} className="mob-user">
+              <Avatar name={user.name} src={user.avatar} size={28} />
+              {user.name}
+            </Link>
+          ) : (
+            <Link href="/login" onClick={close} className="mob-login">
+              <UserIcon />
+              Login
+            </Link>
+          )}
         </div>
       )}
     </header>

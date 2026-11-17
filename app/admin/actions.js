@@ -377,3 +377,75 @@ export const deleteQuiz = staff(async (s, fd) => {
   const { error } = await s.from("quizzes").delete().eq("id", id);
   return error ? lqErr(error) : ok("Quiz deleted along with its results.");
 });
+
+// ---- Student tools: edit name/phone, profile picture, delete (need supabase/add-admin-upgrades.sql for pictures) ----
+const IMG_EXT = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+const storageMsg = (e) => /bucket|not found|storage/i.test(e.message || "") ? "Picture storage is not set up yet. Run supabase/add-admin-upgrades.sql in the Supabase SQL Editor first." : "Could not upload the picture: " + e.message;
+
+async function readImage(fd, field, maxBytes) {
+  const f = fd.get(field);
+  if (!f || typeof f === "string" || !f.size) return { err: "Choose a picture first." };
+  const ext = IMG_EXT[f.type];
+  if (!ext) return { err: "Use a JPG, PNG or WebP picture." };
+  if (f.size > maxBytes) return { err: "That picture is too big. Choose one under " + Math.round(maxBytes / 1048576) + " MB." };
+  return { ext, type: f.type, buf: Buffer.from(await f.arrayBuffer()) };
+}
+
+export const updateStudent = admin(async (s, fd, user) => {
+  const name = String(fd.get("name") || "").trim().slice(0, 80);
+  const phone = String(fd.get("phone") || "").trim().slice(0, 30);
+  if (name.length < 2) return bad("Enter the student's full name.");
+  if (!phoneOk(phone)) return bad("That phone number does not look right.");
+  const r = await target(s, String(fd.get("student") || ""), user);
+  if (r.err) return bad(r.err);
+  const { error } = await s.from("profiles").update({ full_name: name, phone: phone || null }).eq("id", r.t.id);
+  if (error) return dbErr(error);
+  try { await serviceClient().auth.admin.updateUserById(r.t.id, { user_metadata: { full_name: name, phone: phone || undefined, pin_account: true } }); } catch {} // keep the sign-in record in step; the profile above is what the site shows
+  return ok("Saved. The name is now " + name + ".");
+});
+
+export const setAvatar = admin(async (s, fd, user) => {
+  const r = await target(s, String(fd.get("student") || ""), user);
+  if (r.err) return bad(r.err);
+  if (fd.get("remove") === "1") {
+    try { await serviceClient().storage.from("avatars").remove(Object.values(IMG_EXT).map((x) => `${r.t.id}.${x}`)); } catch {}
+    const { error } = await s.from("profiles").update({ avatar_url: null }).eq("id", r.t.id);
+    return error ? dbErr(error) : ok("Picture removed.");
+  }
+  const img = await readImage(fd, "photo", 1.5 * 1048576);
+  if (img.err) return bad(img.err);
+  let svc;
+  try { svc = serviceClient(); } catch (e) { return bad(setupMsg(e)); }
+  const path = `${r.t.id}.${img.ext}`;
+  const up = await svc.storage.from("avatars").upload(path, img.buf, { contentType: img.type, upsert: true });
+  if (up.error) return bad(storageMsg(up.error));
+  const url = svc.storage.from("avatars").getPublicUrl(path).data.publicUrl + "?v=" + Date.now();
+  const { error } = await s.from("profiles").update({ avatar_url: url }).eq("id", r.t.id);
+  if (error) return /avatar_url/.test(error.message) ? bad("Picture storage is not set up yet. Run supabase/add-admin-upgrades.sql in the Supabase SQL Editor first.") : dbErr(error);
+  return { ...ok("Picture saved."), url };
+});
+
+// Removes the student's sign-in account; their profile, enrollments, payments, attendance and quiz results go with it.
+export const deleteStudent = admin(async (s, fd, user) => {
+  const r = await target(s, String(fd.get("student") || ""), user);
+  if (r.err) return bad(r.err);
+  if (r.t.role !== "student") return bad("Instructors are removed from the Instructors section.");
+  let svc;
+  try { svc = serviceClient(); } catch (e) { return bad(setupMsg(e)); }
+  try { await svc.storage.from("avatars").remove(Object.values(IMG_EXT).map((x) => `${r.t.id}.${x}`)); } catch {}
+  const { error } = await svc.auth.admin.deleteUser(r.t.id);
+  if (error) return bad("Could not delete the student: " + error.message + ".");
+  return ok((r.t.full_name || "The student") + " was deleted.");
+});
+
+// Blog pictures. The browser shrinks the picture first, then this stores it and returns its public address.
+export const uploadBlogImage = admin(async (s, fd) => {
+  const img = await readImage(fd, "photo", 3 * 1048576);
+  if (img.err) return bad(img.err);
+  let svc;
+  try { svc = serviceClient(); } catch (e) { return bad(setupMsg(e)); }
+  const path = `${Date.now()}-${randomBytes(4).toString("hex")}.${img.ext}`;
+  const up = await svc.storage.from("blog-images").upload(path, img.buf, { contentType: img.type });
+  if (up.error) return bad(storageMsg(up.error));
+  return { ...ok("Picture uploaded."), url: svc.storage.from("blog-images").getPublicUrl(path).data.publicUrl };
+});

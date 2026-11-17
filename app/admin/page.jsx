@@ -22,7 +22,7 @@ import { accessSummary } from "../../lib/access";
 import { lagosToday, prettyDate } from "../../lib/dates";
 import { signOut } from "../auth-actions";
 
-export const metadata = { title: "Admin panel | MAFIANA Tech Academy" };
+export const metadata = { title: "Admin panel | MAF Tech Academy" };
 export const dynamic = "force-dynamic";
 
 function who(p) {
@@ -121,6 +121,10 @@ export default async function Admin() {
       id: p.id,
       label: who(p),
       sub: subLine(p),
+      name: p.full_name || "",
+      phone: p.phone || "",
+      pin: p.access_pin || "",
+      avatar: p.avatar_url || "",
       code: p.student_code || "",
       courses: [...new Set(ens.map((e) => e.course))],
       fees,

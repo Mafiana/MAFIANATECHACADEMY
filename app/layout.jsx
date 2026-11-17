@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./upgrades.css";
 import RevealObserver from "../components/RevealObserver";
 import ScrollTop from "../components/ScrollTop";
 

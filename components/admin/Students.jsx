@@ -1,6 +1,8 @@
 "use client";
 import { useMemo, useState } from "react";
 import ActionForm from "./ActionForm";
+import Avatar from "../Avatar";
+import StudentTools, { SavedPin } from "./StudentTools";
 import { PaymentRow, EnrollmentRow } from "./rows";
 import { naira } from "../../lib/courses";
 import { recordPayment, renewAccess, resetPin, setAccess } from "../../app/admin/actions";
@@ -24,6 +26,7 @@ function AccessBlock({ s }) {
         {paused ? <span className="badge bad">Paused</span> : a?.expired ? <span className="badge bad">Ended {prettyDate(s.accessUntil)}</span>
           : a ? <>Valid until <b>{prettyDate(s.accessUntil)}</b> ({a.left} day{a.left === 1 ? "" : "s"} left)</> : "No end date set."}
       </p>
+      <SavedPin pin={s.pin} />
       <div className="adm-acts" style={{ alignItems: "flex-start" }}>
         <ActionForm action={renewAccess} label="Renew" busy="..." cls="btn sm" className="adm-inline adm-renew" reset={false} hideMsg>
           <input type="hidden" name="student" value={s.id} />
@@ -72,7 +75,7 @@ export default function Students({ students }) {
           return (
             <div className={"adm-row" + (isOpen ? " open" : "")} key={s.id}>
               <button type="button" className="adm-head" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : s.id)}>
-                <span className="adm-name"><b>{s.label}</b><small>{s.sub}</small></span>
+                <span className="adm-name" style={{ display: "flex", alignItems: "center", gap: 10 }}><Avatar name={s.name || s.label} src={s.avatar} size={36} /><span style={{ display: "grid" }}><b>{s.label}</b><small>{s.sub}</small></span></span>
                 <span className="adm-courses">{s.courses.length ? s.courses.join(", ") : <i>No course yet</i>}</span>
                 <span className="adm-money"><b>{naira(s.balance)}</b><small>balance</small></span>
                 <span className={"badge " + tone}>{sl}</span>
@@ -88,6 +91,7 @@ export default function Students({ students }) {
                     <div><small>Lessons done</small><b>{s.lessonsTotal ? `${s.lessonsDone} of ${s.lessonsTotal}` : "–"}</b></div>
                   </div>
                   <AccessBlock s={s} />
+                  <StudentTools s={s} />
                   <h4>Enrollments</h4>
                   {s.enrollments.length ? s.enrollments.map((e) => <EnrollmentRow key={e.id} e={e} />) : <p className="m">Not enrolled yet. Use “Enroll a student” below.</p>}
                   <h4>Payments</h4>

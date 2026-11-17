@@ -10,8 +10,10 @@ function Mark() {
   );
 }
 
-export default function Footer() {
-  const wa = process.env.NEXT_PUBLIC_WHATSAPP;
+export default function Footer({ portal = false }) {
+  // In the student portal: no WhatsApp button, and the academy name is written MAF Tech Academy.
+  const brand = portal ? "MAF Tech Academy" : "MAFIANA Tech Academy";
+  const wa = portal ? "" : process.env.NEXT_PUBLIC_WHATSAPP;
   const social = [
     ["Instagram", CONTACT.social.instagram],
     ["TikTok", CONTACT.social.tiktok],
@@ -41,7 +43,7 @@ export default function Footer() {
           <div>
             <Link className="logo sf-logo" href="/">
               <Mark />
-              MAFIANA Tech Academy
+              {brand}
             </Link>
             <p>
               Practical computer, data, design and web development training. Learn in class or online and graduate with a
@@ -72,7 +74,6 @@ export default function Footer() {
             {/* Student login removed as requested */}
             <Link href="/verify">Verify a certificate</Link>
             <Link href="/admin">Admin login</Link>
-            <Link href="/#contact">Enroll</Link>
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms and Conditions</Link>
           </div>
@@ -83,12 +84,12 @@ export default function Footer() {
             {address && <p>{address}</p>}
             {phone && <p>{phone}</p>}
             {email && <p>{email}</p>}
-            {!address && !phone && !email && <p>Message us on WhatsApp to enroll.</p>}
+            {!address && !phone && !email && !portal && <p>Message us on WhatsApp to enroll.</p>}
           </div>
         </div>
 
         <div className="sf-bottom">
-          <span>© {new Date().getFullYear()} MAFIANA Tech Academy. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} {brand}. All rights reserved.</span>
           {/* Registration fee line removed as requested */}
         </div>
       </div>

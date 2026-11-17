@@ -1,7 +1,7 @@
 import PortalShell from "../../../components/portal/PortalShell";
 import { getPortalData, fmtDate } from "../../../lib/portalData";
 
-export const metadata = { title: "Attendance | MAFIANA Tech Academy" };
+export const metadata = { title: "Attendance | MAF Tech Academy" };
 
 export default async function Attendance() {
   const d = await getPortalData();

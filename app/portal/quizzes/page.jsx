@@ -2,7 +2,7 @@ import Link from "next/link";
 import PortalShell from "../../../components/portal/PortalShell";
 import { getPortalData } from "../../../lib/portalData";
 
-export const metadata = { title: "Quizzes | MAFIANA Tech Academy" };
+export const metadata = { title: "Quizzes | MAF Tech Academy" };
 
 export default async function Quizzes() {
   const d = await getPortalData();

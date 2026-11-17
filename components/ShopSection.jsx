@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState, useEffect } from "react";
+import { DEFAULT_SHOP, SHOP_CATEGORIES } from "../lib/shop";
 
 const PHONE = process.env.NEXT_PUBLIC_WHATSAPP || "234XXXXXXXXXX";
 const naira = (x) => "₦" + Number(x).toLocaleString("en-NG");
@@ -7,21 +8,14 @@ const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 
 const PER_PAGE = 6;
 
-const CATEGORIES = ["All", "Laptop", "Mouse", "Keyboard", "Flash", "Bag", "Charger", "Audio"];
-
-const SHOP = [
-  { name: "Wireless mouse", price: 7000, img: "/shop/mouse.jpeg", desc: "Quiet click, long battery", cat: "Mouse" },
-  { name: "Keyboard", price: 10000, img: "/shop/keyboard.jpeg", desc: "Full size, soft keys", cat: "Keyboard" },
-  { name: "64GB flash drive", price: 10000, img: "/shop/flash.jpeg", desc: "USB 3.0, metal body", cat: "Flash" },
-  { name: "Laptop charger", price: 15000, img: "/shop/charger.jpeg", desc: "Compatible with common models", cat: "Charger" },
-  { name: "Laptop bag", price: 14000, img: "/shop/bag.jpeg", desc: "Padded, fits 15.6 inch", cat: "Bag" },
-  { name: "Headphones", price: 9000, img: "/shop/headphones.jpeg", desc: "Over-ear, for class & calls", cat: "Audio" },
-];
+const CATEGORIES = SHOP_CATEGORIES;
+const SHOP = DEFAULT_SHOP;
 
 export default function ShopSection() {
   const [cat, setCat] = useState("All");
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(null);
+  const [pic, setPic] = useState(0);
 
   const list = useMemo(() => (cat === "All" ? SHOP : SHOP.filter((p) => p.cat === cat)), [cat]);
   const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
@@ -74,14 +68,15 @@ export default function ShopSection() {
         {slice.map((item) => (
           <article
             className="shop-card"
-            key={item.name}
+            key={item.id || item.name}
             role="button"
             tabIndex={0}
-            onClick={() => setSelected(item)}
+            onClick={() => { setSelected(item); setPic(0); }}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 setSelected(item);
+                setPic(0);
               }
             }}
             style={{ cursor: "pointer" }}
@@ -155,13 +150,38 @@ export default function ShopSection() {
             </button>
 
             <div className="shop-modal-img">
-              <img src={selected.img} alt={selected.name} />
+              <img src={(selected.imgs && selected.imgs[pic]) || selected.img} alt={selected.name} />
             </div>
+            {selected.imgs && selected.imgs.length > 1 && (
+              <div className="shop-thumbs" role="group" aria-label="Product pictures">
+                {selected.imgs.map((src, i) => (
+                  <button key={src} type="button" aria-current={i === pic} aria-label={`Picture ${i + 1}`} onClick={() => setPic(i)}>
+                    <img src={src} alt="" />
+                  </button>
+                ))}
+              </div>
+            )}
 
             <div className="shop-modal-body">
               <h3>{selected.name}</h3>
               <p className="m">{selected.desc}</p>
               <div className="shop-modal-price">{naira(selected.price)}</div>
+
+              {selected.specs && (
+                <>
+                  <h4 className="shop-specs-title">System configuration</h4>
+                  <table className="shop-specs">
+                    <tbody>
+                      {selected.specs.map(([k, v]) => (
+                        <tr key={k}>
+                          <th scope="row">{k}</th>
+                          <td>{v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
 
               <a
                 className="btn"

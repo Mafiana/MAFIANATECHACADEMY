@@ -3,13 +3,13 @@ import { getPortalData, waUrl, fmtDate } from "../../../lib/portalData";
 import { naira } from "../../../lib/courses";
 import { CONTACT } from "../../../lib/legal";
 
-export const metadata = { title: "Payments | MAFIANA Tech Academy" };
+export const metadata = { title: "Payments | MAF Tech Academy" };
 
 export default async function Payments() {
   const d = await getPortalData();
   const b = CONTACT.bank || {};
-  const proof = waUrl(`Hello MAFIANA Tech Academy, I am ${d.name}. I have paid ${d.balance > 0 ? "part of my balance" : ""} and want to send my payment proof.`);
-  const ask = waUrl(`Hello MAFIANA Tech Academy, I am ${d.name}. Please send me the payment details for my balance of ${naira(d.balance)}.`);
+  const proof = waUrl(`Hello MAF Tech Academy, I am ${d.name}. I have paid ${d.balance > 0 ? "part of my balance" : ""} and want to send my payment proof.`);
+  const ask = waUrl(`Hello MAF Tech Academy, I am ${d.name}. Please send me the payment details for my balance of ${naira(d.balance)}.`);
   return (
     <PortalShell active="payments" role={d.profile?.role}>
       <div><h3 style={{ fontSize: 26 }}>Payments</h3><span className="m" style={{ color: "var(--mute)" }}>Your fees and every payment we have recorded.</span></div>

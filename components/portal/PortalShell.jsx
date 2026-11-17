@@ -1,44 +1,42 @@
 import Link from "next/link";
 import Shell from "../Shell";
+import Icon from "./Icons";
 import { signOut } from "../../app/auth-actions";
 
 const NAV = [
-  ["home", "/portal", "Dashboard", "🏠"],
-  ["courses", "/portal/courses", "My courses", "📚"],
-  ["lessons", "/portal/lessons", "Lessons", "▶️"],
-  ["quizzes", "/portal/quizzes", "Quizzes", "❓"],
-  ["payments", "/portal/payments", "Payments", "💰"],
-  ["attendance", "/portal/attendance", "Attendance", "📅"],
-  ["profile", "/portal/profile", "Profile", "👤"],
+  ["home", "/portal", "Dashboard", "home"],
+  ["courses", "/portal/courses", "My courses", "courses"],
+  ["lessons", "/portal/lessons", "Lessons", "lessons"],
+  ["quizzes", "/portal/quizzes", "Quizzes", "quizzes"],
+  ["payments", "/portal/payments", "Payments", "payments"],
+  ["attendance", "/portal/attendance", "Attendance", "attendance"],
+  ["profile", "/portal/profile", "Profile", "profile"],
 ];
 
 export default function PortalShell({ active, role, children }) {
   const staff = role === "admin" || role === "instructor";
 
   return (
-    <Shell>
+    <Shell portal>
       <section style={{ paddingTop: 24 }}>
         <div className="portal">
           <aside className="pnav">
             <b className="side-title">Student portal</b>
             {NAV.map(([k, href, label, icon]) => (
               <Link key={k} href={href} className={k === active ? "on" : ""}>
-                <span className="side-icon" aria-hidden="true">
-                  {icon}
-                </span>{" "}
+                <Icon name={icon} />
                 {label}
               </Link>
             ))}
             {staff && (
               <Link href="/admin" className={active === "admin" ? "on" : ""}>
-                <span className="side-icon" aria-hidden="true">
-                  ⚙️
-                </span>{" "}
+                <Icon name="admin" />
                 Admin panel
               </Link>
             )}
             <form action={signOut}>
               <button className="lnk" type="submit">
+                <Icon name="logout" />
                 Log out
               </button>
             </form>

@@ -6,7 +6,7 @@ import PortalShell from "../../components/portal/PortalShell";
 import { getPortalData, waUrl, fmtDate } from "../../lib/portalData";
 import { naira, COURSE_IMAGES } from "../../lib/courses";
 
-export const metadata = { title: "Student portal | MAFIANA Tech Academy" };
+export const metadata = { title: "Student portal | MAF Tech Academy" };
 
 export default async function Portal() {
   const d = await getPortalData();
@@ -17,8 +17,8 @@ export default async function Portal() {
   const acc = d.profile?.role === "student" ? accessSummary(d.profile) : null;
   const renewMsg = waUrl(`Hello MAF Tech Academy, I am ${d.name}. I want to renew my Access PIN.`);
   const certs = d.enrollments.filter((e) => e.certificate_issued);
-  const pay = waUrl(`Hello MAFIANA Tech Academy, I am ${d.name}. I want to pay my balance of ${naira(d.balance)}.`);
-  const join = waUrl(`Hello MAFIANA Tech Academy, I am ${d.name}. I have signed up on the portal and want to enroll in a course.`);
+  const pay = waUrl(`Hello MAF Tech Academy, I am ${d.name}. I want to pay my balance of ${naira(d.balance)}.`);
+  const join = waUrl(`Hello MAF Tech Academy, I am ${d.name}. I have signed up on the portal and want to enroll in a course.`);
 
   return (
     <PortalShell active="home" role={d.profile?.role}>
@@ -26,7 +26,7 @@ export default async function Portal() {
 
       <div className="p-hero">
         <div>
-          <Greeting name={first} />
+          <Greeting name={first} avatar={d.avatar} />
           <p className="greet-sub">{enrolled ? (d.balance > 0 ? `Your balance is ${naira(d.balance)}.` : "Your fees are fully paid. Well done.") : "You are not enrolled in a course yet."}</p>
         </div>
         {!enrolled && join && <a className="btn" href={join} target="_blank" rel="noopener noreferrer">Enroll on WhatsApp</a>}

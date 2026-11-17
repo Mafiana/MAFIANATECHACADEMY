@@ -39,7 +39,18 @@ export async function middleware(request) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return go("/login", path.startsWith("/admin") ? { next: "/admin" } : {});
+  if (!user) {
+    // /admin itself shows the admin sign-in form right at the /admin address (no redirect to /login).
+    if (path === "/admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.search = "?next=/admin";
+      const res = NextResponse.rewrite(url);
+      response.cookies.getAll().forEach((c) => res.cookies.set(c));
+      return res;
+    }
+    return go(path.startsWith("/admin") ? "/admin" : "/login");
+  }
 
   const { data: me, error } = await supabase
     .from("profiles")

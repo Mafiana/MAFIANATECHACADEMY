@@ -4,7 +4,7 @@ import PortalShell from "../../../../components/portal/PortalShell";
 import { getPortalData } from "../../../../lib/portalData";
 import { videoEmbed } from "../../../../lib/video";
 
-export const metadata = { title: "Lesson | MAFIANA Tech Academy" };
+export const metadata = { title: "Lesson | MAF Tech Academy" };
 
 export default async function Lesson({ params }) {
   const id = Number(params.id);
