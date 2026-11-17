@@ -11,8 +11,8 @@ function Mark() {
 }
 
 export default function Footer({ portal = false }) {
-  // In the student portal: no WhatsApp button, and the academy name is written MAF Tech Academy.
-  const brand = portal ? "MAF Tech Academy" : "MAFIANA Tech Academy";
+  // In the student portal there is no WhatsApp button.
+  const brand = "MAF Tech Academy";
   const wa = portal ? "" : process.env.NEXT_PUBLIC_WHATSAPP;
   const social = [
     ["Instagram", CONTACT.social.instagram],

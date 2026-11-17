@@ -1,8 +1,8 @@
 import Legal from "../../components/Legal";
 
 export const metadata = {
-  title: "Privacy Policy | MAFIANA Tech Academy",
-  description: "How MAFIANA Tech Academy collects, uses and protects your personal information.",
+  title: "Privacy Policy | MAF Tech Academy",
+  description: "How MAF Tech Academy collects, uses and protects your personal information.",
 };
 
 const sections = [
@@ -43,7 +43,7 @@ export default function Privacy() {
   return (
     <Legal
       title="Privacy Policy"
-      intro="MAFIANA Tech Academy respects your privacy. This policy explains what personal information we collect, why we collect it and the choices you have."
+      intro="MAF Tech Academy respects your privacy. This policy explains what personal information we collect, why we collect it and the choices you have."
       sections={sections}
     />
   );

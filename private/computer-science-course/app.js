@@ -12,10 +12,26 @@ function loadProgress() {
 }
 
 function saveProgress(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+  syncProgress(data);
 }
 
-let progress = loadProgress(); // { moduleId: { completed, score }, finalTestPassed: bool, studentName: string }
+// Inside the student portal, progress is also saved to the academy database so it follows the student to any device.
+function syncProgress(data) {
+  if (!STUDENT) return;
+  try {
+    fetch('/portal/course-app/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ progress: data, total: courseData.modules.length }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch {}
+}
+
+// The saved copy from the database wins. If there is none yet, use this browser's copy and upload it.
+let progress = STUDENT && window.MAF_PROGRESS ? window.MAF_PROGRESS : loadProgress();
+if (STUDENT && window.MAF_PROGRESS === null && Object.keys(progress).length) syncProgress(progress); // { moduleId: { completed, score }, finalTestPassed: bool, studentName: string }
 
 // ========== RENDER HELPERS ==========
 const contentEl = document.getElementById('content');

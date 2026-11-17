@@ -90,6 +90,12 @@ export default function Students({ students }) {
                     <div><small>Classes attended</small><b>{s.present} of {s.total}</b></div>
                     <div><small>Lessons done</small><b>{s.lessonsTotal ? `${s.lessonsDone} of ${s.lessonsTotal}` : "–"}</b></div>
                   </div>
+                  <div className="adm-access">
+                    <h4>Interactive course</h4>
+                    <p className="m" style={{ margin: 0 }}>
+                      {s.course ? <><b>{s.course.done}{s.course.total ? ` of ${s.course.total}` : ""}</b> modules completed{s.course.passed ? <> · final test <b>passed{s.course.score != null ? ` (${s.course.score}%)` : ""}</b></> : " · final test not passed yet"} · last activity {prettyDate(String(s.course.updated).slice(0, 10))}</> : "Has not started the course yet."}
+                    </p>
+                  </div>
                   <AccessBlock s={s} />
                   <StudentTools s={s} />
                   <h4>Enrollments</h4>

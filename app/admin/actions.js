@@ -7,6 +7,9 @@ import { isHttpUrl } from "../../lib/video";
 import { serviceClient } from "../../lib/supabase/service";
 import { generatePin, prettyPin, pinEmail } from "../../lib/pin";
 import { lagosToday, addMonths, prettyDate } from "../../lib/dates";
+import { sanitizeHtml } from "../../lib/sanitizeHtml";
+import { posts as builtInPosts, slugify, POST_CATEGORIES } from "../../lib/posts";
+import { DEFAULT_SHOP, SHOP_CATEGORIES } from "../../lib/shop";
 
 // Every action returns { ok, msg } so the form can show success or the real error.
 const ok = (msg) => ({ ok: true, msg });
@@ -448,4 +451,147 @@ export const uploadBlogImage = admin(async (s, fd) => {
   const up = await svc.storage.from("blog-images").upload(path, img.buf, { contentType: img.type });
   if (up.error) return bad(storageMsg(up.error));
   return { ...ok("Picture uploaded."), url: svc.storage.from("blog-images").getPublicUrl(path).data.publicUrl };
+});
+
+// ---- Blog posts (stored in Supabase, shown on the public /blog page; needs supabase/add-content-tables.sql) ----
+const TABLE_MSG = "That table is not set up yet. Run supabase/add-content-tables.sql in the Supabase SQL Editor first.";
+const tableErr = (error) => (/relation|does not exist|schema cache/i.test(error.message) ? bad(TABLE_MSG) : dbErr(error));
+const okImage = (v) => v === "" || /^(https:\/\/|\/(?!\/))/.test(v) || /^data:image\/(jpeg|png|webp);base64,[a-z0-9+/=]+$/i.test(v);
+
+function postFields(fd) {
+  const title = String(fd.get("title") || "").trim().slice(0, 140);
+  const excerpt = String(fd.get("excerpt") || "").trim().slice(0, 300);
+  const category = String(fd.get("category") || "");
+  const cover = String(fd.get("cover") || "").trim();
+  const body_html = sanitizeHtml(String(fd.get("body") || "").slice(0, 600000));
+  if (title.length < 3) return { err: "Add a title for the post." };
+  if (!POST_CATEGORIES.includes(category)) return { err: "Choose a category." };
+  if (!okImage(cover) || cover.length > 700000) return { err: "The cover image is not valid or is too big. Upload it again." };
+  if (body_html.replace(/<[^>]*>/g, "").trim().length < 20 && !/<img/.test(body_html)) return { err: "The post is empty. Write something first." };
+  return { row: { title, excerpt, category, cover: cover || null, body_html, published: fd.get("published") === "1", updated_at: new Date().toISOString() } };
+}
+
+export const savePost = admin(async (s, fd) => {
+  const f = postFields(fd);
+  if (f.err) return bad(f.err);
+  const id = String(fd.get("id") || "");
+  let slug;
+  if (id) {
+    if (!/^\d+$/.test(id)) return bad("That post could not be found.");
+    const { data, error } = await s.from("blog_posts").update(f.row).eq("id", id).select("slug").maybeSingle();
+    if (error) return tableErr(error);
+    if (!data) return bad("That post could not be found. It may have been deleted.");
+    slug = data.slug;
+  } else {
+    const base = slugify(f.row.title).slice(0, 70) || "post";
+    const taken = new Set(builtInPosts.map((p) => p.slug));
+    let tries = 0, error;
+    do {
+      slug = tries ? `${base}-${tries + 1}` : base;
+      if (taken.has(slug)) { tries++; continue; }
+      ({ error } = await s.from("blog_posts").insert({ ...f.row, slug }));
+      if (!error || error.code !== "23505") break;
+      tries++;
+    } while (tries < 8);
+    if (error) return tableErr(error);
+  }
+  revalidatePath("/blog", "layout");
+  return ok(f.row.published ? "Saved and published. It is on the blog now." : "Saved as a draft. It is not on the blog yet.");
+});
+
+export const deletePost = admin(async (s, fd) => {
+  const id = String(fd.get("id") || "");
+  if (!/^\d+$/.test(id)) return bad("That post could not be found.");
+  const { error } = await s.from("blog_posts").delete().eq("id", id);
+  if (error) return tableErr(error);
+  revalidatePath("/blog", "layout");
+  return ok("Post deleted.");
+});
+
+// One-time: copies posts that were only saved inside this browser into the database.
+export const importPosts = admin(async (s, fd) => {
+  let list;
+  try { list = JSON.parse(String(fd.get("posts") || "[]")); } catch { return bad("Could not read the saved posts."); }
+  if (!Array.isArray(list) || !list.length) return bad("There are no saved posts to import.");
+  let n = 0;
+  for (const p of list.slice(0, 30)) {
+    const x = new FormData();
+    x.set("title", String(p.title || "")); x.set("excerpt", String(p.excerpt || ""));
+    x.set("category", POST_CATEGORIES.includes(p.category) ? p.category : "Learning");
+    x.set("cover", String(p.cover || "")); x.set("body", String(p.bodyHtml || "")); x.set("published", "1");
+    const f = postFields(x);
+    if (f.err) continue;
+    const base = slugify(f.row.title).slice(0, 70) || "post";
+    for (let t = 0; t < 8; t++) {
+      const slug = t ? `${base}-${t + 1}` : base;
+      if (builtInPosts.some((x) => x.slug === slug)) continue;
+      const { error } = await s.from("blog_posts").insert({ ...f.row, slug });
+      if (!error) { n++; break; }
+      if (error.code !== "23505") return tableErr(error);
+    }
+  }
+  revalidatePath("/blog", "layout");
+  return n ? ok(`Imported ${n} post${n === 1 ? "" : "s"} and published ${n === 1 ? "it" : "them"}.`) : bad("Nothing could be imported (posts need a title and some text).");
+});
+
+// ---- Shop products (stored in Supabase, shown on the homepage Student shop) ----
+export const uploadShopImage = admin(async (s, fd) => {
+  const img = await readImage(fd, "photo", 3 * 1048576);
+  if (img.err) return bad(img.err);
+  let svc;
+  try { svc = serviceClient(); } catch (e) { return bad(setupMsg(e)); }
+  const path = `${Date.now()}-${randomBytes(4).toString("hex")}.${img.ext}`;
+  const up = await svc.storage.from("shop-images").upload(path, img.buf, { contentType: img.type });
+  if (up.error) return bad(/bucket|not found/i.test(up.error.message) ? "Shop picture storage is not set up yet. Run supabase/add-content-tables.sql in the Supabase SQL Editor first." : "Could not upload the picture: " + up.error.message);
+  return { ...ok("Picture uploaded."), url: svc.storage.from("shop-images").getPublicUrl(path).data.publicUrl };
+});
+
+function parseSpecs(text) {
+  return String(text || "").split(/\r?\n/).map((l) => l.trim()).filter(Boolean).slice(0, 24).map((l) => {
+    const i = l.indexOf(":");
+    return i > 0 ? [l.slice(0, i).trim().slice(0, 40), l.slice(i + 1).trim().slice(0, 140)] : null;
+  }).filter((x) => x && x[0] && x[1]);
+}
+
+export const saveProduct = admin(async (s, fd) => {
+  const name = String(fd.get("name") || "").trim().slice(0, 100);
+  const cat = String(fd.get("cat") || "");
+  const price = toInt(fd.get("price")), stock = toInt(fd.get("stock"));
+  const img = String(fd.get("img") || "").trim();
+  let imgs = [];
+  try { imgs = JSON.parse(String(fd.get("imgs") || "[]")); } catch {}
+  imgs = (Array.isArray(imgs) ? imgs : []).map(String).filter((u) => u && okImage(u) && !u.startsWith("data:")).slice(0, 8);
+  if (name.length < 2) return bad("Enter the product name.");
+  if (!SHOP_CATEGORIES.includes(cat) || cat === "All") return bad("Choose a category.");
+  if (!(price >= 0 && price <= 1e9)) return bad("Enter the price in naira, as a whole number.");
+  if (!(stock >= 0 && stock <= 1e6)) return bad("Enter how many are in stock, as a whole number.");
+  if (!okImage(img) || img.startsWith("data:")) return bad("The picture address is not valid. Upload the picture again.");
+  const row = { name, cat, price, stock, img: img || null, imgs, specs: parseSpecs(fd.get("specs")), descr: String(fd.get("descr") || "").trim().slice(0, 300), active: fd.get("active") === "1" };
+  const id = String(fd.get("id") || "");
+  const q = id ? s.from("shop_products").update(row).eq("id", id) : s.from("shop_products").insert(row);
+  const { error } = await q;
+  if (error) return tableErr(error);
+  revalidatePath("/");
+  return ok(id ? "Product saved." : "Product added to the shop.");
+});
+
+export const deleteProduct = admin(async (s, fd) => {
+  const id = String(fd.get("id") || "");
+  if (!/^\d+$/.test(id)) return bad("That product could not be found.");
+  const { error } = await s.from("shop_products").delete().eq("id", id);
+  if (error) return tableErr(error);
+  revalidatePath("/");
+  return ok("Product removed.");
+});
+
+// Copies the starter products into the database (only when it is empty) so they can be edited here.
+export const seedShop = admin(async (s) => {
+  const { count, error: ce } = await s.from("shop_products").select("id", { count: "exact", head: true });
+  if (ce) return tableErr(ce);
+  if (count) return bad("The shop already has products.");
+  const rows = DEFAULT_SHOP.map((p, i) => ({ name: p.name, cat: p.cat, price: p.price, stock: p.stock ?? 0, descr: p.desc || "", img: p.img || null, imgs: p.imgs || [], specs: p.specs || [], active: true, sort: i }));
+  const { error } = await s.from("shop_products").insert(rows);
+  if (error) return tableErr(error);
+  revalidatePath("/");
+  return ok(`Loaded ${rows.length} starter products. Edit them below.`);
 });

@@ -16,7 +16,7 @@ export default function AuthShell({ title, subtitle, children }) {
               strokeLinecap="round"
             />
           </svg>
-          MAFIANA Tech Academy
+          MAF Tech Academy
         </Link>
         <div className="auth-box">
           <h1>{title}</h1>

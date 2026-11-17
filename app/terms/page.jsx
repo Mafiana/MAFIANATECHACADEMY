@@ -1,8 +1,8 @@
 import Legal from "../../components/Legal";
 
 export const metadata = {
-  title: "Terms and Conditions | MAFIANA Tech Academy",
-  description: "The rules for enrolling, paying and studying at MAFIANA Tech Academy.",
+  title: "Terms and Conditions | MAF Tech Academy",
+  description: "The rules for enrolling, paying and studying at MAF Tech Academy.",
 };
 
 const sections = [
@@ -48,7 +48,7 @@ export default function Terms() {
   return (
     <Legal
       title="Terms and Conditions"
-      intro="Please read these terms before you enrol or use our website. They explain the rules for registration, payment and study at MAFIANA Tech Academy."
+      intro="Please read these terms before you enrol or use our website. They explain the rules for registration, payment and study at MAF Tech Academy."
       sections={sections}
     />
   );

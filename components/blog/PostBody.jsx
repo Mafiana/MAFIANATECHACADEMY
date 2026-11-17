@@ -1,10 +1,12 @@
 import { slugify } from "../../lib/posts";
 
 // Renders the blocks of a post (see lib/posts.js).
-export default function PostBody({ body }) {
+export default function PostBody({ body, html }) {
+  // Posts written in the admin panel arrive as cleaned HTML (see lib/sanitizeHtml.js).
+  if (html) return <div className="bl-html" dangerouslySetInnerHTML={{ __html: html }} />;
   return (
     <>
-      {body.map((b, i) => {
+      {(body || []).map((b, i) => {
         if (typeof b === "string") return <p key={i}>{b}</p>;
         if (b.h) return <h2 key={i} id={slugify(b.h)}>{b.h}</h2>;
         if (b.ul) return <ul key={i}>{b.ul.map((x) => <li key={x}>{x}</li>)}</ul>;

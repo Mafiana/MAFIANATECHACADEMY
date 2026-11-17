@@ -85,7 +85,7 @@ function EnrollForm() {
   const submit = (e) => {
     e.preventDefault();
     window.open(
-      wa(`Hello MAFIANA Tech Academy, my name is ${name}. I want to enroll for ${course}.${msg ? " " + msg : ""}`),
+      wa(`Hello MAF Tech Academy, my name is ${name}. I want to enroll for ${course}.${msg ? " " + msg : ""}`),
       "_blank"
     );
   };
@@ -108,7 +108,7 @@ function EnrollForm() {
   );
 }
 
-export default function App() {
+export default function App({ shop }) {
   return (
     <>
       <Navbar />
@@ -133,7 +133,7 @@ export default function App() {
         <Section
           id="about"
           title="About the academy"
-          sub="MAFIANA Tech Academy teaches practical skills you can use for work the same month you learn them. Small classes, real projects and a certificate at the end."
+          sub="MAF Tech Academy teaches practical skills you can use for work the same month you learn them. Small classes, real projects and a certificate at the end."
         >
           <div className="about-grid">
             {ABOUT.map(([t, d], i) => (
@@ -477,7 +477,7 @@ export default function App() {
         </Section>
 
         {/* ===== Shop ===== */}
-        <ShopSection />
+        <ShopSection products={shop} />
 
         {/* ===== Contact ===== */}
         <section id="contact">

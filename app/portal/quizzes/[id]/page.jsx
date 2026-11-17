@@ -4,7 +4,7 @@ import PortalShell from "../../../../components/portal/PortalShell";
 import QuizTaker from "../../../../components/portal/QuizTaker";
 import { getPortalData } from "../../../../lib/portalData";
 
-export const metadata = { title: "Quiz | MAFIANA Tech Academy" };
+export const metadata = { title: "Quiz | MAF Tech Academy" };
 
 export default async function Quiz({ params }) {
   const id = Number(params.id);

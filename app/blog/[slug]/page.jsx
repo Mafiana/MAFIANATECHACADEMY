@@ -5,28 +5,33 @@ import PostBody from "../../../components/blog/PostBody";
 import BlogCard, { Meta } from "../../../components/blog/BlogCard";
 import ReadingProgress from "../../../components/blog/ReadingProgress";
 import ShareBar from "../../../components/blog/ShareBar";
-import { posts, getPost, related, slugify, AUTHOR } from "../../../lib/posts";
+import { posts, slugify, AUTHOR } from "../../../lib/posts";
+import { getAllPosts, relatedIn } from "../../../lib/blogDb";
+import { headingsOf } from "../../../lib/sanitizeHtml";
 import { getCourse } from "../../../lib/catalog";
 import { waHref } from "../../../lib/wa";
 
+export const revalidate = 60; // new posts from the admin panel appear within a minute
 export const generateStaticParams = () => posts.map((p) => ({ slug: p.slug }));
 
-export function generateMetadata({ params }) {
-  const p = getPost(params.slug);
+export async function generateMetadata({ params }) {
+  const p = (await getAllPosts()).find((x) => x.slug === params.slug);
   if (!p) return {};
-  return { title: `${p.title} | MAF Tech Academy`, description: p.excerpt, openGraph: { title: p.title, description: p.excerpt, type: "article", images: [p.cover] } };
+  const og = p.cover.startsWith("data:") ? {} : { images: [p.cover] };
+  return { title: `${p.title} | MAF Tech Academy`, description: p.excerpt, openGraph: { title: p.title, description: p.excerpt, type: "article", ...og } };
 }
 
-export default function Post({ params }) {
-  const p = getPost(params.slug);
+export default async function Post({ params }) {
+  const all = await getAllPosts();
+  const p = all.find((x) => x.slug === params.slug);
   if (!p) notFound();
-  const toc = p.body.filter((b) => b.h).map((b) => b.h);
+  const toc = p.html ? headingsOf(p.html) : p.body.filter((b) => b.h).map((b) => b.h);
   const course = p.course ? getCourse(p.course) : null;
   const site = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "");
   const ld = {
     "@context": "https://schema.org", "@type": "Article", headline: p.title, description: p.excerpt, datePublished: p.date,
     author: { "@type": "Organization", name: "MAF Tech Academy" }, publisher: { "@type": "Organization", name: "MAF Tech Academy" },
-    ...(site ? { image: site + p.cover, mainEntityOfPage: `${site}/blog/${p.slug}` } : {}),
+    ...(site && !p.cover.startsWith("data:") ? { image: (p.cover.startsWith("http") ? "" : site) + p.cover, mainEntityOfPage: `${site}/blog/${p.slug}` } : {}),
   };
   return (
     <Shell>
@@ -43,7 +48,7 @@ export default function Post({ params }) {
         <img className="bl-hero-img" src={p.cover} alt="" width="1200" height="630" />
         <div className="bl-layout">
           <div className="prose bl-prose">
-            <PostBody body={p.body} />
+            <PostBody body={p.body} html={p.html} />
             <ShareBar title={p.title} />
             <div className="bl-author">
               <span className="bl-av big" aria-hidden="true">M</span>
@@ -68,7 +73,7 @@ export default function Post({ params }) {
       </article>
       <section className="bl-related">
         <h2>Keep reading</h2>
-        <div className="bl-grid">{related(p).map((r) => <BlogCard key={r.slug} post={r} />)}</div>
+        <div className="bl-grid">{relatedIn(all, p).map((r) => <BlogCard key={r.slug} post={r} />)}</div>
       </section>
     </Shell>
   );

@@ -7,10 +7,6 @@ import { createClient } from "../../lib/supabase/client";
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// TEMP design login — remove when Supabase admin is live
-const TEMP_EMAIL = "admin@mafiana.test";
-const TEMP_PASSWORD = "Admin123!";
-
 export default function AdminLogin() {
   const router = useRouter();
   const [f, setF] = useState({ email: "", password: "" });
@@ -25,15 +21,6 @@ export default function AdminLogin() {
 
     const email = f.email.trim();
     const password = f.password;
-
-    // Temporary bypass so you can design the admin UI without Supabase
-    if (email === TEMP_EMAIL && password === TEMP_PASSWORD) {
-      document.cookie = "temp_admin=1; path=/; max-age=86400; SameSite=Lax";
-      setRedirecting(true);
-      router.push("/admin");
-      router.refresh();
-      return;
-    }
 
     try {
       const supabase = createClient();
@@ -57,7 +44,7 @@ export default function AdminLogin() {
       router.refresh();
     } catch {
       setBusy(false);
-      setMsg("Could not reach the server. Use the temporary design login if Supabase is not set up yet.");
+      setMsg("Could not reach the server. Check your internet connection and try again.");
     }
   }
 
@@ -100,9 +87,6 @@ export default function AdminLogin() {
         )}
         <p className="auth-switch">
           Student or instructor? <a href="/login">Sign in with your Access PIN</a>
-        </p>
-        <p className="m" style={{ marginTop: 12, fontSize: 13 }}>
-          Design mode: <code>admin@mafiana.test</code> / <code>Admin123!</code>
         </p>
       </form>
       {(busy || redirecting) && (

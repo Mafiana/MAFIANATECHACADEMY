@@ -6,11 +6,6 @@ export async function middleware(request) {
   let response = NextResponse.next({ request });
   const path = request.nextUrl.pathname;
 
-  // Temporary design-mode admin (cookie set by login-form)
-  if (path.startsWith("/admin") && request.cookies.get("temp_admin")?.value === "1") {
-    return response;
-  }
-
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,

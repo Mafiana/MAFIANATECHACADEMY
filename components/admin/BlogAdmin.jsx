@@ -1,19 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { resizeImage } from "../../lib/resizeImage";
-import { uploadBlogImage } from "../../app/admin/actions";
+import { uploadBlogImage, savePost, deletePost, importPosts } from "../../app/admin/actions";
 
-const KEY = "maf_blog_posts";
+const KEY = "maf_blog_posts"; // older practice posts that were only saved in this browser
 
-const empty = () => ({
-  id: String(Date.now()),
-  title: "",
-  excerpt: "",
-  cover: "",
-  category: "Learning",
-  bodyHtml: "<p></p>",
-  updated: new Date().toISOString(),
-});
+const empty = () => ({ id: "", title: "", excerpt: "", cover: "", category: "Learning", bodyHtml: "<p></p>", published: true });
 
 function load() {
   try {
@@ -23,8 +15,8 @@ function load() {
   }
 }
 
-export default function BlogAdmin() {
-  const [posts, setPosts] = useState([]);
+export default function BlogAdmin({ posts = [], missing = false }) {
+  const [saved, setSaved] = useState([]); // browser-only practice posts, offered for import once
   const [editing, setEditing] = useState(null);
   const editorRef = useRef(null);
   const fileRef = useRef(null);
@@ -33,7 +25,7 @@ export default function BlogAdmin() {
   const [note, setNote] = useState({ ok: null, text: "" });
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => setPosts(load()), []);
+  useEffect(() => setSaved(load()), []);
 
   // Uploads a picture to storage and returns its web address. If storage is not set up yet, the (small) picture is kept inside the post instead.
   async function upload(file) {
@@ -82,11 +74,6 @@ export default function BlogAdmin() {
     if (url) setEditing((x) => ({ ...x, cover: url }));
   }
 
-  function persist(next) {
-    setPosts(next);
-    localStorage.setItem(KEY, JSON.stringify(next));
-  }
-
   function startNew() {
     const p = empty();
     setEditing(p);
@@ -96,9 +83,10 @@ export default function BlogAdmin() {
   }
 
   function startEdit(p) {
-    setEditing({ ...p });
+    setEditing({ id: String(p.id), title: p.title, excerpt: p.excerpt, cover: p.cover || "", category: p.category, bodyHtml: p.body_html, published: p.published });
+    setNote({ ok: null, text: "" });
     setTimeout(() => {
-      if (editorRef.current) editorRef.current.innerHTML = p.bodyHtml || "<p></p>";
+      if (editorRef.current) editorRef.current.innerHTML = p.body_html || "<p></p>";
     }, 0);
   }
 
@@ -107,26 +95,40 @@ export default function BlogAdmin() {
     editorRef.current?.focus();
   }
 
-  function save() {
-    if (!editing?.title.trim()) return alert("Add a title");
-    const bodyHtml = editorRef.current?.innerHTML || "";
-    const row = { ...editing, bodyHtml, updated: new Date().toISOString() };
-    const i = posts.findIndex((x) => x.id === row.id);
-    const next = i >= 0 ? posts.map((x, idx) => (idx === i ? row : x)) : [row, ...posts];
-    persist(next);
-    setEditing(null);
+  async function save() {
+    if (!editing?.title.trim()) return setNote({ ok: false, text: "Add a title for the post." });
+    const fd = new FormData();
+    fd.set("id", editing.id); fd.set("title", editing.title); fd.set("excerpt", editing.excerpt);
+    fd.set("category", editing.category); fd.set("cover", editing.cover || "");
+    fd.set("body", editorRef.current?.innerHTML || ""); fd.set("published", editing.published ? "1" : "0");
+    setBusy(true);
+    try {
+      const r = await savePost(null, fd);
+      setNote({ ok: r.ok, text: r.msg });
+      if (r.ok) setEditing(null);
+    } catch { setNote({ ok: false, text: "Could not save. Check your connection and try again." }); }
+    setBusy(false);
   }
 
-  function remove(id) {
-    if (!confirm("Delete this post?")) return;
-    persist(posts.filter((p) => p.id !== id));
-    if (editing?.id === id) setEditing(null);
+  async function remove(p) {
+    if (!confirm(`Delete "${p.title}"? It disappears from the blog.`)) return;
+    const fd = new FormData(); fd.set("id", String(p.id));
+    const r = await deletePost(null, fd);
+    setNote({ ok: r.ok, text: r.msg });
+    if (r.ok && editing?.id === String(p.id)) setEditing(null);
+  }
+
+  async function importSaved() {
+    const fd = new FormData(); fd.set("posts", JSON.stringify(saved));
+    const r = await importPosts(null, fd);
+    setNote({ ok: r.ok, text: r.msg });
+    if (r.ok) { localStorage.removeItem(KEY); setSaved([]); }
   }
 
   return (
     <div className="card" id="blog">
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
-        <h3 style={{ margin: 0 }}>Blog</h3>
+        <h3 style={{ margin: 0 }}>Blog <span className="m" style={{ fontWeight: 400 }}>· posts here appear on the public blog</span></h3>
         {!editing && (
           <button type="button" className="btn sm" onClick={startNew}>
             New post
@@ -134,20 +136,29 @@ export default function BlogAdmin() {
         )}
       </div>
 
+      {missing && <p className="adm-msg bad" role="alert">Blog storage is not set up yet. Run supabase/add-content-tables.sql in the Supabase SQL Editor, then refresh this page.</p>}
+      {!editing && note.text && <p className={"adm-msg " + (note.ok ? "ok" : "bad")} role={note.ok ? "status" : "alert"}>{note.text}</p>}
+      {!editing && !missing && saved.length > 0 && (
+        <div className="csv-import">
+          <b>{saved.length} post{saved.length === 1 ? "" : "s"} saved only in this browser</b>
+          <p className="m" style={{ margin: "4px 0 10px" }}>These were written before posts could be published. Import them to put them on the blog.</p>
+          <button type="button" className="btn sm" onClick={importSaved}>Import and publish</button>
+        </div>
+      )}
       {!editing && (
         <div className="adm-list" style={{ marginTop: 14 }}>
-          {!posts.length && <p className="m">No posts yet. Create one to practise the editor.</p>}
+          {!posts.length && !missing && <p className="m">No posts written here yet. The blog currently shows the built-in articles. Press New post to add yours.</p>}
           {posts.map((p) => (
             <div className="adm-item" key={p.id}>
               <div className="adm-item-main">
                 <span>
-                  <b>{p.title}</b> <span className="m">{p.category}</span>
+                  <b>{p.title}</b> <span className="m">{p.category}</span> {!p.published && <span className="badge bad">Draft</span>}
                 </span>
                 <span className="adm-acts">
                   <button type="button" className="btn ghost sm" onClick={() => startEdit(p)}>
                     Edit
                   </button>
-                  <button type="button" className="btn danger sm" onClick={() => remove(p.id)}>
+                  <button type="button" className="btn danger sm" onClick={() => remove(p)}>
                     Delete
                   </button>
                 </span>
@@ -163,6 +174,10 @@ export default function BlogAdmin() {
           <input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} placeholder="Post title" />
           <label>Excerpt</label>
           <input value={editing.excerpt} onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })} placeholder="Short summary" />
+          <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <input type="checkbox" checked={editing.published} onChange={(e) => setEditing({ ...editing, published: e.target.checked })} style={{ width: "auto" }} />
+            Published (untick to keep it as a draft)
+          </label>
           <label>Category</label>
           <select value={editing.category} onChange={(e) => setEditing({ ...editing, category: e.target.value })}>
             {["Office", "Career", "Data", "Web", "Design", "Learning"].map((c) => (
@@ -226,8 +241,8 @@ export default function BlogAdmin() {
           />
 
           <div className="adm-acts" style={{ marginTop: 14 }}>
-            <button type="button" className="btn" onClick={save}>
-              Save post
+            <button type="button" className="btn" disabled={busy} onClick={save}>
+              {busy ? "Saving..." : "Save post"}
             </button>
             <button type="button" className="btn ghost" onClick={() => setEditing(null)}>
               Cancel

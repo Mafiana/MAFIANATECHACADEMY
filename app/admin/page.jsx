@@ -48,7 +48,7 @@ export default async function Admin() {
   const errors = [];
 
   // ---- Load data (tolerate missing tables) ----
-  const [profRes, enRes, payRes, attRes, lesRes, quizRes, annRes] = await Promise.all([
+  const [profRes, enRes, payRes, attRes, lesRes, quizRes, annRes, cpRes, shopRes, blogRes] = await Promise.all([
     fetchAll(() => s.from("profiles").select("*").order("created_at", { ascending: false })),
     fetchAll(() => s.from("enrollments").select("*").order("id", { ascending: false })),
     fetchAll(() => s.from("payments").select("*").order("id", { ascending: false })),
@@ -56,6 +56,9 @@ export default async function Admin() {
     s.from("lessons").select("*").order("course").order("position"),
     s.from("quizzes").select("id, course, title, questions, created_at").order("id", { ascending: false }),
     s.from("announcements").select("*").order("id", { ascending: false }),
+    s.from("course_progress").select("student_id,data,updated_at"),
+    s.from("shop_products").select("*").order("sort").order("id"),
+    s.from("blog_posts").select("id,slug,title,excerpt,category,cover,body_html,published,created_at").order("created_at", { ascending: false }),
   ]);
 
   if (profRes.error) errors.push("profiles: " + profRes.error.message);
@@ -75,6 +78,19 @@ export default async function Admin() {
   const annMissing = !!annRes.error;
 
   const byId = Object.fromEntries(profiles.map((p) => [p.id, p]));
+
+  // Interactive course progress (optional: empty until supabase/add-content-tables.sql is run)
+  const courseById = {};
+  for (const r of cpRes.error ? [] : cpRes.data || []) {
+    const d = r.data || {};
+    courseById[r.student_id] = {
+      done: Object.entries(d).filter(([k, v]) => /^\d+$/.test(k) && v?.completed).length,
+      total: d._total || 0,
+      passed: !!d.finalTestPassed,
+      score: d.finalTestScore ?? null,
+      updated: r.updated_at,
+    };
+  }
 
   // Students only (not admin/instructor)
   const studentProfiles = profiles.filter((p) => !p.role || p.role === "student");
@@ -124,6 +140,7 @@ export default async function Admin() {
       name: p.full_name || "",
       phone: p.phone || "",
       pin: p.access_pin || "",
+      course: courseById[p.id] || null,
       avatar: p.avatar_url || "",
       code: p.student_code || "",
       courses: [...new Set(ens.map((e) => e.course))],
@@ -313,8 +330,8 @@ export default async function Admin() {
             <Staff instructors={instructors} />
 
             <OnlineAdmin />
-            <BlogAdmin />
-            <ShopAdmin />
+            <BlogAdmin posts={blogRes.error ? [] : blogRes.data || []} missing={!!blogRes.error} />
+            <ShopAdmin products={shopRes.error ? [] : shopRes.data || []} missing={!!shopRes.error} />
             <CoursesAdmin />
 
             <div className="card" id="export">

@@ -4,7 +4,7 @@ import RevealObserver from "../components/RevealObserver";
 import ScrollTop from "../components/ScrollTop";
 
 export const metadata = {
-  title: "MAFIANA Tech Academy | Computer, Data, Design and Web Development",
+  title: "MAF Tech Academy | Computer, Data, Design and Web Development",
   description:
     "Learn computer basics, data analytics, graphic design and web development in class or online. Pay in installments and get a certificate.",
 };

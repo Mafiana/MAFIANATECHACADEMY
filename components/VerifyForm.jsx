@@ -136,7 +136,7 @@ export default function VerifyForm() {
 
           {result.status === "valid" ? (
             <p className="vf-note ok">
-              This certificate was issued by MAFIANA Tech Academy and is currently valid.
+              This certificate was issued by MAF Tech Academy and is currently valid.
             </p>
           ) : (
             <p className="vf-note bad">

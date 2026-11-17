@@ -1,6 +1,7 @@
 import Shell from "../../components/Shell";
 import BlogIndex from "../../components/blog/BlogIndex";
-import { posts, POST_CATEGORIES } from "../../lib/posts";
+import { POST_CATEGORIES } from "../../lib/posts";
+import { getAllPosts } from "../../lib/blogDb";
 import { waHref } from "../../lib/wa";
 
 export const metadata = {
@@ -8,7 +9,10 @@ export const metadata = {
   description: "Practical guides on Excel, SQL, web development, design, freelancing and studying online, from the MAF Tech Academy team.",
 };
 
-export default function Blog() {
+export const revalidate = 60; // new posts from the admin panel appear within a minute
+
+export default async function Blog() {
+  const posts = await getAllPosts();
   return (
     <Shell>
       <section className="bl-hero">

@@ -3,7 +3,7 @@ import VerifyForm from "../../components/VerifyForm";
 
 export const metadata = {
   title: "Verify a certificate | MAF Tech Academy",
-  description: "Check that a MAFIANA Tech Academy certificate is genuine.",
+  description: "Check that a MAF Tech Academy certificate is genuine.",
 };
 
 export default function VerifyPage() {

@@ -9,15 +9,15 @@ const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 const PER_PAGE = 6;
 
 const CATEGORIES = SHOP_CATEGORIES;
-const SHOP = DEFAULT_SHOP;
 
-export default function ShopSection() {
+export default function ShopSection({ products }) {
+  const SHOP = products && products.length ? products : DEFAULT_SHOP;
   const [cat, setCat] = useState("All");
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(null);
   const [pic, setPic] = useState(0);
 
-  const list = useMemo(() => (cat === "All" ? SHOP : SHOP.filter((p) => p.cat === cat)), [cat]);
+  const list = useMemo(() => (cat === "All" ? SHOP : SHOP.filter((p) => p.cat === cat)), [cat, SHOP]);
   const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const slice = list.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);

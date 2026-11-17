@@ -41,3 +41,8 @@
 .img-up{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
 .img-up img.cover{width:120px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
 .editor-canvas img{max-width:100%;height:auto;border-radius:10px;margin:8px 0;display:block}
+
+/* blog posts written in the admin editor */
+.bl-html img{max-width:100%;height:auto;border-radius:12px;margin:14px 0;display:block}
+.bl-html a{color:var(--green);text-decoration:underline}
+.bl-html blockquote{border-left:4px solid var(--gold,#F2B705);margin:16px 0;padding:4px 16px;color:var(--mute)}
