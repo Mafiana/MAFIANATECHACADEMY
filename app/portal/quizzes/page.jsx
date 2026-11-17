@@ -14,6 +14,13 @@ export default async function Quizzes() {
   return (
     <PortalShell active="quizzes" role={d.profile?.role}>
       <div><h3 style={{ fontSize: 26 }}>Quizzes</h3><span className="m" style={{ color: "var(--mute)" }}>Test what you have learned. You can retake a quiz any time.</span></div>
+      <div className="card" style={{ borderColor: "var(--green)" }}>
+        <h3>Interactive Computer Science Course</h3>
+        <div className="stat" style={{ borderBottom: 0 }}>
+          <span>Beginner to advanced · module quizzes, final test and certificate <span className="m">· available to every student</span></span>
+          <Link className="btn sm" href="/portal/quizzes/course">Open course</Link>
+        </div>
+      </div>
       {!courses.length && <div className="card"><p className="m" style={{ margin: 0 }}>You are not enrolled in a course yet. Your quizzes appear here after you enroll.</p></div>}
       {courses.length > 0 && (error || !quizzes?.length) && <div className="card"><p className="m" style={{ margin: 0 }}>No quizzes have been added for your courses yet. Check back soon.</p></div>}
       {courses.map((c) => {
