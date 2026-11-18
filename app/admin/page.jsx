@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Shell from "../../components/Shell";
 import Greeting from "../../components/Greeting";
 import AdminMenuButton from "../../components/admin/AdminMenuButton";
+import Icon from "../../components/portal/Icons";
 import AddStudent from "../../components/admin/AddStudent";
 import Students from "../../components/admin/Students";
 import EnrollForm from "../../components/admin/EnrollForm";
@@ -210,32 +211,29 @@ export default async function Admin() {
           <aside id="admin-side">
             <b className="side-title">Admin panel</b>
             <a className="on" href="#overview">
-              Overview
+              <Icon name="home" /> Overview
             </a>
             <a href="#notifications">
-              🔔 Notifications
-              {notes.length > 0 && <span className="badge bad" style={{ marginLeft: 8 }}>{notes.length}</span>}
+              <Icon name="bell" /> Notifications
+              {notes.length > 0 && <span className="badge bad" style={{ marginLeft: "auto" }}>{notes.length}</span>}
             </a>
-            <a href="#add-student">Add a student</a>
-            <a href="#students">Students</a>
-            <a href="#enroll">Enroll</a>
-            <a href="#attendance">Class register</a>
-            <a href="#payments">Payments</a>
-            <a href="#certificates">Certificates</a>
-            <a href="#lessons">Video lessons</a>
-            <a href="#quizzes">Quizzes</a>
-            <a href="#shop-admin">Student shop</a>
-            <a href="#announcements">Announcements</a>
-            <a href="#instructors">Instructors</a>
-            <a href="#export">Export</a>
-            <a href="/portal">My student view</a>
+            <a href="#add-student"><Icon name="userplus" /> Add a student</a>
+            <a href="#students"><Icon name="users" /> Students</a>
+            <a href="#enroll"><Icon name="enroll" /> Enroll</a>
+            <a href="#attendance"><Icon name="attendance" /> Class register</a>
+            <a href="#payments"><Icon name="payments" /> Payments</a>
+            <a href="#certificates"><Icon name="certificate" /> Certificates</a>
+            <a href="#lessons"><Icon name="lessons" /> Video lessons</a>
+            <a href="#quizzes"><Icon name="quizzes" /> Quizzes</a>
+            <a href="#shop-admin"><Icon name="shop" /> Student shop</a>
+            <a href="#announcements"><Icon name="megaphone" /> Announcements</a>
+            <a href="#instructors"><Icon name="instructor" /> Instructors</a>
+            <a href="#export"><Icon name="download" /> Export</a>
+            <a href="/portal"><Icon name="eye" /> My student view</a>
 
             <form action={signOut}>
               <button className="lnk" type="submit">
-                <span className="side-icon" aria-hidden="true">
-                  🚪
-                </span>{" "}
-                Log out
+                <Icon name="logout" /> Log out
               </button>
             </form>
           </aside>

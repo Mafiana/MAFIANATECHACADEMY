@@ -11,14 +11,11 @@ function Mark() {
 }
 
 export default function Footer({ portal = false }) {
-  // In the student portal there is no WhatsApp button.
   const brand = "MAF Tech Academy";
-  const wa = portal ? "" : process.env.NEXT_PUBLIC_WHATSAPP;
   const social = [
     ["Instagram", CONTACT.social.instagram],
     ["TikTok", CONTACT.social.tiktok],
     ["Facebook", CONTACT.social.facebook],
-    ["WhatsApp", wa ? `https://wa.me/${wa}` : ""],
   ].filter(([, u]) => u);
 
   // Only show real contact lines (skip placeholders)
@@ -83,7 +80,7 @@ export default function Footer({ portal = false }) {
             {address && <p>{address}</p>}
             {phone && <p>{phone}</p>}
             {email && <p>{email}</p>}
-            {!address && !phone && !email && !portal && <p>Message us on WhatsApp to enroll.</p>}
+            {!address && !phone && !email && !portal && <p>Use the enroll form to reach us.</p>}
           </div>
         </div>
 

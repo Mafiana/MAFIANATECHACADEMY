@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const SLIDES = ["/hero/1.svg", "/hero/2.svg", "/hero/3.svg", "/hero/4.svg"];
+const SLIDES = ["/hero/1.jpg", "/hero/2.jpg", "/hero/3.jpg", "/hero/4.jpg"];
 const EVERY = 5500; // ms between slides
 
 export default function HeroSlider({ children }) {

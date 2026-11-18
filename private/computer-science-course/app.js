@@ -126,7 +126,7 @@ function showHome() {
     <div class="module-grid">${cards}</div>
 
     <div style="margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-      <div class="module-card" data-id="final" style="border:2px solid #1565c0;">
+      <div class="module-card" data-id="final" style="border:2px solid #1B5A46;">
         <div class="num">FINAL ASSESSMENT</div>
         <h3>Final Course Test</h3>
         <p>Questions drawn from all modules. Score 70%+ to unlock your certificate.</p>
@@ -466,43 +466,43 @@ function showCertificate() {
     </div>
 
     <div id="certificate-preview" style="
-      background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
-      border: 8px solid #0d47a1;
+      background: linear-gradient(135deg, #F2F6F3 0%, #CFE8DC 100%);
+      border: 8px solid #0E3B2E;
       border-radius: 12px;
       padding: 48px 40px;
       text-align: center;
       max-width: 700px;
       margin: 0 auto;
-      box-shadow: 0 12px 40px rgba(13,71,161,0.15);
+      box-shadow: 0 12px 40px rgba(14, 59, 46,0.15);
       position: relative;
     ">
-      <div style="font-size:0.85rem;letter-spacing:3px;color:#1565c0;font-weight:600;margin-bottom:8px;">MAF TECH ACADEMY</div>
-      <div style="font-size:1.8rem;font-weight:700;color:#0d47a1;margin-bottom:6px;">Certificate of Completion</div>
-      <div style="width:80px;height:3px;background:#00bcd4;margin:16px auto;"></div>
-      <p style="color:#546e7a;margin-bottom:8px;">This is to certify that</p>
-      <div id="cert-display-name" style="font-size:1.6rem;font-weight:700;color:#1a237e;margin:12px 0 16px;font-family:Georgia,serif;">
+      <div style="font-size:0.85rem;letter-spacing:3px;color:#1B5A46;font-weight:600;margin-bottom:8px;">MAF TECH ACADEMY</div>
+      <div style="font-size:1.8rem;font-weight:700;color:#0E3B2E;margin-bottom:6px;">Certificate of Completion</div>
+      <div style="width:80px;height:3px;background:#F2B705;margin:16px auto;"></div>
+      <p style="color:#52645A;margin-bottom:8px;">This is to certify that</p>
+      <div id="cert-display-name" style="font-size:1.6rem;font-weight:700;color:#102019;margin:12px 0 16px;font-family:Georgia,serif;">
         ${savedName || '________________________'}
       </div>
-      <p style="color:#455a64;max-width:480px;margin:0 auto 20px;line-height:1.6;">
+      <p style="color:#52645A;max-width:480px;margin:0 auto 20px;line-height:1.6;">
         has successfully completed the <strong>Interactive Computer Science Course</strong>
         (Beginner to Advanced) covering computer fundamentals, productivity tools,
         internet skills, and practical digital skills, and has passed the Final Assessment.
       </p>
       <div style="display:flex;justify-content:space-around;margin-top:32px;flex-wrap:wrap;gap:16px;">
         <div>
-          <div style="font-size:0.8rem;color:#78909c;">Final Score</div>
-          <div style="font-weight:700;color:#0d47a1;font-size:1.2rem;">${progress.finalTestScore || '—'}%</div>
+          <div style="font-size:0.8rem;color:#7D8F85;">Final Score</div>
+          <div style="font-weight:700;color:#0E3B2E;font-size:1.2rem;">${progress.finalTestScore || '—'}%</div>
         </div>
         <div>
-          <div style="font-size:0.8rem;color:#78909c;">Date</div>
-          <div style="font-weight:700;color:#0d47a1;font-size:1.1rem;">${new Date().toLocaleDateString()}</div>
+          <div style="font-size:0.8rem;color:#7D8F85;">Date</div>
+          <div style="font-weight:700;color:#0E3B2E;font-size:1.1rem;">${new Date().toLocaleDateString()}</div>
         </div>
         <div>
-          <div style="font-size:0.8rem;color:#78909c;">Modules</div>
-          <div style="font-weight:700;color:#0d47a1;font-size:1.1rem;">${courseData.modules.length}</div>
+          <div style="font-size:0.8rem;color:#7D8F85;">Modules</div>
+          <div style="font-weight:700;color:#0E3B2E;font-size:1.1rem;">${courseData.modules.length}</div>
         </div>
       </div>
-      <div style="margin-top:36px;font-size:0.85rem;color:#90a4ae;">MAF Tech Academy • Interactive Computer Science Course</div>
+      <div style="margin-top:36px;font-size:0.85rem;color:#7D8F85;">MAF Tech Academy • Interactive Computer Science Course</div>
     </div>
 
     <div style="text-align:center;margin-top:28px;">

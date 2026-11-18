@@ -235,6 +235,7 @@ export default function App({ shop }) {
               <CourseCard key={c.slug} course={c} />
             ))}
           </div>
+
           <p style={{ marginTop: 20 }}>
             <Link className="btn" href="/courses">
               Browse all courses

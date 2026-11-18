@@ -5,6 +5,8 @@ import PostBody from "../../../components/blog/PostBody";
 import BlogCard, { Meta } from "../../../components/blog/BlogCard";
 import ReadingProgress from "../../../components/blog/ReadingProgress";
 import ShareBar from "../../../components/blog/ShareBar";
+import LoveButton from "../../../components/blog/LoveButton";
+import { publicClient } from "../../../lib/supabase/public";
 import { posts, slugify, AUTHOR } from "../../../lib/posts";
 import { getAllPosts, relatedIn } from "../../../lib/blogDb";
 import { headingsOf } from "../../../lib/sanitizeHtml";
@@ -27,6 +29,12 @@ export default async function Post({ params }) {
   if (!p) notFound();
   const toc = p.html ? headingsOf(p.html) : p.body.filter((b) => b.h).map((b) => b.h);
   const course = p.course ? getCourse(p.course) : null;
+  let loves = 0;
+  try {
+    const sb = publicClient();
+    const { data } = sb ? await sb.from("blog_loves").select("loves").eq("slug", p.slug).maybeSingle() : { data: null };
+    loves = data?.loves || 0;
+  } catch {}
   const site = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "");
   const ld = {
     "@context": "https://schema.org", "@type": "Article", headline: p.title, description: p.excerpt, datePublished: p.date,
@@ -49,6 +57,7 @@ export default async function Post({ params }) {
         <div className="bl-layout">
           <div className="prose bl-prose">
             <PostBody body={p.body} html={p.html} />
+            <LoveButton slug={p.slug} initial={loves} />
             <ShareBar title={p.title} />
             <div className="bl-author">
               <span className="bl-av big" aria-hidden="true">M</span>
