@@ -3,7 +3,24 @@ import { useMemo, useState, useEffect } from "react";
 import { DEFAULT_SHOP, SHOP_CATEGORIES } from "../lib/shop";
 
 const PHONE = process.env.NEXT_PUBLIC_WHATSAPP || "234XXXXXXXXXX";
-const naira = (x) => "₦" + Number(x).toLocaleString("en-NG");
+// Prices are not shown to students. Each product shows whether it is available.
+const stockLabel = (item) => (Number(item.stock) > 0 ? "In stock" : "Out of stock");
+const stockClass = (item) => "shop-stock" + (Number(item.stock) > 0 ? "" : " out");
+const soldOut = (item) => !(Number(item.stock) > 0);
+// Featured products first, then the rest, then sold-out products last.
+const rank = (item) => (soldOut(item) ? 2 : item.featured ? 0 : 1);
+const haystack = (item) => [item.name, item.desc, item.cat, ...(item.specs || []).flat()].join(" ").toLowerCase();
+
+function Badges({ item }) {
+  if (!item.featured && !item.isNew && !soldOut(item)) return null;
+  return (
+    <span className="shop-badges">
+      {soldOut(item) ? <span className="shop-badge sold">Sold out</span> : null}
+      {item.featured && !soldOut(item) ? <span className="shop-badge feat">★ Featured</span> : null}
+      {item.isNew && !soldOut(item) ? <span className="shop-badge new">New</span> : null}
+    </span>
+  );
+}
 const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 
 const PER_PAGE = 6;
@@ -13,11 +30,19 @@ const CATEGORIES = SHOP_CATEGORIES;
 export default function ShopSection({ products }) {
   const SHOP = products && products.length ? products : DEFAULT_SHOP;
   const [cat, setCat] = useState("All");
+  const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(null);
   const [pic, setPic] = useState(0);
 
-  const list = useMemo(() => (cat === "All" ? SHOP : SHOP.filter((p) => p.cat === cat)), [cat, SHOP]);
+  const list = useMemo(() => {
+    const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+    return SHOP
+      .map((p, i) => [p, i])
+      .filter(([p]) => (cat === "All" || p.cat === cat) && words.every((w) => haystack(p).includes(w)))
+      .sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1])
+      .map(([p]) => p);
+  }, [cat, q, SHOP]);
   const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const slice = list.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
@@ -48,6 +73,10 @@ export default function ShopSection({ products }) {
       </p>
 
       <div className="shop-tools">
+        <div className="shop-search">
+          <svg className="shop-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+          <input type="search" className="bl-search" placeholder="Search the shop (for example mouse, laptop, 8GB)" value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} aria-label="Search the student shop" />
+        </div>
         <div className="bl-chips" role="group" aria-label="Filter by category">
           {CATEGORIES.map((c) => (
             <button key={c} type="button" aria-pressed={cat === c} onClick={() => pickCat(c)}>
@@ -62,12 +91,12 @@ export default function ShopSection({ products }) {
         {totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ""}
       </p>
 
-      {!list.length && <p className="m">No products in this category yet.</p>}
+      {!list.length && <p className="m">{q.trim() ? `No products match “${q.trim()}”.` : "No products in this category yet."}</p>}
 
       <div className="shop-grid">
         {slice.map((item) => (
           <article
-            className="shop-card"
+            className={"shop-card" + (soldOut(item) ? " is-sold" : "") + (item.featured && !soldOut(item) ? " is-featured" : "")}
             key={item.id || item.name}
             role="button"
             tabIndex={0}
@@ -82,6 +111,7 @@ export default function ShopSection({ products }) {
             style={{ cursor: "pointer" }}
           >
             <div className="shop-img">
+              <Badges item={item} />
               <img
                 src={item.img}
                 alt={item.name}
@@ -98,7 +128,7 @@ export default function ShopSection({ products }) {
               <h3>{item.name}</h3>
               <p className="m">{item.desc}</p>
               <div className="shop-foot">
-                <b>{naira(item.price)}</b>
+                <b className={stockClass(item)}>{stockLabel(item)}</b>
                 <span className="btn ghost sm">View</span>
               </div>
             </div>
@@ -150,6 +180,7 @@ export default function ShopSection({ products }) {
             </button>
 
             <div className="shop-modal-img">
+              <Badges item={selected} />
               <img src={(selected.imgs && selected.imgs[pic]) || selected.img} alt={selected.name} />
             </div>
             {selected.imgs && selected.imgs.length > 1 && (
@@ -165,7 +196,7 @@ export default function ShopSection({ products }) {
             <div className="shop-modal-body">
               <h3>{selected.name}</h3>
               <p className="m">{selected.desc}</p>
-              <div className="shop-modal-price">{naira(selected.price)}</div>
+              <div className={"shop-modal-price " + stockClass(selected)}>{stockLabel(selected)}</div>
 
               {selected.specs && (
                 <>
@@ -187,9 +218,9 @@ export default function ShopSection({ products }) {
                 className="btn"
                 target="_blank"
                 rel="noopener noreferrer"
-                href={wa("Hello, I want to buy: " + selected.name)}
+                href={wa(soldOut(selected) ? "Hello, when will " + selected.name + " be back in stock?" : "Hello, I want to buy: " + selected.name)}
               >
-                Order on WhatsApp
+                {soldOut(selected) ? "Ask about restock on WhatsApp" : "Order on WhatsApp"}
               </a>
             </div>
           </div>

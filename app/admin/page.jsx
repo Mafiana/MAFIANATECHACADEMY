@@ -15,11 +15,14 @@ import BlogAdmin from "../../components/admin/BlogAdmin";
 import ShopAdmin from "../../components/admin/ShopAdmin";
 import CoursesAdmin from "../../components/admin/CoursesAdmin";
 import OnlineAdmin from "../../components/admin/OnlineAdmin";
+import Notifications from "../../components/admin/Notifications";
+import InstructorPanel from "../../components/admin/InstructorPanel";
 import { createClient } from "../../lib/supabase/server";
 import { fetchAll } from "../../lib/supabase/fetchAll";
 import { naira } from "../../lib/courses";
 import { accessSummary } from "../../lib/access";
 import { lagosToday, prettyDate } from "../../lib/dates";
+import { withAttempts } from "../../lib/quizStats";
 import { signOut } from "../auth-actions";
 
 export const metadata = { title: "Admin panel | MAF Tech Academy" };
@@ -42,13 +45,14 @@ export default async function Admin() {
   if (!user) redirect("/login?next=/admin");
 
   const { data: me } = await s.from("profiles").select("role, full_name").eq("id", user.id).single();
+  if (me?.role === "instructor") return <InstructorPanel s={s} user={user} name={me.full_name} />;
   if (me?.role !== "admin") redirect("/login?next=/admin");
 
   const today = lagosToday();
   const errors = [];
 
   // ---- Load data (tolerate missing tables) ----
-  const [profRes, enRes, payRes, attRes, lesRes, quizRes, annRes, cpRes, shopRes, blogRes] = await Promise.all([
+  const [profRes, enRes, payRes, attRes, lesRes, quizRes, annRes, cpRes, shopRes, blogRes, icRes, qaRes] = await Promise.all([
     fetchAll(() => s.from("profiles").select("*").order("created_at", { ascending: false })),
     fetchAll(() => s.from("enrollments").select("*").order("id", { ascending: false })),
     fetchAll(() => s.from("payments").select("*").order("id", { ascending: false })),
@@ -59,6 +63,8 @@ export default async function Admin() {
     s.from("course_progress").select("student_id,data,updated_at"),
     s.from("shop_products").select("*").order("sort").order("id"),
     s.from("blog_posts").select("id,slug,title,excerpt,category,cover,body_html,published,created_at").order("created_at", { ascending: false }),
+    s.from("instructor_courses").select("instructor_id,course"),
+    fetchAll(() => s.from("quiz_attempts").select("*").order("id", { ascending: false })),
   ]);
 
   if (profRes.error) errors.push("profiles: " + profRes.error.message);
@@ -72,12 +78,13 @@ export default async function Admin() {
   const attendance = attRes.data || [];
 
   const lessons = lesRes.error ? [] : lesRes.data || [];
-  const quizzes = quizRes.error ? [] : quizRes.data || [];
+  const rawQuizzes = quizRes.error ? [] : quizRes.data || [];
   const announcements = annRes.error ? [] : annRes.data || [];
   const lqMissing = !!(lesRes.error || quizRes.error);
   const annMissing = !!annRes.error;
 
   const byId = Object.fromEntries(profiles.map((p) => [p.id, p]));
+  const quizzes = withAttempts(rawQuizzes, qaRes.error ? [] : qaRes.data || [], (id) => who(byId[id]));
 
   // Interactive course progress (optional: empty until supabase/add-content-tables.sql is run)
   const courseById = {};
@@ -94,6 +101,8 @@ export default async function Admin() {
 
   // Students only (not admin/instructor)
   const studentProfiles = profiles.filter((p) => !p.role || p.role === "student");
+  const taught = {};
+  for (const r of icRes.error ? [] : icRes.data || []) (taught[r.instructor_id] ||= []).push(r.course);
   const instructors = profiles
     .filter((p) => p.role === "instructor")
     .map((p) => ({
@@ -101,6 +110,7 @@ export default async function Admin() {
       label: who(p),
       sub: subLine(p),
       paused: p.access_status === "revoked",
+      courses: taught[p.id] || [],
     }));
 
   // Group related rows per student
@@ -186,6 +196,11 @@ export default async function Admin() {
     .filter(({ a, s }) => a && (a.expired || a.soon) && s.accessStatus !== "revoked")
     .sort((x, y) => (x.a.left || 0) - (y.a.left || 0));
 
+  // Notifications: access ending within 7 days, or ended in the last 30 days (paused students are left out).
+  const notes = renewals
+    .filter(({ a }) => a.left >= -30)
+    .map(({ s: st, a }) => ({ id: st.id, name: st.name || st.label, plan: st.accessPlan || st.courses.join(", "), until: prettyDate(st.accessUntil), left: a.left }));
+
   return (
     <Shell>
       <section style={{ paddingTop: 24 }}>
@@ -197,6 +212,10 @@ export default async function Admin() {
             <a className="on" href="#overview">
               Overview
             </a>
+            <a href="#notifications">
+              🔔 Notifications
+              {notes.length > 0 && <span className="badge bad" style={{ marginLeft: 8 }}>{notes.length}</span>}
+            </a>
             <a href="#add-student">Add a student</a>
             <a href="#students">Students</a>
             <a href="#enroll">Enroll</a>
@@ -205,6 +224,7 @@ export default async function Admin() {
             <a href="#certificates">Certificates</a>
             <a href="#lessons">Video lessons</a>
             <a href="#quizzes">Quizzes</a>
+            <a href="#shop-admin">Student shop</a>
             <a href="#announcements">Announcements</a>
             <a href="#instructors">Instructors</a>
             <a href="#export">Export</a>
@@ -254,30 +274,7 @@ export default async function Admin() {
               </div>
             </div>
 
-            {renewals.length > 0 && (
-              <div className="card">
-                <h3>
-                  PINs to renew <span className="m">({renewals.length})</span>
-                </h3>
-                {renewals.slice(0, 8).map(({ s: st, a }) => (
-                  <div className="stat" key={st.id}>
-                    <span>
-                      {st.label} <span className="m">{st.courses.join(", ")}</span>
-                    </span>
-                    <b>
-                      {a.expired
-                        ? `ended ${prettyDate(st.accessUntil)}`
-                        : a.left === 0
-                          ? "ends today"
-                          : `${a.left} day${a.left === 1 ? "" : "s"} left`}
-                    </b>
-                  </div>
-                ))}
-                <p className="m" style={{ margin: "10px 0 0" }}>
-                  Open the student below and use Renew.
-                </p>
-              </div>
-            )}
+            <Notifications items={notes} />
 
             <div id="add-student">
               <AddStudent />

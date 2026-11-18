@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { CopyModal } from "../Modal";
 
 function WhatsAppIcon() {
   return (
@@ -28,6 +29,7 @@ function CheckIcon() {
 
 export default function ShareBar({ title }) {
   const [copied, setCopied] = useState(false);
+  const [manual, setManual] = useState(false);
 
   const url = () => (typeof window !== "undefined" ? window.location.href : "");
 
@@ -37,7 +39,7 @@ export default function ShareBar({ title }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      window.prompt("Copy this link:", url());
+      setManual(true);
     }
   };
 
@@ -62,6 +64,7 @@ export default function ShareBar({ title }) {
         {copied ? <CheckIcon /> : <CopyIcon />}
         {copied ? "Link copied" : "Copy link"}
       </button>
+      <CopyModal open={manual} title="Copy this link" text={url()} onClose={() => setManual(false)} />
     </div>
   );
 }

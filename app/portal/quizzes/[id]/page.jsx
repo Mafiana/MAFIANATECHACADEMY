@@ -4,7 +4,7 @@ import PortalShell from "../../../../components/portal/PortalShell";
 import QuizTaker from "../../../../components/portal/QuizTaker";
 import { getPortalData } from "../../../../lib/portalData";
 
-export const metadata = { title: "Quiz | MAF Tech Academy" };
+export const metadata = { title: "Module | MAF Tech Academy" };
 
 export default async function Quiz({ params }) {
   const id = Number(params.id);
@@ -15,7 +15,7 @@ export default async function Quiz({ params }) {
   return (
     <PortalShell active="quizzes" role={d.profile?.role}>
       <div>
-        <Link href="/portal/quizzes" className="m">← All quizzes</Link>
+        <Link href="/portal/quizzes" className="m">← All modules</Link>
         <h3 style={{ fontSize: 26, marginTop: 6 }}>{z.title}</h3>
         <span className="m" style={{ color: "var(--mute)" }}>{z.course} · {z.questions.length} question{z.questions.length === 1 ? "" : "s"}</span>
       </div>

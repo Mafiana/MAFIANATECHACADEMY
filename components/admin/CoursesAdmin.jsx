@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CATALOG, CATEGORIES, LEVELS } from "../../lib/catalog";
+import { NoticeModal } from "../Modal";
 
 const KEY = "maf_courses";
 const naira = (x) => "₦" + Number(x || 0).toLocaleString("en-NG");
@@ -16,6 +17,7 @@ function load() {
 export default function CoursesAdmin() {
   const [courses, setCourses] = useState([]);
   const [form, setForm] = useState(null);
+  const [notice, setNotice] = useState("");
 
   useEffect(() => setCourses(load()), []);
 
@@ -25,7 +27,7 @@ export default function CoursesAdmin() {
   }
 
   function save() {
-    if (!form.name.trim() || !form.slug.trim()) return alert("Name and slug are required");
+    if (!form.name.trim() || !form.slug.trim()) return setNotice("Name and slug are required.");
     const row = {
       ...form,
       weeks: Number(form.weeks) || 0,
@@ -186,6 +188,7 @@ export default function CoursesAdmin() {
           </p>
         </div>
       )}
+      <NoticeModal open={!!notice} title="Missing details" message={notice} onClose={() => setNotice("")} />
     </div>
   );
 }

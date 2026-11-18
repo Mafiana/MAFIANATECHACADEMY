@@ -32,10 +32,10 @@ function AccessBlock({ s }) {
           <input type="hidden" name="student" value={s.id} />
           <select name="months" defaultValue="3" aria-label="Extend by">{MONTHS.map(([m, l]) => <option key={m} value={m}>Extend {l}</option>)}</select>
         </ActionForm>
-        <ActionForm action={resetPin} label="New PIN" busy="..." cls="btn ghost sm" className="adm-inline" confirm={"Issue a new PIN for " + s.label + "? Their old PIN stops working immediately."} hideMsg={false}>
+        <ActionForm action={resetPin} label="New PIN" busy="..." cls="btn ghost sm" className="adm-inline" confirmTitle="Issue a new PIN?" confirm={"Issue a new PIN for " + s.label + "? Their old PIN stops working immediately."} hideMsg={false}>
           <input type="hidden" name="student" value={s.id} />
         </ActionForm>
-        <ActionForm action={setAccess} label={paused ? "Restore access" : "Pause access"} busy="..." cls={paused ? "btn sm" : "btn danger sm"} className="adm-inline" confirm={paused ? undefined : "Pause " + s.label + "'s access? Their PIN stops working now."}>
+        <ActionForm action={setAccess} label={paused ? "Restore access" : "Pause access"} busy="..." cls={paused ? "btn sm" : "btn danger sm"} className="adm-inline" confirmTitle="Pause access?" confirm={paused ? undefined : "Pause " + s.label + "'s access? Their PIN stops working now."}>
           <input type="hidden" name="student" value={s.id} /><input type="hidden" name="action" value={paused ? "restore" : "pause"} />
         </ActionForm>
       </div>
@@ -62,7 +62,10 @@ export default function Students({ students }) {
   return (
     <div className="card" id="students">
       <h3>Students <span className="m">({students.length})</span></h3>
-      <input type="search" className="adm-search" placeholder="Search by name, phone, Student ID or course" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search students" />
+      <div className="adm-searchbox">
+        <svg className="adm-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+        <input type="search" className="adm-search" placeholder="Search by name, phone, Student ID or course" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search students" />
+      </div>
       <div className="adm-chips" role="group" aria-label="Filter by payment status">
         {FILTERS.map(([k, l]) => <button key={k} type="button" aria-pressed={f === k} onClick={() => setF(k)}>{l} <span>{counts[k]}</span></button>)}
       </div>

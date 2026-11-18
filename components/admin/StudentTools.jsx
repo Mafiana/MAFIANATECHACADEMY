@@ -2,15 +2,17 @@
 import { useRef, useState } from "react";
 import ActionForm from "./ActionForm";
 import Avatar from "../Avatar";
+import { CopyModal } from "../Modal";
 import { resizeImage } from "../../lib/resizeImage";
 import { deleteStudent, setAvatar, updateStudent } from "../../app/admin/actions";
 
 // The student's saved Access PIN, always visible here (copy it any time).
 export function SavedPin({ pin }) {
   const [copied, setCopied] = useState(false);
+  const [manual, setManual] = useState(false);
   const copy = async () => {
     try { await navigator.clipboard.writeText(pin); setCopied(true); setTimeout(() => setCopied(false), 1800); }
-    catch { window.prompt("Copy this PIN:", pin); }
+    catch { setManual(true); }
   };
   if (!pin) return <p className="m" style={{ margin: "0 0 8px" }}>No PIN is saved for this student. Press “New PIN” to issue one and it will stay here.</p>;
   return (
@@ -18,6 +20,7 @@ export function SavedPin({ pin }) {
       <span className="m">Saved PIN</span>
       <code>{pin}</code>
       <button type="button" className="btn ghost sm" onClick={copy}>{copied ? "Copied" : "Copy"}</button>
+      <CopyModal open={manual} title="Copy this PIN" text={pin} onClose={() => setManual(false)} />
     </div>
   );
 }
@@ -84,7 +87,7 @@ export default function StudentTools({ s }) {
       <div className="adm-danger">
         <h4 style={{ marginTop: 0 }}>Delete student</h4>
         <p className="m" style={{ margin: "0 0 10px" }}>Removes {s.label}, their Access PIN, enrollments, payments, attendance and quiz results for good. This cannot be undone.</p>
-        <ActionForm action={deleteStudent} label="Delete student" busy="Deleting..." cls="btn danger sm" className="adm-inline" confirm={"Delete " + s.label + " permanently? Their PIN stops working and all their records are removed. This cannot be undone."}>
+        <ActionForm action={deleteStudent} label="Delete student" busy="Deleting..." cls="btn danger sm" className="adm-inline" confirmTitle="Delete student?" confirm={"Delete " + s.label + " permanently? Their PIN stops working and all their records are removed. This cannot be undone."}>
           <input type="hidden" name="student" value={s.id} />
         </ActionForm>
       </div>

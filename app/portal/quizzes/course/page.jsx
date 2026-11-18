@@ -9,7 +9,7 @@ export default async function CourseApp() {
   return (
     <PortalShell active="quizzes" role={d.profile?.role}>
       <div>
-        <Link href="/portal/quizzes" className="m">← All quizzes</Link>
+        <Link href="/portal/quizzes" className="m">← All modules</Link>
         <h3 style={{ fontSize: 26, marginTop: 6 }}>Interactive Computer Science Course</h3>
         <span className="m" style={{ color: "var(--mute)" }}>Lessons, practice activities, module quizzes, a final test and a certificate.</span>
       </div>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import PortalShell from "../../../components/portal/PortalShell";
 import { getPortalData } from "../../../lib/portalData";
 
-export const metadata = { title: "Quizzes | MAF Tech Academy" };
+export const metadata = { title: "Modules | MAF Tech Academy" };
 
 export default async function Quizzes() {
   const d = await getPortalData();
@@ -13,7 +13,7 @@ export default async function Quizzes() {
   const tries = (qid) => (attempts || []).filter((a) => a.quiz_id === qid).length;
   return (
     <PortalShell active="quizzes" role={d.profile?.role}>
-      <div><h3 style={{ fontSize: 26 }}>Quizzes</h3><span className="m" style={{ color: "var(--mute)" }}>Test what you have learned. You can retake a quiz any time.</span></div>
+      <div><h3 style={{ fontSize: 26 }}>Modules</h3><span className="m" style={{ color: "var(--mute)" }}>Test what you have learned. You can retake a module any time.</span></div>
       <div className="card" style={{ borderColor: "var(--green)" }}>
         <h3>Interactive Computer Science Course</h3>
         <div className="stat" style={{ borderBottom: 0 }}>
@@ -21,8 +21,8 @@ export default async function Quizzes() {
           <Link className="btn sm" href="/portal/quizzes/course">Open course</Link>
         </div>
       </div>
-      {!courses.length && <div className="card"><p className="m" style={{ margin: 0 }}>You are not enrolled in a course yet. Your quizzes appear here after you enroll.</p></div>}
-      {courses.length > 0 && (error || !quizzes?.length) && <div className="card"><p className="m" style={{ margin: 0 }}>No quizzes have been added for your courses yet. Check back soon.</p></div>}
+      {!courses.length && <div className="card"><p className="m" style={{ margin: 0 }}>You are not enrolled in a course yet. Your modules appear here after you enroll.</p></div>}
+      {courses.length > 0 && (error || !quizzes?.length) && <div className="card"><p className="m" style={{ margin: 0 }}>No modules have been added for your courses yet. Check back soon.</p></div>}
       {courses.map((c) => {
         const list = (quizzes || []).filter((z) => z.course === c);
         if (!list.length) return null;

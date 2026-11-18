@@ -31,7 +31,7 @@ function LessonRow({ l }) {
   );
 }
 
-export default function Lessons({ lessons, missing }) {
+export default function Lessons({ lessons, missing, courses = COURSE_NAMES }) {
   return (
     <div className="card" id="lessons">
       <h3>Video lessons <span className="m">({lessons.length})</span></h3>
@@ -39,7 +39,7 @@ export default function Lessons({ lessons, missing }) {
       {missing && <p className="adm-msg bad">Lessons and quizzes are not set up yet. Run <code>supabase/add-lessons-quizzes.sql</code> in the Supabase SQL Editor, then refresh this page.</p>}
       <ActionForm action={addLesson} label="Add lesson" busy="Adding..." className="form adm-edit">
         <label>Course</label>
-        <select name="course">{COURSE_NAMES.map((c) => <option key={c}>{c}</option>)}</select>
+        <select name="course">{courses.map((c) => <option key={c}>{c}</option>)}</select>
         <label>Lesson title</label>
         <input name="title" required maxLength={120} placeholder="SQL joins" />
         <label>Video link</label>
@@ -51,7 +51,7 @@ export default function Lessons({ lessons, missing }) {
         <div style={{ height: 10 }} />
       </ActionForm>
       {!missing && !lessons.length && <p className="m" style={{ marginTop: 12 }}>No lessons yet.</p>}
-      {COURSE_NAMES.filter((c) => lessons.some((l) => l.course === c)).map((c) => (
+      {courses.filter((c) => lessons.some((l) => l.course === c)).map((c) => (
         <div key={c}>
           <h4 className="adm-sub">{c}</h4>
           {lessons.filter((l) => l.course === c).map((l) => <LessonRow key={l.id} l={l} />)}

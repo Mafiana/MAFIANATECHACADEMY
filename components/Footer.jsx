@@ -73,7 +73,6 @@ export default function Footer({ portal = false }) {
             <h4>Students</h4>
             {/* Student login removed as requested */}
             <Link href="/verify">Verify a certificate</Link>
-            <Link href="/admin">Admin login</Link>
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms and Conditions</Link>
           </div>

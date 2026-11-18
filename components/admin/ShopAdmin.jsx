@@ -2,19 +2,23 @@
 import { useRef, useState } from "react";
 import { SHOP_CATEGORIES } from "../../lib/shop";
 import { resizeImage } from "../../lib/resizeImage";
+import { ConfirmModal } from "../Modal";
 import { deleteProduct, saveProduct, seedShop, uploadShopImage } from "../../app/admin/actions";
 
 const naira = (x) => "₦" + Number(x || 0).toLocaleString("en-NG");
 const specsToText = (specs) => (Array.isArray(specs) ? specs.map(([k, v]) => `${k}: ${v}`).join("\n") : "");
 
-const blank = () => ({ id: "", name: "", cat: "Laptop", price: "", stock: "", descr: "", img: "", imgs: [], specs: "", active: true });
-const fromRow = (r) => ({ id: String(r.id), name: r.name, cat: r.cat, price: String(r.price), stock: String(r.stock), descr: r.descr || "", img: r.img || "", imgs: Array.isArray(r.imgs) ? r.imgs : [], specs: specsToText(r.specs), active: r.active });
+const blank = () => ({ id: "", name: "", cat: "Laptop", price: "", stock: "", descr: "", img: "", imgs: [], specs: "", active: true, featured: false, is_new: false });
+const fromRow = (r) => ({ id: String(r.id), name: r.name, cat: r.cat, price: String(r.price), stock: String(r.stock), descr: r.descr || "", img: r.img || "", imgs: Array.isArray(r.imgs) ? r.imgs : [], specs: specsToText(r.specs), active: r.active, featured: !!r.featured, is_new: !!r.is_new });
 
 // Products saved here are what the homepage Student shop shows (changes appear within about a minute).
 export default function ShopAdmin({ products = [], missing = false }) {
   const [form, setForm] = useState(null);
   const [note, setNote] = useState({ ok: null, text: "" });
   const [busy, setBusy] = useState(false);
+  const [toDelete, setToDelete] = useState(null);
+  const [q, setQ] = useState("");
+  const [fcat, setFcat] = useState("All");
   const mainRef = useRef(null);
   const moreRef = useRef(null);
 
@@ -41,18 +45,18 @@ export default function ShopAdmin({ products = [], missing = false }) {
 
   async function save() {
     const fd = new FormData();
-    Object.entries({ ...form, imgs: JSON.stringify(form.imgs), active: form.active ? "1" : "0" }).forEach(([k, v]) => fd.set(k, v));
+    Object.entries({ ...form, imgs: JSON.stringify(form.imgs), active: form.active ? "1" : "0", featured: form.featured ? "1" : "0", is_new: form.is_new ? "1" : "0" }).forEach(([k, v]) => fd.set(k, v));
     const r = await run(() => saveProduct(null, fd));
     if (r.ok) setForm(null);
   }
 
   async function remove(p) {
-    if (!confirm(`Remove "${p.name}" from the shop?`)) return;
     const fd = new FormData(); fd.set("id", String(p.id));
     await run(() => deleteProduct(null, fd));
   }
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+  const shown = products.filter((p) => (fcat === "All" || p.cat === fcat) && (!q.trim() || (p.name + " " + p.cat + " " + (p.descr || "")).toLowerCase().includes(q.trim().toLowerCase())));
 
   return (
     <div className="card" id="shop-admin">
@@ -74,16 +78,26 @@ export default function ShopAdmin({ products = [], missing = false }) {
 
       {!form && (
         <div className="adm-list" style={{ marginTop: 18 }}>
-          {products.map((p) => (
+          {products.length > 4 && (
+            <div className="adm-reg-pick" style={{ marginBottom: 10 }}>
+              <div className="adm-searchbox" style={{ margin: 0 }}>
+                <svg className="adm-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+                <input type="search" className="adm-search" placeholder="Search products" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search products" />
+              </div>
+              <select value={fcat} onChange={(e) => setFcat(e.target.value)} aria-label="Filter by category">{SHOP_CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select>
+            </div>
+          )}
+          {!shown.length && products.length > 0 && <p className="m">No products match.</p>}
+          {shown.map((p) => (
             <div className="adm-item shop-admin-row" key={p.id}>
               <div className="shop-admin-thumb"><img src={p.img || ""} alt="" onError={(e) => (e.currentTarget.style.display = "none")} /></div>
               <div className="shop-admin-info">
-                <b>{p.name} {!p.active && <span className="badge bad">Hidden</span>}</b>
+                <b>{p.name} {!p.active && <span className="badge bad">Hidden</span>} {p.stock === 0 && <span className="badge mute">Sold out</span>} {p.featured && <span className="badge warn">Featured</span>} {p.is_new && <span className="badge ok">New</span>}</b>
                 <span className="m">{p.cat} · {naira(p.price)} · stock {p.stock}{p.specs?.length ? " · has specs" : ""}</span>
               </div>
               <div className="adm-acts">
                 <button type="button" className="btn ghost sm" onClick={() => { setNote({ ok: null, text: "" }); setForm(fromRow(p)); }}>Edit</button>
-                <button type="button" className="btn danger sm" onClick={() => remove(p)}>Delete</button>
+                <button type="button" className="btn danger sm" onClick={() => setToDelete(p)}>Delete</button>
               </div>
             </div>
           ))}
@@ -137,6 +151,15 @@ export default function ShopAdmin({ products = [], missing = false }) {
                 <input type="checkbox" checked={form.active} onChange={(e) => setForm({ ...form, active: e.target.checked })} style={{ width: "auto" }} />
                 Show this product in the shop
               </label>
+              <label style={{ display: "flex", gap: 8, alignItems: "center", color: "var(--ink)", marginTop: 8 }}>
+                <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} style={{ width: "auto" }} />
+                Featured: show first, with a ★ label
+              </label>
+              <label style={{ display: "flex", gap: 8, alignItems: "center", color: "var(--ink)", marginTop: 8 }}>
+                <input type="checkbox" checked={form.is_new} onChange={(e) => setForm({ ...form, is_new: e.target.checked })} style={{ width: "auto" }} />
+                New: show a “New” label
+              </label>
+              <p className="m" style={{ margin: "8px 0 0" }}>“Sold out” shows automatically when the stock is 0.</p>
             </div>
           </div>
 
@@ -146,6 +169,15 @@ export default function ShopAdmin({ products = [], missing = false }) {
           </div>
         </div>
       )}
+      <ConfirmModal
+        open={!!toDelete}
+        title="Remove this product?"
+        message={toDelete ? `"${toDelete.name}" will be removed from the shop. This cannot be undone.` : ""}
+        confirmLabel="Remove product"
+        danger
+        onCancel={() => setToDelete(null)}
+        onConfirm={() => { const p = toDelete; setToDelete(null); remove(p); }}
+      />
     </div>
   );
 }

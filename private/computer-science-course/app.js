@@ -535,8 +535,53 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
   document.getElementById('sidebar').classList.toggle('open');
 });
 
-document.getElementById('reset-progress').addEventListener('click', () => {
-  if (confirm('Reset all progress including Final Test and Certificate? This cannot be undone.')) {
+// Modal box (replaces the browser's confirm dialog). Resolves true if the student confirms.
+function askConfirm(title, message, confirmLabel) {
+  return new Promise((resolve) => {
+    const before = document.activeElement;
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML =
+      '<div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">' +
+      '<h3 id="modal-title"></h3><p></p>' +
+      '<div class="modal-actions">' +
+      '<button type="button" class="btn btn-outline" data-act="no">Cancel</button>' +
+      '<button type="button" class="btn btn-danger" data-act="yes"></button>' +
+      '</div></div>';
+    overlay.querySelector('h3').textContent = title;
+    overlay.querySelector('p').textContent = message;
+    overlay.querySelector('[data-act="yes"]').textContent = confirmLabel || 'Confirm';
+    function done(answer) {
+      document.removeEventListener('keydown', onKey, true);
+      overlay.remove();
+      if (before && before.focus) before.focus();
+      resolve(answer);
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') { e.stopPropagation(); done(false); }
+      else if (e.key === 'Tab') {
+        const items = overlay.querySelectorAll('button');
+        const a = items[0], z = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+        else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+      }
+    }
+    overlay.addEventListener('mousedown', (e) => { if (e.target === overlay) done(false); });
+    overlay.querySelector('[data-act="no"]').addEventListener('click', () => done(false));
+    overlay.querySelector('[data-act="yes"]').addEventListener('click', () => done(true));
+    document.addEventListener('keydown', onKey, true);
+    document.body.appendChild(overlay);
+    overlay.querySelector('[data-act="no"]').focus();
+  });
+}
+
+document.getElementById('reset-progress').addEventListener('click', async () => {
+  const ok = await askConfirm(
+    'Reset all progress?',
+    'This clears your module progress, the Final Test and your Certificate. This cannot be undone.',
+    'Reset progress'
+  );
+  if (ok) {
     progress = {};
     saveProgress(progress);
     showHome();

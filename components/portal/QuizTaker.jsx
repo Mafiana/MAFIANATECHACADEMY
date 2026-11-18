@@ -52,7 +52,7 @@ function Inner({ quiz, retry }) {
       {done && (
         <div className="adm-acts">
           <button type="button" className="btn" onClick={retry}>Try again</button>
-          <Link className="btn ghost" href="/portal/quizzes">All quizzes</Link>
+          <Link className="btn ghost" href="/portal/quizzes">All modules</Link>
         </div>
       )}
       {state.ok === false && <p className="adm-msg bad" role="alert">{state.msg}</p>}

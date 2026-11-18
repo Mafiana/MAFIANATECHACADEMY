@@ -1,7 +1,5 @@
 import Link from "next/link";
 import Greeting from "../../components/Greeting";
-import { accessSummary } from "../../lib/access";
-import { prettyDate } from "../../lib/dates";
 import PortalShell from "../../components/portal/PortalShell";
 import { getPortalData, waUrl, fmtDate } from "../../lib/portalData";
 import { naira, COURSE_IMAGES } from "../../lib/courses";
@@ -14,8 +12,6 @@ export default async function Portal() {
   // Announcements are optional: if the table has not been created yet this quietly shows nothing.
   const { data: ann } = await d.supabase.from("announcements").select("id,title,body,created_at").order("created_at", { ascending: false }).limit(3);
   const enrolled = d.enrollments.length > 0;
-  const acc = d.profile?.role === "student" ? accessSummary(d.profile) : null;
-  const renewMsg = waUrl(`Hello MAF Tech Academy, I am ${d.name}. I want to renew my Access PIN.`);
   const certs = d.enrollments.filter((e) => e.certificate_issued);
   const pay = waUrl(`Hello MAF Tech Academy, I am ${d.name}. I want to pay my balance of ${naira(d.balance)}.`);
   const join = waUrl(`Hello MAF Tech Academy, I am ${d.name}. I have signed up on the portal and want to enroll in a course.`);
@@ -32,13 +28,6 @@ export default async function Portal() {
         {!enrolled && join && <a className="btn" href={join} target="_blank" rel="noopener noreferrer">Enroll on WhatsApp</a>}
         {enrolled && d.balance > 0 && <Link className="btn" href="/portal/payments">How to pay</Link>}
       </div>
-
-      {acc?.soon && (
-        <div className="adm-msg warn" role="status">
-          Your access ends {acc.left === 0 ? "today" : `in ${acc.left} day${acc.left === 1 ? "" : "s"}`} (on {prettyDate(acc.until)}).{" "}
-          {renewMsg && <a href={renewMsg} target="_blank" rel="noopener noreferrer">Message the academy to renew</a>}
-        </div>
-      )}
 
       <div className="grid p-stats">
         <div className="card"><div className="m">Fees paid</div><h3>{naira(d.paid)}</h3><div className="m">of {naira(d.fees)}</div></div>

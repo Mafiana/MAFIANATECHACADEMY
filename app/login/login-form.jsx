@@ -50,7 +50,7 @@ export default function AdminLogin() {
 
   return (
     <AuthShell
-      title="Admin login"
+      title="Sign in"
       subtitle="For the academy admin. Instructors sign in with their Access PIN on the student login."
     >
       <form className="form auth-form" onSubmit={submit}>

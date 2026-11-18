@@ -46,3 +46,42 @@
 .bl-html img{max-width:100%;height:auto;border-radius:12px;margin:14px 0;display:block}
 .bl-html a{color:var(--green);text-decoration:underline}
 .bl-html blockquote{border-left:4px solid var(--gold,#F2B705);margin:16px 0;padding:4px 16px;color:var(--mute)}
+
+/* ---- Modal boxes (replace the browser's alert / confirm / prompt) ---- */
+.mdl-overlay{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;padding:18px;background:rgba(10,20,15,.55);backdrop-filter:blur(2px);animation:mdl-fade .15s ease both}
+.mdl{width:100%;max-width:420px;max-height:calc(100vh - 36px);overflow:auto;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.35);animation:mdl-pop .18s ease both}
+.mdl.md{max-width:560px}
+.mdl-title{margin:0 0 8px;font-size:20px;line-height:1.3}
+.mdl-body p{margin:0;color:var(--mute);font-size:15px;line-height:1.55}
+.mdl-label{display:block;font-size:14px;margin:0 0 6px;color:var(--mute)}
+.mdl-input{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1.5px solid var(--line);font:inherit;background:var(--bg);color:var(--ink)}
+.mdl-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn.danger-fill{background:#c0392b;color:#fff}
+.btn.danger-fill:hover{background:#a93226}
+@keyframes mdl-fade{from{opacity:0}to{opacity:1}}
+@keyframes mdl-pop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.mdl-overlay,.mdl{animation:none}}
+
+/* ---- Search box with an icon ---- */
+.adm-searchbox{position:relative;margin:6px 0 12px}
+.adm-searchbox .adm-search{margin:0;padding-left:42px}
+.adm-searchbox .adm-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--mute);pointer-events:none}
+
+/* ---- Student shop: availability label instead of a price ---- */
+.shop-foot b.shop-stock,.shop-modal-price.shop-stock{color:#2e7d32}
+.shop-foot b.shop-stock{font-size:16px}
+.shop-foot b.shop-stock.out,.shop-modal-price.shop-stock.out{color:#c0392b}
+@media(prefers-color-scheme:dark){.shop-foot b.shop-stock,.shop-modal-price.shop-stock{color:#7fd6a8}.shop-foot b.shop-stock.out,.shop-modal-price.shop-stock.out{color:#ff8a80}}
+
+/* ---- Student shop: search, badges, featured ---- */
+.shop-search{position:relative}
+.shop-search .bl-search{padding-left:48px}
+.shop-search-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--mute);pointer-events:none}
+.shop-img,.shop-modal-img{position:relative}
+.shop-badges{position:absolute;top:10px;left:10px;z-index:2;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.shop-badge{display:inline-block;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:800;line-height:1.2;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.shop-badge.new{background:#1b7f4b;color:#fff}
+.shop-badge.feat{background:#f2b632;color:#3a2a00}
+.shop-badge.sold{background:#4b5563;color:#fff}
+.shop-card.is-featured{border-color:#f2b632;box-shadow:0 0 0 1px #f2b632}
+.shop-card.is-sold .shop-img img{filter:grayscale(.85);opacity:.6}

@@ -33,7 +33,7 @@ export default async function Lesson({ params }) {
       {embed && <p className="m" style={{ margin: 0 }}>Video not playing? <a href={l.video_url} target="_blank" rel="noopener noreferrer">Open it in a new tab</a>.</p>}
       <div className="adm-acts" style={{ justifyContent: "space-between" }}>
         {prev ? <Link className="btn ghost" href={`/portal/lessons/${prev.id}`}>← Previous</Link> : <span />}
-        {next ? <Link className="btn" href={`/portal/lessons/${next.id}`}>Next lesson →</Link> : <Link className="btn ghost" href="/portal/quizzes">Take a quiz</Link>}
+        {next ? <Link className="btn" href={`/portal/lessons/${next.id}`}>Next lesson →</Link> : <Link className="btn ghost" href="/portal/quizzes">Go to Modules</Link>}
       </div>
     </PortalShell>
   );

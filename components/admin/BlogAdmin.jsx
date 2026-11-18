@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { resizeImage } from "../../lib/resizeImage";
+import { ConfirmModal, PromptModal } from "../Modal";
 import { uploadBlogImage, savePost, deletePost, importPosts } from "../../app/admin/actions";
 
 const KEY = "maf_blog_posts"; // older practice posts that were only saved in this browser
@@ -24,6 +25,8 @@ export default function BlogAdmin({ posts = [], missing = false }) {
   const range = useRef(null);
   const [note, setNote] = useState({ ok: null, text: "" });
   const [busy, setBusy] = useState(false);
+  const [toDelete, setToDelete] = useState(null); // post waiting for delete confirmation
+  const [askLink, setAskLink] = useState(false);
 
   useEffect(() => setSaved(load()), []);
 
@@ -111,11 +114,24 @@ export default function BlogAdmin({ posts = [], missing = false }) {
   }
 
   async function remove(p) {
-    if (!confirm(`Delete "${p.title}"? It disappears from the blog.`)) return;
     const fd = new FormData(); fd.set("id", String(p.id));
     const r = await deletePost(null, fd);
     setNote({ ok: r.ok, text: r.msg });
     if (r.ok && editing?.id === String(p.id)) setEditing(null);
+  }
+
+  // Link button: remember the selected text, ask for the address in a modal, then apply it.
+  function openLink() {
+    keepSpot();
+    setAskLink(true);
+  }
+
+  function applyLink(url) {
+    setAskLink(false);
+    const ed = editorRef.current;
+    ed?.focus();
+    if (range.current) { const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range.current); }
+    if (url) cmd("createLink", /^(https?:|mailto:|tel:|\/|#)/i.test(url) ? url : "https://" + url);
   }
 
   async function importSaved() {
@@ -158,7 +174,7 @@ export default function BlogAdmin({ posts = [], missing = false }) {
                   <button type="button" className="btn ghost sm" onClick={() => startEdit(p)}>
                     Edit
                   </button>
-                  <button type="button" className="btn danger sm" onClick={() => remove(p)}>
+                  <button type="button" className="btn danger sm" onClick={() => setToDelete(p)}>
                     Delete
                   </button>
                 </span>
@@ -220,7 +236,7 @@ export default function BlogAdmin({ posts = [], missing = false }) {
               1. List
             </button>
             <span className="editor-sep" />
-            <button type="button" title="Link" onClick={() => cmd("createLink", prompt("URL") || "")}>
+            <button type="button" title="Link" onMouseDown={(e) => { keepSpot(); e.preventDefault(); }} onClick={openLink}>
               Link
             </button>
             <span className="editor-sep" />
@@ -250,6 +266,24 @@ export default function BlogAdmin({ posts = [], missing = false }) {
           </div>
         </div>
       )}
+      <ConfirmModal
+        open={!!toDelete}
+        title="Delete this post?"
+        message={toDelete ? `"${toDelete.title}" will disappear from the blog. This cannot be undone.` : ""}
+        confirmLabel="Delete post"
+        danger
+        onCancel={() => setToDelete(null)}
+        onConfirm={() => { const p = toDelete; setToDelete(null); remove(p); }}
+      />
+      <PromptModal
+        open={askLink}
+        title="Add a link"
+        label="Web address (URL)"
+        placeholder="https://example.com"
+        confirmLabel="Add link"
+        onCancel={() => setAskLink(false)}
+        onSubmit={applyLink}
+      />
     </div>
   );
 }

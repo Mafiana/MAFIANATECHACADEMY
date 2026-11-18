@@ -1,13 +1,14 @@
 import Link from "next/link";
 import Shell from "../Shell";
 import Icon from "./Icons";
-import { signOut } from "../../app/auth-actions";
+import LogoutButton from "./LogoutButton";
+import AccessNotice from "./AccessNotice";
 
 const NAV = [
   ["home", "/portal", "Dashboard", "home"],
   ["courses", "/portal/courses", "My courses", "courses"],
   ["lessons", "/portal/lessons", "Lessons", "lessons"],
-  ["quizzes", "/portal/quizzes", "Quizzes", "quizzes"],
+  ["quizzes", "/portal/quizzes", "Modules", "quizzes"],
   ["payments", "/portal/payments", "Payments", "payments"],
   ["attendance", "/portal/attendance", "Attendance", "attendance"],
   ["profile", "/portal/profile", "Profile", "profile"],
@@ -34,14 +35,12 @@ export default function PortalShell({ active, role, children }) {
                 Admin panel
               </Link>
             )}
-            <form action={signOut}>
-              <button className="lnk" type="submit">
-                <Icon name="logout" />
-                Log out
-              </button>
-            </form>
+            <LogoutButton />
           </aside>
-          <main>{children}</main>
+          <main>
+            {role === "student" && <AccessNotice />}
+            {children}
+          </main>
         </div>
       </section>
     </Shell>

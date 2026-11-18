@@ -35,7 +35,6 @@ export default function PinLogin({ notice, whatsapp }) {
         <p className="auth-switch">
           No PIN yet or lost yours? {whatsapp ? <a href={whatsapp} target="_blank" rel="noopener noreferrer">Message the academy</a> : "Ask the academy"} and we will issue or renew it.
         </p>
-        <p className="auth-switch"><a href="/admin">Admin login</a></p>
       </form>
     </AuthShell>
   );

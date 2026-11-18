@@ -26,7 +26,7 @@ async function requireRole(roles) {
   const { data: me, error } = await s.from("profiles").select("role").eq("id", user.id).single();
   if (error && error.code !== "PGRST116") return { err: "Could not reach the database. Check your connection and try again in a moment." };
   if (!roles.includes(me?.role)) return { err: roles.includes("instructor") ? "Only academy staff can do this." : "Only admins can do this." };
-  return { s, user };
+  return { s, user, role: me.role };
 }
 
 // guarded(roles, fn): runs fn only for those roles. admin(...) = admins only. staff(...) = admins and instructors.
@@ -35,7 +35,7 @@ function guarded(roles, fn) {
     try {
       const a = await requireRole(roles);
       if (a.err) return bad(a.err);
-      const res = await fn(a.s, fd, a.user);
+      const res = await fn(a.s, fd, a.user, a.role);
       if (res.ok) revalidatePath("/admin");
       return res;
     } catch (e) {
@@ -117,8 +117,19 @@ export const deletePayment = admin(async (s, fd) => {
   return error ? dbErr(error) : ok("Payment deleted.");
 });
 
+
+// ---- instructor scope: an instructor works only with the courses the admin gave them (none given = every course) ----
+async function courseScope(s, user, role) {
+  if (role !== "instructor") return null; // admins are not limited
+  const { data, error } = await s.from("instructor_courses").select("course").eq("instructor_id", user.id);
+  if (error || !data?.length) return null;
+  return data.map((r) => r.course);
+}
+const outside = (scope, course) => scope && !scope.includes(course);
+const SCOPE_MSG = "That course is not one of yours. Ask the admin to give you access to it.";
+
 // Saves a whole class register for one date. Re-saving the same date updates it instead of duplicating.
-export const saveRegister = staff(async (s, fd) => {
+export const saveRegister = staff(async (s, fd, user, role) => {
   const date = String(fd.get("date") || "");
   if (!DATE.test(date)) return bad("Choose a valid date.");
   let entries;
@@ -131,6 +142,13 @@ export const saveRegister = staff(async (s, fd) => {
     rows.push({ student_id: id, class_date: date, present: present === true });
   }
   const ids = rows.map((r) => r.student_id);
+  const scope = await courseScope(s, user, role);
+  if (scope) {
+    const { data: roster, error: re } = await s.rpc("staff_roster");
+    if (re) return dbErr(re);
+    const mine = new Set((roster || []).filter((r) => scope.includes(r.course)).map((r) => r.student_id));
+    if (ids.some((id) => !mine.has(id))) return bad("You can only take the register for students in your own courses.");
+  }
   const { error: delErr } = await s.from("attendance").delete().in("student_id", ids).eq("class_date", date);
   if (delErr) return dbErr(delErr);
   const { error } = await s.from("attendance").insert(rows);
@@ -281,6 +299,23 @@ export const setAccess = admin(async (s, fd, user) => {
   return ok(pause ? `${who}'s access is paused. Their PIN stops working now.` : ended ? `${who}'s access is switched on, but the end date has already passed. Use Renew to extend it.` : `${who}'s access is back on.`);
 });
 
+// ---- instructor courses (needs supabase/add-instructor-courses.sql) ----
+export const setInstructorCourses = admin(async (s, fd) => {
+  const id = String(fd.get("instructor") || "");
+  if (!UUID.test(id)) return bad("Choose an instructor.");
+  const courses = [...new Set(fd.getAll("course").map(String))].filter((c) => COURSE_NAMES.includes(c));
+  const { data: t } = await s.from("profiles").select("role,full_name").eq("id", id).maybeSingle();
+  if (!t || t.role !== "instructor") return bad("That instructor was not found.");
+  const { error: de } = await s.from("instructor_courses").delete().eq("instructor_id", id);
+  if (de) return /instructor_courses/.test(de.message) ? bad("Run supabase/add-instructor-courses.sql in the Supabase SQL Editor first.") : dbErr(de);
+  if (courses.length) {
+    const { error } = await s.from("instructor_courses").insert(courses.map((course) => ({ instructor_id: id, course })));
+    if (error) return dbErr(error);
+  }
+  const who = t.full_name || "The instructor";
+  return ok(courses.length ? `${who} now teaches: ${courses.join(", ")}.` : `${who} can see every course (none chosen).`);
+});
+
 const noTable = (error) => /announcements/.test(error.message) ? bad("Announcements are not set up yet. Run supabase/add-announcements.sql in the Supabase SQL Editor first.") : dbErr(error);
 
 export const postAnnouncement = admin(async (s, fd) => {
@@ -316,9 +351,10 @@ function lessonFields(fd) {
   return { title, url, minutes, position };
 }
 
-export const addLesson = staff(async (s, fd) => {
+export const addLesson = staff(async (s, fd, user, role) => {
   const course = String(fd.get("course") || "");
   if (!COURSE_NAMES.includes(course)) return bad("Choose a course.");
+  if (outside(await courseScope(s, user, role), course)) return bad(SCOPE_MSG);
   const f = lessonFields(fd);
   if (f.err) return bad(f.err);
   let position = f.position;
@@ -330,9 +366,11 @@ export const addLesson = staff(async (s, fd) => {
   return error ? lqErr(error) : ok("Lesson added to " + course + ". Enrolled students can watch it now.");
 });
 
-export const updateLesson = staff(async (s, fd) => {
+export const updateLesson = staff(async (s, fd, user, role) => {
   const id = toInt(fd.get("id"));
   if (!(id > 0)) return bad("Lesson not found.");
+  const scope = await courseScope(s, user, role);
+  if (scope) { const { data: l } = await s.from("lessons").select("course").eq("id", id).maybeSingle(); if (!l || outside(scope, l.course)) return bad(SCOPE_MSG); }
   const f = lessonFields(fd);
   if (f.err) return bad(f.err);
   const patch = { title: f.title, video_url: f.url, minutes: f.minutes };
@@ -341,17 +379,20 @@ export const updateLesson = staff(async (s, fd) => {
   return error ? lqErr(error) : ok("Lesson updated.");
 });
 
-export const deleteLesson = staff(async (s, fd) => {
+export const deleteLesson = staff(async (s, fd, user, role) => {
   const id = toInt(fd.get("id"));
   if (!(id > 0)) return bad("Lesson not found.");
+  const scope = await courseScope(s, user, role);
+  if (scope) { const { data: l } = await s.from("lessons").select("course").eq("id", id).maybeSingle(); if (!l || outside(scope, l.course)) return bad(SCOPE_MSG); }
   const { error } = await s.from("lessons").delete().eq("id", id);
   return error ? lqErr(error) : ok("Lesson deleted.");
 });
 
-export const createQuiz = staff(async (s, fd) => {
+export const createQuiz = staff(async (s, fd, user, role) => {
   const course = String(fd.get("course") || "");
   const title = String(fd.get("title") || "").trim().slice(0, 120);
   if (!COURSE_NAMES.includes(course)) return bad("Choose a course.");
+  if (outside(await courseScope(s, user, role), course)) return bad(SCOPE_MSG);
   if (!title) return bad("Give the quiz a title.");
   let raw;
   try { raw = JSON.parse(String(fd.get("payload") || "[]")); } catch { return bad("Could not read the questions."); }
@@ -374,9 +415,11 @@ export const createQuiz = staff(async (s, fd) => {
   return ok("Quiz created with " + questions.length + " question" + (questions.length === 1 ? "" : "s") + ". Enrolled students can take it now.");
 });
 
-export const deleteQuiz = staff(async (s, fd) => {
+export const deleteQuiz = staff(async (s, fd, user, role) => {
   const id = toInt(fd.get("id"));
   if (!(id > 0)) return bad("Quiz not found.");
+  const scope = await courseScope(s, user, role);
+  if (scope) { const { data: z } = await s.from("quizzes").select("course").eq("id", id).maybeSingle(); if (!z || outside(scope, z.course)) return bad(SCOPE_MSG); }
   const { error } = await s.from("quizzes").delete().eq("id", id);
   return error ? lqErr(error) : ok("Quiz deleted along with its results.");
 });
@@ -567,12 +610,19 @@ export const saveProduct = admin(async (s, fd) => {
   if (!(stock >= 0 && stock <= 1e6)) return bad("Enter how many are in stock, as a whole number.");
   if (!okImage(img) || img.startsWith("data:")) return bad("The picture address is not valid. Upload the picture again.");
   const row = { name, cat, price, stock, img: img || null, imgs, specs: parseSpecs(fd.get("specs")), descr: String(fd.get("descr") || "").trim().slice(0, 300), active: fd.get("active") === "1" };
+  const flags = { featured: fd.get("featured") === "1", is_new: fd.get("is_new") === "1" };
   const id = String(fd.get("id") || "");
-  const q = id ? s.from("shop_products").update(row).eq("id", id) : s.from("shop_products").insert(row);
-  const { error } = await q;
+  const write = (r) => (id ? s.from("shop_products").update(r).eq("id", id) : s.from("shop_products").insert(r));
+  let { error } = await write({ ...row, ...flags });
+  let note = "";
+  // If supabase/add-shop-upgrades.sql has not been run yet, save everything else and say so.
+  if (error && /featured|is_new/.test(error.message || "")) {
+    ({ error } = await write(row));
+    if (!error && (flags.featured || flags.is_new)) note = " The Featured and New labels were not saved: run supabase/add-shop-upgrades.sql in the Supabase SQL Editor first.";
+  }
   if (error) return tableErr(error);
   revalidatePath("/");
-  return ok(id ? "Product saved." : "Product added to the shop.");
+  return ok((id ? "Product saved." : "Product added to the shop.") + note);
 });
 
 export const deleteProduct = admin(async (s, fd) => {

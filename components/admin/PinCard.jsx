@@ -1,17 +1,19 @@
 "use client";
 import { useState } from "react";
 import { prettyDate } from "../../lib/dates";
+import { CopyModal } from "../Modal";
 
 // Shows a freshly issued Access PIN. The PIN is also saved on the student profile.
 export default function PinCard({ card }) {
   const [copied, setCopied] = useState(false);
+  const [manual, setManual] = useState(false);
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(card.pin);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      window.prompt("Copy this PIN:", card.pin);
+      setManual(true);
     }
   };
   const site = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/^https?:\/\//, "").replace(/\/$/, "");
@@ -60,6 +62,7 @@ export default function PinCard({ card }) {
         </button>
       </div>
       <p className="pin-slip-warn no-print">This PIN is saved on the student profile. Use “New PIN” only if it must be replaced.</p>
+      <CopyModal open={manual} title="Copy this PIN" text={card.pin} onClose={() => setManual(false)} />
     </div>
   );
 }

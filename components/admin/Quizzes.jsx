@@ -15,7 +15,7 @@ function downloadTemplate() {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-function Builder() {
+function Builder({ courses }) {
   const [qs, setQs] = useState([blank()]);
   const [imp, setImp] = useState({ ok: null, text: "", errors: [] });
   const titleRef = useRef(null);
@@ -41,7 +41,7 @@ function Builder() {
     <ActionForm action={createQuiz} label="Create quiz" busy="Creating..." className="form adm-edit" reset={false} onSuccess={() => { setQs([blank()]); setImp({ ok: null, text: "", errors: [] }); if (titleRef.current) titleRef.current.value = ""; }}>
       <input type="hidden" name="payload" value={JSON.stringify(qs)} />
       <label>Course</label>
-      <select name="course">{COURSE_NAMES.map((c) => <option key={c}>{c}</option>)}</select>
+      <select name="course">{courses.map((c) => <option key={c}>{c}</option>)}</select>
       <label>Quiz title</label>
       <input ref={titleRef} name="title" required maxLength={120} placeholder="Excel quiz" />
       <div className="csv-import">
@@ -102,13 +102,13 @@ function QuizRow({ z }) {
   );
 }
 
-export default function Quizzes({ quizzes, missing }) {
+export default function Quizzes({ quizzes, missing, courses = COURSE_NAMES }) {
   return (
     <div className="card" id="quizzes">
       <h3>Quizzes <span className="m">({quizzes.length})</span></h3>
       <p className="m" style={{ margin: "0 0 8px" }}>Multiple-choice quizzes. Students take them in their portal and the score is saved. They can retake a quiz.</p>
       {missing && <p className="adm-msg bad">Lessons and quizzes are not set up yet. Run <code>supabase/add-lessons-quizzes.sql</code> in the Supabase SQL Editor, then refresh this page.</p>}
-      <Builder />
+      <Builder courses={courses} />
       {!missing && !quizzes.length && <p className="m" style={{ marginTop: 12 }}>No quizzes yet.</p>}
       {quizzes.map((z) => <QuizRow key={z.id} z={z} />)}
     </div>
