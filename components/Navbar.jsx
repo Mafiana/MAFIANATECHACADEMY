@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Avatar from "./Avatar";
 import { createClient } from "../lib/supabase/client";
+import { signOut } from "../app/auth-actions";
 
 // third value true = shown only in the mobile menu
 const LINKS = [
@@ -64,6 +65,53 @@ function useViewer() {
   return v;
 }
 
+// Profile pill for signed-in people: photo with an online dot, name, and a chevron that opens a small menu.
+function UserMenu({ user }) {
+  const [open, setOpen] = useState(false);
+  const box = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => box.current && !box.current.contains(e.target) && setOpen(false);
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDown); document.removeEventListener("keydown", onKey); };
+  }, [open]);
+
+  const staff = user.href === "/admin";
+  return (
+    <div className="nav-menu" ref={box}>
+      <button
+        type="button"
+        className="nav-user"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={`Account menu for ${user.name}`}
+        onClick={() => setOpen(!open)}
+      >
+        <span className="av-wrap">
+          <Avatar name={user.name} src={user.avatar} size={40} />
+          <i className="av-dot" aria-hidden="true" />
+        </span>
+        <span className="nm">{user.name}</span>
+        <svg className={"chev" + (open ? " up" : "")} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3.5 6l4.5 4.5L12.5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      {open && (
+        <div className="nav-drop" role="menu">
+          <Link href={user.href} role="menuitem" onClick={() => setOpen(false)}>
+            {staff ? "Admin panel" : "My dashboard"}
+          </Link>
+          <form action={signOut}>
+            <button type="submit" role="menuitem" className="out">Log out</button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
@@ -98,10 +146,7 @@ export default function Navbar() {
           {!ready ? (
             <span className="nav-slot" aria-hidden="true" />
           ) : user ? (
-            <Link className="nav-user" href={user.href} aria-label={`Open dashboard for ${user.name}`}>
-              <Avatar name={user.name} src={user.avatar} size={32} />
-              <span className="nm">{user.name}</span>
-            </Link>
+            <UserMenu user={user} />
           ) : (
             <Link className="btn ghost nav-login" href="/login" aria-label="Login">
               <UserIcon />
@@ -136,7 +181,10 @@ export default function Navbar() {
           ))}
           {ready && user ? (
             <Link href={user.href} onClick={close} className="mob-user">
-              <Avatar name={user.name} src={user.avatar} size={28} />
+              <span className="av-wrap">
+                <Avatar name={user.name} src={user.avatar} size={32} />
+                <i className="av-dot" aria-hidden="true" />
+              </span>
               {user.name}
             </Link>
           ) : (

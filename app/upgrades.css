@@ -2,9 +2,6 @@
 .avatar{display:inline-grid;place-items:center;flex:none;border-radius:50%;background:var(--green);color:#F2F6F3;font-weight:700;overflow:hidden;line-height:1}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block}
 
-.nav-user{display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border:1.5px solid var(--line);border-radius:99px;background:var(--surface);color:var(--ink);text-decoration:none;font-weight:700;font-size:15px;max-width:240px}
-.nav-user:hover{border-color:var(--green)}
-.nav-user span.nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nav-slot{min-width:1px;min-height:40px}
 .mob-user{display:inline-flex;align-items:center;gap:10px;font-weight:700}
 
@@ -85,3 +82,43 @@
 .shop-badge.sold{background:#4b5563;color:#fff}
 .shop-card.is-featured{border-color:#f2b632;box-shadow:0 0 0 1px #f2b632}
 .shop-card.is-sold .shop-img img{filter:grayscale(.85);opacity:.6}
+
+/* ---- Profile pill (signed-in navbar) ---- */
+.nav-menu{position:relative}
+.nav-user{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:5px 16px 5px 5px;
+  border:1.5px solid color-mix(in srgb,var(--green) 14%,var(--line));
+  border-radius:99px;
+  background:linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--mint) 70%,var(--surface)));
+  color:var(--ink);font:700 16px/1 "DM Sans",system-ui,sans-serif;
+  max-width:260px;cursor:pointer;text-decoration:none;
+  box-shadow:0 4px 14px rgba(14,59,46,.08);
+  transition:border-color .2s,box-shadow .2s,transform .2s;
+}
+.nav-user:hover{border-color:var(--green);box-shadow:0 6px 18px rgba(14,59,46,.14)}
+.nav-user[aria-expanded=true]{border-color:var(--green)}
+.nav-user .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-user .chev{flex:none;color:var(--green);transition:transform .25s}
+.nav-user .chev.up{transform:rotate(180deg)}
+.av-wrap{position:relative;display:inline-flex;flex:none}
+.av-dot{
+  position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;
+  background:#3DDC5A;border:2.5px solid var(--surface);font-style:normal;
+  box-shadow:0 0 0 1px rgba(14,59,46,.12);
+}
+.nav-drop{
+  position:absolute;right:0;top:calc(100% + 10px);min-width:210px;z-index:40;
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  padding:6px;box-shadow:0 18px 40px rgba(16,32,25,.18);
+  display:grid;gap:2px;
+}
+.nav-drop a,.nav-drop button{
+  display:block;width:100%;text-align:left;padding:11px 14px;border-radius:10px;border:0;
+  background:transparent;color:var(--ink);font:500 15px "DM Sans",system-ui,sans-serif;
+  text-decoration:none;cursor:pointer;
+}
+.nav-drop a:hover,.nav-drop button:hover{background:var(--mint)}
+.nav-drop .out{color:#C0392B}
+.nav-drop form{margin:0}
+@media(prefers-reduced-motion:reduce){.nav-user,.nav-user .chev{transition:none}}

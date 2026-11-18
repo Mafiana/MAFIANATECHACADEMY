@@ -32,6 +32,19 @@ const SERVICES = [
   ["Certificates and exams", "Final test and a certificate you can show employers."],
   ["Career support", "Guidance on jobs, freelancing and finding your first clients."],
 ];
+const SVG = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" };
+const SERVICE_ICONS = [
+  // Admission office: ID card
+  <svg key="a" {...SVG}><rect x="4" y="3" width="16" height="18" rx="2.5" /><path d="M9 3v2.5h6V3" /><circle cx="12" cy="11" r="2.4" /><path d="M7.8 17.5c.7-2 2.2-3 4.2-3s3.5 1 4.2 3" /></svg>,
+  // Training hall and computer lab: monitor
+  <svg key="b" {...SVG}><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /></svg>,
+  // Online class studio: play button
+  <svg key="c" {...SVG}><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M10 9l5 3-5 3z" /></svg>,
+  // Certificates and exams: certificate with ribbon
+  <svg key="d" {...SVG}><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h5" /><path d="M14 3l5 5v3" /><path d="M14 3v5h5" /><path d="M8.5 12h4M8.5 15.5h2.5" /><circle cx="17" cy="16" r="2.6" /><path d="M15.6 18.4L15 21l2-1 2 1-.6-2.6" /></svg>,
+  // Career support: briefcase
+  <svg key="e" {...SVG}><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 13h18" /><path d="M11 13v2h2v-2" /></svg>,
+];
 const MORE = [
   ["Corporate training", "We train your staff in Office, data, design or web, at your office or in our lab. Tell us the team size and we send a quote.", "I want corporate training for my company", "Request a quote", "corp"],
   ["Online courses", "Learn from any city with live classes and recorded lessons at the online fee.", null, "See courses", "online"],
@@ -177,56 +190,37 @@ export default function App({ shop }) {
         {/* ===== Student services ===== */}
         <Section
           id="services"
-          title="Student services"
-          sub="Five services support you from registration to your first job."
+          title="Student services Cycle"
+          sub="Five services cycle you from registration to your first job."
         >
-          <div className="svc-block">
-            <div className="svc-grid">
-              {SERVICES.map(([t, d], i) => (
-                <article className="svc-card" key={t} style={{ "--i": i }}>
-                  <div className="svc-visual">
-                    <div className="svc-icon" aria-hidden="true">
-                      {i === 0 && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
-                          <rect x="9" y="3" width="6" height="4" rx="1" />
-                          <path d="M9 12h6M9 16h4" />
-                        </svg>
-                      )}
-                      {i === 1 && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                          <rect x="3" y="4" width="18" height="12" rx="2" />
-                          <path d="M8 20h8M12 16v4" />
-                        </svg>
-                      )}
-                      {i === 2 && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                          <circle cx="12" cy="12" r="2" />
-                          <path d="M16.24 7.76a6 6 0 010 8.49M7.76 7.76a6 6 0 000 8.49M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
-                        </svg>
-                      )}
-                      {i === 3 && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                          <path d="M12 3l9 5-9 5-9-5 9-5z" />
-                          <path d="M3 13v5l9 5 9-5v-5" />
-                          <path d="M12 13v10" />
-                        </svg>
-                      )}
-                      {i === 4 && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                          <path d="M5 19l4-8 4 4 6-10" />
-                          <path d="M13 5h6v6" />
-                        </svg>
-                      )}
-                    </div>
-                  </div>
-                  <div className="svc-body">
-                    <h3>{t}</h3>
-                    <p className="m">{d}</p>
-                  </div>
-                </article>
-              ))}
+          <div className="svc-block svc-layout">
+            <div className="svc-copy">
+              <h3>Support at every step of your training</h3>
+              <p>
+                Your journey starts at our Admission Office, where you register and get your ID. From there, you’ll master
+                your skills in our Training Hall or join our Online Studio from anywhere in the world. Once your final
+                exams are passed, you’ll walk away with a Certificate to show employers. But we don’t stop there—our Career
+                Support team steps in to help you land your first job or freelance client, bridging the gap between the
+                classroom and your career.
+              </p>
+              <WaLink text="I want to register at MAF Tech Academy" ghost={false}>Talk to the admission office</WaLink>
             </div>
+            <ol className="svc-cycle">
+              {SERVICES.map(([t, d], i) => (
+                <li className="svc-node" key={t} style={{ "--i": i }}>
+                  <div className="svc-circle">
+                    <span className="svc-icon" aria-hidden="true">{SERVICE_ICONS[i]}</span>
+                    <h3>{t}</h3>
+                    <p>{d}</p>
+                  </div>
+                  <span className="svc-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 48 32" fill="currentColor">
+                      <path d="M2 11h26V3a2 2 0 013.4-1.4l14 13a2 2 0 010 2.9l-14 13A2 2 0 0128 29v-8H2a2 2 0 01-2-2v-6a2 2 0 012-2z" />
+                    </svg>
+                  </span>
+                </li>
+              ))}
+            </ol>
           </div>
         </Section>
 
