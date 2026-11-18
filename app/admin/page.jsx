@@ -154,6 +154,7 @@ export default async function Admin() {
       course: courseById[p.id] || null,
       avatar: p.avatar_url || "",
       code: p.student_code || "",
+      gender: p.gender || "",
       courses: [...new Set(ens.map((e) => e.course))],
       fees,
       paid,

@@ -26,6 +26,13 @@ export default function AddStudent() {
       <input name="name" required minLength={2} maxLength={80} autoComplete="off" value={f.name} onChange={(e) => change({ name: e.target.value })} />
       <label>Phone number <span className="m">optional, helps you find them later</span></label>
       <input name="phone" type="tel" maxLength={30} autoComplete="off" value={f.phone} onChange={(e) => change({ phone: e.target.value })} />
+      <label>Gender <span className="m">optional · appears on the Student ID card</span></label>
+      <select name="gender" defaultValue="">
+        <option value="">Not set</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
       <label>Plan: course</label>
       <select name="course" value={f.course} onChange={(e) => change({ course: e.target.value })}>{COURSE_NAMES.map((c) => <option key={c}>{c}</option>)}</select>
       <label>Plan: class type</label>

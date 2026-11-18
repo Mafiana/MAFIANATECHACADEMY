@@ -75,12 +75,19 @@ export default function StudentTools({ s }) {
       <div>
         <h4>Profile</h4>
         <PhotoEditor s={s} />
-        <ActionForm action={updateStudent} label="Save name and phone" busy="Saving..." className="form adm-edit" reset={false}>
+        <ActionForm action={updateStudent} label="Save profile" busy="Saving..." className="form adm-edit" reset={false}>
           <input type="hidden" name="student" value={s.id} />
           <label>Full name</label>
           <input name="name" required minLength={2} maxLength={80} defaultValue={s.name} autoComplete="off" />
           <label>Phone number <span className="m">optional</span></label>
           <input name="phone" type="tel" maxLength={30} defaultValue={s.phone} autoComplete="off" />
+          <label>Gender <span className="m">shown on the Student ID card</span></label>
+          <select name="gender" defaultValue={s.gender || ""}>
+            <option value="">Not set</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
           <div style={{ height: 10 }} />
         </ActionForm>
       </div>

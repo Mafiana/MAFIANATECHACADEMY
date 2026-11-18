@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import ActionForm from "./ActionForm";
 import Avatar from "../Avatar";
 import StudentTools, { SavedPin } from "./StudentTools";
@@ -100,6 +101,15 @@ export default function Students({ students }) {
                     </p>
                   </div>
                   <AccessBlock s={s} />
+                  <div className="adm-access">
+                    <h4>Student ID card</h4>
+                    <p className="m" style={{ margin: "0 0 10px" }}>
+                      Download or print a photo ID card for this student (includes gender, program and validity).
+                    </p>
+                    <Link className="btn sm" href={`/admin/id-card/${s.id}`} target="_blank" rel="noopener noreferrer">
+                      Download Student ID card
+                    </Link>
+                  </div>
                   <StudentTools s={s} />
                   <h4>Enrollments</h4>
                   {s.enrollments.length ? s.enrollments.map((e) => <EnrollmentRow key={e.id} e={e} />) : <p className="m">Not enrolled yet. Use “Enroll a student” below.</p>}
