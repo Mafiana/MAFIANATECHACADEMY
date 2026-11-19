@@ -56,8 +56,8 @@ const TEAM = [
     name: "Stanley Mafiana",
     role: "Director & Lead Instructor",
     initials: "SM",
-    twitter: "https://twitter.com/",
-    linkedin: "https://www.linkedin.com/",
+    twitter: "https://x.com/stanlee12242",
+linkedin: "https://www.linkedin.com/in/mafiana-stanley-403773223/",
   },
 ];
 const FAQ = [
@@ -241,15 +241,20 @@ export default function App({ shop }) {
               Browse all courses
             </Link>
           </p>
-          <div className="grid" style={{ marginTop: 28 }}>
-            {COMBOS.map(([t, d, now, was]) => (
-              <div className="card" key={t}>
-                <h3>{t}</h3>
-                <div className="m">{d}</div>
-                <b>{naira(now)}</b> <s className="m">{naira(was)}</s>
-              </div>
-            ))}
-          </div>
+          <div className="combo-grid">
+  {COMBOS.map(([t, d, now, was]) => (
+    <article className="combo-card" key={t}>
+      <div className="combo-badge">Combo deal</div>
+      <h3>{t}</h3>
+      <p className="combo-desc">{d}</p>
+      <div className="combo-price">
+        <b>{naira(now)}</b>
+        <s>{naira(was)}</s>
+      </div>
+      <div className="combo-save">You save {naira(was - now)}</div>
+    </article>
+  ))}
+</div>
           <p className="sub" style={{ marginTop: 20 }}>
             Early bird: first 10 students who pay in full get ₦10,000 off. Bring a friend and you both get ₦5,000
             off.

@@ -1475,3 +1475,52 @@ fieldset{min-width:0}
   .more-row,.more-row.reverse{grid-template-columns:1fr;direction:ltr}
   .more-img{min-height:160px}
 }
+
+
+/* Combo cards */
+.combo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 28px;
+}
+.combo-card {
+  background: white;
+  border: 1px solid #D5E0D9;
+  border-radius: 20px;
+  padding: 28px 24px;
+  position: relative;
+}
+.combo-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #F2B705;
+  color: #102019;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 99px;
+}
+.combo-desc {
+  color: #52645a;
+  font-size: 15px;
+}
+.combo-price b {
+  font-size: 28px;
+  color: #0E3B2E;
+}
+.combo-price s {
+  color: #52645a;
+  margin-left: 8px;
+}
+.combo-save {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1E8E55;
+  background: #CFE8DC;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 99px;
+  margin-top: 8px;
+}
