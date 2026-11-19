@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import Shell from "../../../../components/Shell";
 import PrintButton from "../../../../components/PrintButton";
-import IdCard, { formatStudentId, formatCardDate } from "../../../../components/IdCard";
+import IdCard from "../../../../components/IdCard";
+import { formatStudentId, formatCardDate } from "../../../../lib/id-card";
 import { createClient } from "../../../../lib/supabase/server";
 
 export const metadata = { title: "Student ID Card | MAF Tech Academy" };
