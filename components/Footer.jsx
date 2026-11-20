@@ -87,8 +87,8 @@ export default function Footer({ portal = false }) {
             {/* Placeholders removed — only real values show */}
             {address && <p>{address}</p>}
             {phone && <p>{phone}</p>}
-            {email && <p>{email}</p>}
-            {!address && !phone && !email && !portal && <p>Use the enroll form to reach us.</p>}
+            {email && <p><a href={`mailto:${email}`}>{email}</a></p>}
+            {!address && !phone && !email && !portal && <p><a href="mailto:mafianastanley99@gmail.com">mafianastanley99@gmail.com</a></p>}
           </div>
         </div>
 

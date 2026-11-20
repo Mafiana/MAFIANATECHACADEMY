@@ -101,10 +101,38 @@ footer a{color:inherit}
 .auth-quote{text-align:center;color:#F2F6F3;max-width:420px;margin-top:8px}
 .auth-quote b{display:block;font:800 34px "Bricolage Grotesque",sans-serif;color:#F2B705}.auth-quote span{display:block;margin-top:8px;opacity:.85}
 @media(max-width:900px){.auth{grid-template-columns:1fr}.auth-right{display:none}.auth-box{padding:24px 0}}
-.spin{width:18px;height:18px;border:3px solid rgba(16,32,25,.25);border-top-color:#102019;border-radius:50%;display:inline-block;animation:sp .8s linear infinite}
-.spin.big{width:44px;height:44px;border-width:5px;border-color:var(--line);border-top-color:var(--gold)}
-@keyframes sp{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.spin{animation-duration:2s}}
+/* Classic 12-bar loader (replaces the old circle spinner) */
+.spin{
+  --size:18px;
+  --duration:1.2s;
+  position:relative;
+  display:inline-block;
+  width:var(--size);
+  height:var(--size);
+  color:currentColor;
+  vertical-align:middle;
+}
+.spin.big{--size:44px}
+.spin i,.spin span.bar{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:24%;
+  height:8%;
+  margin-top:-4%;
+  margin-left:-12%;
+  border-radius:2px;
+  background:currentColor;
+  transform-origin:center center;
+  animation:classic-fade var(--duration) linear infinite;
+}
+@keyframes classic-fade{
+  0%{opacity:1}
+  100%{opacity:.15}
+}
+@media(prefers-reduced-motion:reduce){
+  .spin i,.spin span.bar{animation-duration:2.4s}
+}
 .auth-loading{position:fixed;inset:0;z-index:100;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-weight:700}
 
 /* ---- portal and admin side menu ---- */
@@ -128,7 +156,7 @@ footer a{color:inherit}
 .sf a{display:block;color:#CFE0D7;text-decoration:none;padding:4px 0}.sf a:hover{color:#F2B705}
 .sf .sf-logo{display:flex;color:#fff;margin-bottom:12px}
 .sf-social{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.sf-social a{border:1px solid rgba(255,255,255,.28);border-radius:99px;padding:6px 14px;font-size:14px}
+.sf-social a{border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1}
 .sf-bottom{border-top:1px solid rgba(255,255,255,.14);padding:18px 0 22px;display:flex;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;font-size:13px;opacity:.85}
 @media(max-width:860px){.sf-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.sf-grid{grid-template-columns:1fr}.sf-cta{padding:22px}}
@@ -1523,4 +1551,22 @@ fieldset{min-width:0}
   padding: 4px 12px;
   border-radius: 99px;
   margin-top: 8px;
+}
+
+/* WhatsApp order button in student shop */
+.btn.shop-wa-btn{
+  display:inline-flex !important;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  line-height:1.2;
+}
+.btn.shop-wa-btn svg{
+  flex:none;
+  width:18px;
+  height:18px;
+  display:block;
+  margin:0;
+  position:relative;
+  top:0;
 }

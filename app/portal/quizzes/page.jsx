@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PortalShell from "../../../components/portal/PortalShell";
+import OpenCourseButton from "../../../components/portal/OpenCourseButton";
 import { getPortalData } from "../../../lib/portalData";
 
 export const metadata = { title: "Modules | MAF Tech Academy" };
@@ -18,7 +19,7 @@ export default async function Quizzes() {
         <h3>Interactive Computer Science Course</h3>
         <div className="stat" style={{ borderBottom: 0 }}>
           <span>Beginner to advanced · module quizzes, final test and certificate <span className="m">· available to every student</span></span>
-          <Link className="btn sm" href="/portal/quizzes/course">Open course</Link>
+          <OpenCourseButton />
         </div>
       </div>
       {!courses.length && <div className="card"><p className="m" style={{ margin: 0 }}>You are not enrolled in a course yet. Your modules appear here after you enroll.</p></div>}
