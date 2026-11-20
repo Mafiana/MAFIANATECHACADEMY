@@ -6,10 +6,8 @@ import Avatar from "./Avatar";
 import { createClient } from "../lib/supabase/client";
 import { signOut } from "../app/auth-actions";
 
-// third value true = shown only in the mobile menu
 const LINKS = [
   ["About", "/#about", true],
-  // Courses removed from navbar as requested
   ["Blog", "/blog"],
   ["Shop", "/#shop"],
   ["Contact", "/#contact"],
@@ -39,7 +37,6 @@ function UserIcon() {
   );
 }
 
-// Looks up the signed-in person in the browser, so public pages stay fast and cacheable.
 function useViewer() {
   const [v, setV] = useState({ ready: false, user: null });
   useEffect(() => {
@@ -51,30 +48,40 @@ function useViewer() {
         const { data: { user } } = await sb.auth.getUser();
         if (!user) return !off && setV({ ready: true, user: null });
         let { data: p, error } = await sb.from("profiles").select("full_name,role,avatar_url").eq("id", user.id).maybeSingle();
-        if (error) ({ data: p } = await sb.from("profiles").select("full_name,role").eq("id", user.id).maybeSingle()); // avatar column not added yet
+        if (error) ({ data: p } = await sb.from("profiles").select("full_name,role").eq("id", user.id).maybeSingle());
         if (off) return;
         const staff = p?.role === "admin" || p?.role === "instructor";
-        setV({ ready: true, user: { name: p?.full_name || user.email?.split("@")[0] || "Student", avatar: p?.avatar_url || "", href: staff ? "/admin" : "/portal", role: p?.role || "student" } });
+        setV({
+          ready: true,
+          user: {
+            name: p?.full_name || user.email?.split("@")[0] || "Student",
+            avatar: p?.avatar_url || "",
+            href: staff ? "/admin" : "/portal",
+            role: p?.role || "student",
+          },
+        });
       };
       load().catch(() => !off && setV({ ready: true, user: null }));
       sub = sb.auth.onAuthStateChange(() => load().catch(() => {})).data.subscription;
     } catch {
       setV({ ready: true, user: null });
     }
-    return () => { off = true; sub?.unsubscribe(); };
+    return () => {
+      off = true;
+      sub?.unsubscribe();
+    };
   }, []);
   return v;
 }
 
-// Profile pill for signed-in people: photo with an online dot, name, and a chevron that opens a small menu.
 function UserMenu({ user }) {
   const [open, setOpen] = useState(false);
   const box = useRef(null);
   const pathname = usePathname() || "";
 
-  // When the user is already inside the student portal, hide "My dashboard"
+  // CRITICAL: when already on /portal/*, only show Log out
   const inPortal = pathname.startsWith("/portal");
-  const staff = user.href === "/admin" || user.role === "admin" || user.role === "instructor";
+  const staff = user.role === "admin" || user.role === "instructor" || user.href === "/admin";
 
   useEffect(() => {
     if (!open) return;
@@ -82,7 +89,10 @@ function UserMenu({ user }) {
     const onKey = (e) => e.key === "Escape" && setOpen(false);
     document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey);
-    return () => { document.removeEventListener("mousedown", onDown); document.removeEventListener("keydown", onKey); };
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [open]);
 
   return (
@@ -106,14 +116,15 @@ function UserMenu({ user }) {
       </button>
       {open && (
         <div className="nav-drop" role="menu">
-          {/* Only show dashboard / admin link when NOT already on the student portal */}
           {!inPortal && (
             <Link href={user.href} role="menuitem" onClick={() => setOpen(false)}>
               {staff ? "Admin panel" : "My dashboard"}
             </Link>
           )}
           <form action={signOut}>
-            <button type="submit" role="menuitem" className="out">Log out</button>
+            <button type="submit" role="menuitem" className="out">
+              Log out
+            </button>
           </form>
         </div>
       )}
@@ -125,6 +136,8 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   const { ready, user } = useViewer();
+  const pathname = usePathname() || "";
+  const inPortal = pathname.startsWith("/portal");
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && close();
@@ -137,7 +150,6 @@ export default function Navbar() {
       <div className="wrap bar">
         <Link className="logo" href="/" onClick={close}>
           <Mark />
-          {/* Text hidden on mobile via CSS */}
           <span className="logo-text">
             MAF<span className="lg-long">&nbsp;Tech Academy</span>
           </span>
@@ -189,13 +201,25 @@ export default function Navbar() {
             </Link>
           ))}
           {ready && user ? (
-            <Link href={user.href} onClick={close} className="mob-user">
-              <span className="av-wrap">
-                <Avatar name={user.name} src={user.avatar} size={32} />
-                <i className="av-dot" aria-hidden="true" />
-              </span>
-              {user.name}
-            </Link>
+            inPortal ? (
+              <form action={signOut}>
+                <button type="submit" className="mob-user out" onClick={close}>
+                  <span className="av-wrap">
+                    <Avatar name={user.name} src={user.avatar} size={32} />
+                    <i className="av-dot" aria-hidden="true" />
+                  </span>
+                  Log out
+                </button>
+              </form>
+            ) : (
+              <Link href={user.href} onClick={close} className="mob-user">
+                <span className="av-wrap">
+                  <Avatar name={user.name} src={user.avatar} size={32} />
+                  <i className="av-dot" aria-hidden="true" />
+                </span>
+                {user.name}
+              </Link>
+            )
           ) : (
             <Link href="/login" onClick={close} className="mob-login">
               <UserIcon />

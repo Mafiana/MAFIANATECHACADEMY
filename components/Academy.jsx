@@ -148,48 +148,61 @@ export default function App({ shop }) {
           title="About the academy"
           sub="MAF Tech Academy teaches practical skills you can use for work the same month you learn them. Small classes, real projects and a certificate at the end."
         >
+          <style>{`
+            .about-alt { display: flex; flex-direction: column; gap: 48px; margin-top: 28px; }
+            .about-row { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; }
+            .about-img { border-radius: 16px; overflow: hidden; aspect-ratio: 16/10; background: var(--mint); min-height: 220px; }
+            .about-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+            .about-body h3 { font-size: 24px; margin: 0 0 12px; }
+            .about-body p { margin: 0; color: var(--mute); font-size: 16px; line-height: 1.65; }
+            @media (max-width: 720px) {
+              .about-row { grid-template-columns: 1fr !important; gap: 16px !important; }
+              .about-row .about-body { order: 2 !important; }
+              .about-row .about-img { order: 1 !important; min-height: 180px; }
+            }
+          `}</style>
           <div className="about-alt">
             {/* 1. Image then text */}
-            <div className="about-row">
-              <div className="about-img">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&q=80" alt="Students learning together" />
+            <div className="about-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 36, alignItems: "center" }}>
+              <div className="about-img" style={{ borderRadius: 16, overflow: "hidden", aspectRatio: "16/10", background: "var(--mint)", minHeight: 220 }}>
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&q=80" alt="Students learning together" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
               <div className="about-body">
-                <h3>{ABOUT[0][0]}</h3>
-                <p>{ABOUT[0][1]}</p>
+                <h3 style={{ fontSize: 24, margin: "0 0 12px" }}>{ABOUT[0][0]}</h3>
+                <p style={{ margin: 0, color: "var(--mute)", fontSize: 16, lineHeight: 1.65 }}>{ABOUT[0][1]}</p>
               </div>
             </div>
 
             {/* 2. Text then image */}
-            <div className="about-row reverse">
-              <div className="about-img">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=80" alt="Online and physical classes" />
+            <div className="about-row reverse" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 36, alignItems: "center" }}>
+              <div className="about-body" style={{ order: 1 }}>
+                <h3 style={{ fontSize: 24, margin: "0 0 12px" }}>{ABOUT[1][0]}</h3>
+                <p style={{ margin: 0, color: "var(--mute)", fontSize: 16, lineHeight: 1.65 }}>{ABOUT[1][1]}</p>
               </div>
-              <div className="about-body">
-                <h3>{ABOUT[1][0]}</h3>
-                <p>{ABOUT[1][1]}</p>
+              <div className="about-img" style={{ borderRadius: 16, overflow: "hidden", aspectRatio: "16/10", background: "var(--mint)", minHeight: 220, order: 2 }}>
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=80" alt="Online and physical classes" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
             </div>
 
             {/* 3. Image then text */}
-            <div className="about-row">
-              <div className="about-img">
-                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=900&q=80" alt="Flexible payment plans" />
+            <div className="about-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 36, alignItems: "center" }}>
+              <div className="about-img" style={{ borderRadius: 16, overflow: "hidden", aspectRatio: "16/10", background: "var(--mint)", minHeight: 220 }}>
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=900&q=80" alt="Flexible payment plans" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
               <div className="about-body">
-                <h3>{ABOUT[2][0]}</h3>
-                <p>{ABOUT[2][1]}</p>
+                <h3 style={{ fontSize: 24, margin: "0 0 12px" }}>{ABOUT[2][0]}</h3>
+                <p style={{ margin: 0, color: "var(--mute)", fontSize: 16, lineHeight: 1.65 }}>{ABOUT[2][1]}</p>
               </div>
             </div>
 
             {/* 4. Text then image */}
-            <div className="about-row reverse">
-              <div className="about-img">
-                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&q=80" alt="Certificate and ID card" />
+            <div className="about-row reverse" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 36, alignItems: "center" }}>
+              <div className="about-body" style={{ order: 1 }}>
+                <h3 style={{ fontSize: 24, margin: "0 0 12px" }}>{ABOUT[3][0]}</h3>
+                <p style={{ margin: 0, color: "var(--mute)", fontSize: 16, lineHeight: 1.65 }}>{ABOUT[3][1]}</p>
               </div>
-              <div className="about-body">
-                <h3>{ABOUT[3][0]}</h3>
-                <p>{ABOUT[3][1]}</p>
+              <div className="about-img" style={{ borderRadius: 16, overflow: "hidden", aspectRatio: "16/10", background: "var(--mint)", minHeight: 220, order: 2 }}>
+                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&q=80" alt="Certificate and ID card" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
             </div>
           </div>
