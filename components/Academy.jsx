@@ -142,48 +142,56 @@ export default function App({ shop }) {
       </HeroSlider>
 
       <div className="wrap">
-        {/* ===== About the academy ===== */}
+        {/* ===== About the academy – alternating image / text ===== */}
         <Section
           id="about"
           title="About the academy"
           sub="MAF Tech Academy teaches practical skills you can use for work the same month you learn them. Small classes, real projects and a certificate at the end."
         >
-          <div className="about-grid">
-            {ABOUT.map(([t, d], i) => (
-              <article className="about-card" key={t} style={{ "--i": i }}>
-                <div className="about-icon" aria-hidden="true">
-                  {i === 0 && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <path d="M12 3l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L7.5 17l.9-5L4.8 8.2l5-.7L12 3z" />
-                      <path d="M12 14v7M8 21h8" />
-                    </svg>
-                  )}
-                  {i === 1 && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <rect x="3" y="4" width="18" height="12" rx="2" />
-                      <path d="M8 20h8M12 16v4" />
-                      <circle cx="8.5" cy="10" r="1.2" fill="currentColor" />
-                      <circle cx="15.5" cy="10" r="1.2" fill="currentColor" />
-                    </svg>
-                  )}
-                  {i === 2 && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" />
-                      <circle cx="12" cy="12" r="4" />
-                    </svg>
-                  )}
-                  {i === 3 && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <rect x="3" y="5" width="18" height="14" rx="2" />
-                      <path d="M7 9h10M7 13h6" />
-                      <circle cx="17" cy="13" r="1.5" fill="currentColor" />
-                    </svg>
-                  )}
-                </div>
-                <h3>{t}</h3>
-                <p className="m">{d}</p>
-              </article>
-            ))}
+          <div className="about-alt">
+            {/* 1. Image then text */}
+            <div className="about-row">
+              <div className="about-img">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&q=80" alt="Students learning together" />
+              </div>
+              <div className="about-body">
+                <h3>{ABOUT[0][0]}</h3>
+                <p>{ABOUT[0][1]}</p>
+              </div>
+            </div>
+
+            {/* 2. Text then image */}
+            <div className="about-row reverse">
+              <div className="about-img">
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=80" alt="Online and physical classes" />
+              </div>
+              <div className="about-body">
+                <h3>{ABOUT[1][0]}</h3>
+                <p>{ABOUT[1][1]}</p>
+              </div>
+            </div>
+
+            {/* 3. Image then text */}
+            <div className="about-row">
+              <div className="about-img">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=900&q=80" alt="Flexible payment plans" />
+              </div>
+              <div className="about-body">
+                <h3>{ABOUT[2][0]}</h3>
+                <p>{ABOUT[2][1]}</p>
+              </div>
+            </div>
+
+            {/* 4. Text then image */}
+            <div className="about-row reverse">
+              <div className="about-img">
+                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&q=80" alt="Certificate and ID card" />
+              </div>
+              <div className="about-body">
+                <h3>{ABOUT[3][0]}</h3>
+                <p>{ABOUT[3][1]}</p>
+              </div>
+            </div>
           </div>
         </Section>
 

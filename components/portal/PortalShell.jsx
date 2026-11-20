@@ -3,22 +3,28 @@ import Shell from "../Shell";
 import Icon from "./Icons";
 import LogoutButton from "./LogoutButton";
 import AccessNotice from "./AccessNotice";
+import PresenceHeartbeat from "./PresenceHeartbeat";
 
 const NAV = [
   ["home", "/portal", "Dashboard", "home"],
   ["courses", "/portal/courses", "My courses", "courses"],
   ["lessons", "/portal/lessons", "Lessons", "lessons"],
   ["quizzes", "/portal/quizzes", "Modules", "quizzes"],
+  ["materials", "/portal/materials", "Download material", "download"],
   ["payments", "/portal/payments", "Payments", "payments"],
   ["attendance", "/portal/attendance", "Attendance", "attendance"],
+  ["feedback", "/portal/feedback", "Feedback", "megaphone"],
   ["profile", "/portal/profile", "Profile", "profile"],
 ];
 
-export default function PortalShell({ active, role, children }) {
+export default function PortalShell({ active, role, name, children }) {
   const staff = role === "admin" || role === "instructor";
 
   return (
     <Shell portal>
+      {/* Keeps this user visible in Admin → Who is online */}
+      <PresenceHeartbeat name={name} role={role === "student" ? "Student" : role === "instructor" ? "Instructor" : "Admin"} page={`Portal · ${active || "Dashboard"}`} />
+
       <section style={{ paddingTop: 24 }}>
         <div className="portal">
           <aside className="pnav">

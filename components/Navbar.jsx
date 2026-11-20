@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Avatar from "./Avatar";
 import { createClient } from "../lib/supabase/client";
 import { signOut } from "../app/auth-actions";
@@ -53,7 +54,7 @@ function useViewer() {
         if (error) ({ data: p } = await sb.from("profiles").select("full_name,role").eq("id", user.id).maybeSingle()); // avatar column not added yet
         if (off) return;
         const staff = p?.role === "admin" || p?.role === "instructor";
-        setV({ ready: true, user: { name: p?.full_name || user.email?.split("@")[0] || "Student", avatar: p?.avatar_url || "", href: staff ? "/admin" : "/portal" } });
+        setV({ ready: true, user: { name: p?.full_name || user.email?.split("@")[0] || "Student", avatar: p?.avatar_url || "", href: staff ? "/admin" : "/portal", role: p?.role || "student" } });
       };
       load().catch(() => !off && setV({ ready: true, user: null }));
       sub = sb.auth.onAuthStateChange(() => load().catch(() => {})).data.subscription;
@@ -69,6 +70,12 @@ function useViewer() {
 function UserMenu({ user }) {
   const [open, setOpen] = useState(false);
   const box = useRef(null);
+  const pathname = usePathname() || "";
+
+  // When the user is already inside the student portal, hide "My dashboard"
+  const inPortal = pathname.startsWith("/portal");
+  const staff = user.href === "/admin" || user.role === "admin" || user.role === "instructor";
+
   useEffect(() => {
     if (!open) return;
     const onDown = (e) => box.current && !box.current.contains(e.target) && setOpen(false);
@@ -78,7 +85,6 @@ function UserMenu({ user }) {
     return () => { document.removeEventListener("mousedown", onDown); document.removeEventListener("keydown", onKey); };
   }, [open]);
 
-  const staff = user.href === "/admin";
   return (
     <div className="nav-menu" ref={box}>
       <button
@@ -100,9 +106,12 @@ function UserMenu({ user }) {
       </button>
       {open && (
         <div className="nav-drop" role="menu">
-          <Link href={user.href} role="menuitem" onClick={() => setOpen(false)}>
-            {staff ? "Admin panel" : "My dashboard"}
-          </Link>
+          {/* Only show dashboard / admin link when NOT already on the student portal */}
+          {!inPortal && (
+            <Link href={user.href} role="menuitem" onClick={() => setOpen(false)}>
+              {staff ? "Admin panel" : "My dashboard"}
+            </Link>
+          )}
           <form action={signOut}>
             <button type="submit" role="menuitem" className="out">Log out</button>
           </form>

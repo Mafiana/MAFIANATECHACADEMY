@@ -1,30 +1,68 @@
-// Clean line icons for the student portal sidebar (same style family as Lucide/Feather).
-const P = {
-  home: <><path d="M3 11.5 12 4l9 7.5" /><path d="M5 10v10h14V10" /><path d="M10 20v-6h4v6" /></>,
-  courses: <><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z" /><path d="M4 5.5V21.5" /><path d="M9 7h7M9 11h5" /></>,
-  lessons: <><rect x="3" y="5" width="18" height="14" rx="3" /><path d="m10.5 9.5 4 2.5-4 2.5z" /></>,
-  quizzes: <><circle cx="12" cy="12" r="9" /><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.1.9-1.1 1.8" /><path d="M12 17h.01" /></>,
-  payments: <><rect x="2.5" y="5" width="19" height="14" rx="3" /><path d="M2.5 10h19" /><path d="M6.5 15h4" /></>,
-  attendance: <><rect x="3.5" y="5" width="17" height="16" rx="3" /><path d="M8 3v4M16 3v4M3.5 10h17" /><path d="m9 15 2 2 4-4" /></>,
-  profile: <><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" /></>,
-  admin: <><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" /></>,
-  bell: <><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8.5 3 8.5H3S6 15 6 8" /><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0" /></>,
-  userplus: <><circle cx="9.5" cy="8" r="4" /><path d="M2.5 21c0-3.9 3.1-6.5 7-6.5s7 2.6 7 6.5" /><path d="M19 8v6M16 11h6" /></>,
-  users: <><circle cx="9" cy="8" r="3.6" /><path d="M2.5 20.5c0-3.6 2.9-5.8 6.5-5.8s6.5 2.2 6.5 5.8" /><path d="M16 4.6a3.6 3.6 0 0 1 0 6.8M18 14.9c2 .7 3.5 2.5 3.5 5.1" /></>,
-  enroll: <><rect x="5" y="4" width="14" height="17" rx="2.5" /><path d="M9 4V3h6v1" /><path d="m9 13 2 2 4-4" /></>,
-  certificate: <><circle cx="12" cy="9" r="5.5" /><path d="m8.7 13.6-1.7 7 5-2.7 5 2.7-1.7-7" /><path d="m10 9 1.6 1.6L14.5 7.6" /></>,
-  shop: <><path d="M5 8h14l-1 12H6z" /><path d="M9 8V6.5a3 3 0 0 1 6 0V8" /></>,
-  megaphone: <><path d="M3 10v4a1 1 0 0 0 1 1h3l8 4V5L7 9H4a1 1 0 0 0-1 1z" /><path d="M19 9.5a4 4 0 0 1 0 5" /></>,
-  instructor: <><path d="m2.5 9.5 9.5-5 9.5 5-9.5 5z" /><path d="M6.5 12v4.5c0 1.2 2.5 2.5 5.5 2.5s5.5-1.3 5.5-2.5V12" /><path d="M21.5 9.5V15" /></>,
-  download: <><path d="M12 3v12" /><path d="m7 10.5 5 5 5-5" /><path d="M4 20h16" /></>,
-  eye: <><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12" /><circle cx="12" cy="12" r="3" /></>,
-  logout: <><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></>,
+// Simple icon set used by the portal sidebar and admin.
+// Added "download" and kept "megaphone" for Feedback.
+
+const SVG = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" };
+
+const ICONS = {
+  home: (
+    <svg {...SVG}><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z" /></svg>
+  ),
+  courses: (
+    <svg {...SVG}><path d="M4 19.5A2.5 2.5 0 016.5 17H20" /><path d="M6.5 2H20v15H6.5A2.5 2.5 0 004 14.5v-10A2.5 2.5 0 016.5 2z" /></svg>
+  ),
+  lessons: (
+    <svg {...SVG}><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /><path d="M10 9l5 3-5 3z" /></svg>
+  ),
+  quizzes: (
+    <svg {...SVG}><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg>
+  ),
+  payments: (
+    <svg {...SVG}><rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" /><path d="M6 15h4" /></svg>
+  ),
+  attendance: (
+    <svg {...SVG}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /><path d="M9 14l2 2 4-4" /></svg>
+  ),
+  profile: (
+    <svg {...SVG}><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" /></svg>
+  ),
+  admin: (
+    <svg {...SVG}><path d="M12 2l3 6h6l-5 4 2 7-6-4-6 4 2-7-5-4h6z" /></svg>
+  ),
+  logout: (
+    <svg {...SVG}><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" /></svg>
+  ),
+  download: (
+    <svg {...SVG}><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><path d="M7 10l5 5 5-5" /><path d="M12 15V3" /></svg>
+  ),
+  megaphone: (
+    <svg {...SVG}><path d="M3 11v2a1 1 0 001 1h2l5 4V6L6 10H4a1 1 0 00-1 1z" /><path d="M16 8.5a5 5 0 010 7" /><path d="M19 6a9 9 0 010 12" /></svg>
+  ),
+  bell: (
+    <svg {...SVG}><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 01-3.46 0" /></svg>
+  ),
+  userplus: (
+    <svg {...SVG}><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M19 8v6M22 11h-6" /></svg>
+  ),
+  users: (
+    <svg {...SVG}><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" /></svg>
+  ),
+  enroll: (
+    <svg {...SVG}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6M12 18v-6M9 15h6" /></svg>
+  ),
+  certificate: (
+    <svg {...SVG}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /><circle cx="12" cy="15" r="2.5" /><path d="M10.5 17.5L10 20l2-1 2 1-.5-2.5" /></svg>
+  ),
+  shop: (
+    <svg {...SVG}><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18M16 10a4 4 0 01-8 0" /></svg>
+  ),
+  instructor: (
+    <svg {...SVG}><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" /></svg>
+  ),
+  eye: (
+    <svg {...SVG}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+  ),
 };
 
-export default function Icon({ name, size = 19 }) {
-  return (
-    <svg className="ico" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      {P[name]}
-    </svg>
-  );
+export default function Icon({ name }) {
+  return ICONS[name] || null;
 }

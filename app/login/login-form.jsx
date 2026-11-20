@@ -38,8 +38,11 @@ export default function AdminLogin() {
           "This is not an admin account. Students and instructors sign in with an Access PIN on the student login."
         );
       }
+      // Keep the loader visible for at least 1.2s so the user always sees it
       await wait(Math.max(0, 1200 - (Date.now() - started)));
       setRedirecting(true);
+      // Small extra delay so the "Opening the admin panel..." text is visible
+      await wait(400);
       router.push("/admin");
       router.refresh();
     } catch {
@@ -62,6 +65,7 @@ export default function AdminLogin() {
           autoComplete="username"
           value={f.email}
           onChange={(e) => setF({ ...f, email: e.target.value })}
+          disabled={busy || redirecting}
         />
         <label htmlFor="p">Password</label>
         <PasswordInput
@@ -70,9 +74,10 @@ export default function AdminLogin() {
           autoComplete="current-password"
           value={f.password}
           onChange={(e) => setF({ ...f, password: e.target.value })}
+          disabled={busy || redirecting}
         />
-        <button className="btn auth-btn" disabled={busy}>
-          {busy ? (
+        <button className="btn auth-btn" disabled={busy || redirecting}>
+          {busy || redirecting ? (
             <>
               <span className="spin" aria-hidden="true" /> Please wait
             </>
@@ -89,9 +94,11 @@ export default function AdminLogin() {
           Student or instructor? <a href="/login">Sign in with your Access PIN</a>
         </p>
       </form>
+
+      {/* Full-screen loader – always shown while busy or redirecting */}
       {(busy || redirecting) && (
-        <div className="auth-loading" role="status">
-          <span className="spin big" />
+        <div className="auth-loading" role="status" aria-live="polite">
+          <span className="spin big" aria-hidden="true" />
           <p>{redirecting ? "Opening the admin panel..." : "Signing you in..."}</p>
         </div>
       )}
