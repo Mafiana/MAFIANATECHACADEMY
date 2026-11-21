@@ -1711,3 +1711,365 @@ fieldset{min-width:0}
 }
 
 
+/* ===== Ebooks section (homepage) ===== */
+#ebooks {
+  margin-top: 8px;
+}
+
+.ebook-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 28px 24px;
+  margin-top: 28px;
+}
+
+.ebook-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--line, #e8eeea);
+  box-shadow: 0 2px 10px rgba(16, 32, 25, 0.05);
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.ebook-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(16, 32, 25, 0.1);
+}
+
+/* Cover area */
+.ebook-cover-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(160deg, #1a2744 0%, #0d1526 100%);
+  overflow: hidden;
+}
+
+.ebook-cover-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.ebook-card:hover .ebook-cover-wrap img {
+  transform: scale(1.04);
+}
+
+/* Fallback when no cover */
+.ebook-cover-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 14px;
+  background: linear-gradient(160deg, #1e3a5f 0%, #0f1c2e 100%);
+  color: #fff;
+  text-align: center;
+}
+
+.ebook-cover-fallback .eb-badge {
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-bottom: 10px;
+}
+
+.ebook-cover-fallback .eb-title {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.ebook-cover-fallback .eb-author {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: auto;
+}
+
+/* Featured badge */
+.ebook-feat {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f5c518;
+  color: #1a1a1a;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 2;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Meta under cover */
+.ebook-meta {
+  padding: 14px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-align: left;
+}
+
+.ebook-cat {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--mute, #6b7c72);
+  margin-bottom: 6px;
+}
+
+.ebook-meta h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  line-height: 1.35;
+  color: var(--ink, #102019);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ebook-author {
+  font-size: 12px;
+  color: var(--mute, #6b7c72);
+  margin: 0 0 6px;
+}
+
+.ebook-desc {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--mute, #6b7c72);
+  margin: 0 0 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.ebook-dl {
+  margin-top: auto;
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  padding: 9px 12px;
+  border-radius: 8px;
+}
+
+@media (max-width: 520px) {
+  .ebook-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 12px;
+  }
+  .ebook-meta {
+    padding: 10px 10px 12px;
+  }
+  .ebook-meta h3 {
+    font-size: 13px;
+  }
+  .ebook-desc {
+    display: none;
+  }
+}
+
+/* ===== Ebooks section (homepage) ===== */
+#ebooks {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.ebook-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 32px 28px;
+  margin-top: 32px;
+}
+
+.ebook-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--line, #e8eeea);
+  box-shadow: 0 2px 12px rgba(16, 32, 25, 0.04);
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.ebook-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(16, 32, 25, 0.09);
+}
+
+/* Cover — extra padding so 3D book mockups aren’t clipped */
+.ebook-cover-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.15;
+  background: #f4f7f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 18px 12px;
+  box-sizing: border-box;
+}
+
+.ebook-cover-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.ebook-card:hover .ebook-cover-wrap img {
+  transform: scale(1.03);
+}
+
+/* Fallback when no cover */
+.ebook-cover-fallback {
+  width: 100%;
+  height: 100%;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  background: linear-gradient(160deg, #1e3a5f 0%, #0f1c2e 100%);
+  border-radius: 10px;
+  color: #fff;
+  text-align: center;
+}
+
+.ebook-cover-fallback .eb-badge {
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-bottom: 10px;
+}
+
+.ebook-cover-fallback .eb-title {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.ebook-cover-fallback .eb-author {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: auto;
+}
+
+/* Featured badge */
+.ebook-feat {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #f5c518;
+  color: #1a1a1a;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 2;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* Meta under cover — generous padding */
+.ebook-meta {
+  padding: 8px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-align: left;
+  gap: 0;
+}
+
+.ebook-cat {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--mute, #6b7c72);
+  margin-bottom: 6px;
+}
+
+.ebook-meta h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  line-height: 1.35;
+  color: var(--ink, #102019);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ebook-author {
+  font-size: 13px;
+  color: var(--mute, #6b7c72);
+  margin: 0 0 8px;
+}
+
+.ebook-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--mute, #6b7c72);
+  margin: 0 0 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.ebook-dl {
+  margin-top: auto;
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 9px;
+}
+
+@media (max-width: 520px) {
+  .ebook-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 14px;
+  }
+  .ebook-cover-wrap {
+    padding: 14px 12px 8px;
+  }
+  .ebook-meta {
+    padding: 6px 12px 14px;
+  }
+  .ebook-meta h3 {
+    font-size: 14px;
+  }
+  .ebook-desc {
+    display: none;
+  }
+}

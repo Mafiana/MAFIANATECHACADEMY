@@ -47,6 +47,8 @@ function guarded(roles, fn) {
 const admin = (fn) => guarded(["admin"], fn);
 const staff = (fn) => guarded(["admin", "instructor"], fn);
 
+
+// ---- Ebooks ----
 // ---- Ebooks ----
 export const saveEbook = admin(async (s, fd) => {
   const title = String(fd.get("title") || "").trim().slice(0, 120);

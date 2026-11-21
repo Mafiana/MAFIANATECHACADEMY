@@ -15,130 +15,6 @@ export default function EbookSection({ ebooks = [] }) {
 
   return (
     <section id="ebooks">
-      <style>{`
-        .ebook-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-          gap: 28px;
-          margin-top: 28px;
-        }
-        .ebook-card {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          cursor: pointer;
-          transition: transform 0.2s ease;
-        }
-        .ebook-card:hover {
-          transform: translateY(-6px);
-        }
-        .ebook-cover-wrap {
-          position: relative;
-          width: 100%;
-          max-width: 180px;
-          aspect-ratio: 2 / 3;
-          border-radius: 4px 10px 10px 4px;
-          overflow: hidden;
-          box-shadow:
-            0 4px 6px rgba(0,0,0,0.1),
-            0 10px 20px rgba(0,0,0,0.15),
-            4px 0 8px rgba(0,0,0,0.08);
-          background: linear-gradient(145deg, #1a2744, #0d1526);
-        }
-        .ebook-cover-wrap::before {
-          content: "";
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 8px;
-          background: linear-gradient(90deg, rgba(0,0,0,0.35), transparent);
-          z-index: 2;
-          border-radius: 4px 0 0 4px;
-        }
-        .ebook-cover-wrap img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
-        .ebook-cover-fallback {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 16px 12px;
-          background: linear-gradient(160deg, #1e3a5f 0%, #0f1c2e 100%);
-          color: #fff;
-          text-align: center;
-        }
-        .ebook-cover-fallback .eb-badge {
-          font-size: 9px;
-          letter-spacing: 1.5px;
-          text-transform: uppercase;
-          opacity: 0.7;
-          margin-bottom: 10px;
-        }
-        .ebook-cover-fallback .eb-title {
-          font-size: 15px;
-          font-weight: 800;
-          line-height: 1.25;
-          margin-bottom: 8px;
-        }
-        .ebook-cover-fallback .eb-author {
-          font-size: 11px;
-          opacity: 0.8;
-          margin-top: auto;
-        }
-        .ebook-feat {
-          position: absolute;
-          top: 10px;
-          right: 8px;
-          background: #f5c518;
-          color: #1a1a1a;
-          font-size: 10px;
-          font-weight: 700;
-          padding: 3px 7px;
-          border-radius: 4px;
-          z-index: 3;
-          letter-spacing: 0.3px;
-        }
-        .ebook-meta {
-          margin-top: 12px;
-          width: 100%;
-          max-width: 180px;
-        }
-        .ebook-meta h3 {
-          font-size: 14px;
-          font-weight: 700;
-          margin: 0 0 4px;
-          line-height: 1.3;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-        .ebook-meta .m {
-          font-size: 12px;
-          margin: 0;
-        }
-        .ebook-meta .btn {
-          margin-top: 10px;
-          width: 100%;
-          font-size: 13px;
-          padding: 8px 12px;
-        }
-        @media (max-width: 480px) {
-          .ebook-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-          }
-        }
-      `}</style>
-
       <h2>Ebooks & Resources</h2>
       <p className="sub">
         Free and paid learning materials from the academy. Download or request access.
@@ -169,7 +45,8 @@ export default function EbookSection({ ebooks = [] }) {
                   loading="lazy"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
-                    e.currentTarget.nextSibling.style.display = "flex";
+                    const fb = e.currentTarget.nextElementSibling;
+                    if (fb) fb.style.display = "flex";
                   }}
                 />
               ) : null}
@@ -184,10 +61,14 @@ export default function EbookSection({ ebooks = [] }) {
             </div>
 
             <div className="ebook-meta">
+              {book.category && <span className="ebook-cat">{book.category}</span>}
               <h3>{book.title}</h3>
-              {book.author && <p className="m">by {book.author}</p>}
+              {book.author && <p className="ebook-author">by {book.author}</p>}
+              {book.description && (
+                <p className="ebook-desc">{book.description}</p>
+              )}
               <a
-                className="btn sm"
+                className="btn sm ebook-dl"
                 href={book.file}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -199,7 +80,11 @@ export default function EbookSection({ ebooks = [] }) {
         ))}
       </div>
 
-      {!list.length && <p className="m" style={{ marginTop: 20 }}>No ebooks match your search.</p>}
+      {!list.length && (
+        <p className="m" style={{ marginTop: 20 }}>
+          No ebooks match your search.
+        </p>
+      )}
     </section>
   );
 }
