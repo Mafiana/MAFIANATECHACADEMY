@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import EbookSection from "./EbookSection";
 import ShopSection from "./ShopSection";
+import EbookSection from "./EbookSection";
 import Link from "next/link";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -122,7 +122,8 @@ function EnrollForm() {
   );
 }
 
-export default function App({ shop, ebooks = [] }) {  return (
+export default function App({ shop, ebooks = [] }) {
+  return (
     <>
       <Navbar />
       <HeroSlider>
@@ -458,6 +459,8 @@ export default function App({ shop, ebooks = [] }) {  return (
 
         {/* ===== Shop ===== */}
         <ShopSection products={shop} />
+
+        {/* ===== Ebooks ===== */}
         <EbookSection ebooks={ebooks} />
 
         {/* ===== Contact ===== */}
