@@ -55,19 +55,20 @@ export default async function Admin() {
 
   // ---- Load data (tolerate missing tables) ----
   const [profRes, enRes, payRes, attRes, lesRes, quizRes, annRes, cpRes, shopRes, blogRes, icRes, qaRes, ebookRes] = await Promise.all([
-    fetchAll(() => s.from("profiles").select("*").order("created_at", { ascending: false })),
-    fetchAll(() => s.from("enrollments").select("*").order("id", { ascending: false })),
-    fetchAll(() => s.from("payments").select("*").order("id", { ascending: false })),
-    fetchAll(() => s.from("attendance").select("*").order("class_date", { ascending: false })),
-    s.from("lessons").select("*").order("course").order("position"),
-    s.from("quizzes").select("id, course, title, questions, created_at").order("id", { ascending: false }),
-    s.from("announcements").select("*").order("id", { ascending: false }),
-    s.from("course_progress").select("student_id,data,updated_at"),
-    s.from("shop_products").select("*").order("sort").order("id"),
-    s.from("blog_posts").select("id,slug,title,excerpt,category,cover,body_html,published,created_at").order("created_at", { ascending: false }),
-    s.from("instructor_courses").select("instructor_id,course"),
-    fetchAll(() => s.from("quiz_attempts").select("*").order("id", { ascending: false })),
-  ]);
+  fetchAll(() => s.from("profiles").select("*").order("created_at", { ascending: false })),
+  fetchAll(() => s.from("enrollments").select("*").order("id", { ascending: false })),
+  fetchAll(() => s.from("payments").select("*").order("id", { ascending: false })),
+  fetchAll(() => s.from("attendance").select("*").order("class_date", { ascending: false })),
+  s.from("lessons").select("*").order("course").order("position"),
+  s.from("quizzes").select("id, course, title, questions, created_at").order("id", { ascending: false }),
+  s.from("announcements").select("*").order("id", { ascending: false }),
+  s.from("course_progress").select("student_id,data,updated_at"),
+  s.from("shop_products").select("*").order("sort").order("id"),
+  s.from("blog_posts").select("id,slug,title,excerpt,category,cover,body_html,published,created_at").order("created_at", { ascending: false }),
+  s.from("instructor_courses").select("instructor_id,course"),
+  fetchAll(() => s.from("quiz_attempts").select("*").order("id", { ascending: false })),
+  s.from("ebooks").select("*").order("sort").order("id"),   // ← added
+]);
 
   if (profRes.error) errors.push("profiles: " + profRes.error.message);
   if (enRes.error) errors.push("enrollments: " + enRes.error.message);
@@ -228,6 +229,7 @@ export default async function Admin() {
             <a href="#lessons"><Icon name="lessons" /> Video lessons</a>
             <a href="#quizzes"><Icon name="quizzes" /> Quizzes</a>
             <a href="#shop-admin"><Icon name="shop" /> Student shop</a>
+            <a href="#ebooks-admin"><Icon name="download" /> Ebooks</a>
             <a href="#announcements"><Icon name="megaphone" /> Announcements</a>
             <a href="#instructors"><Icon name="instructor" /> Instructors</a>
             <a href="#export"><Icon name="download" /> Export</a>
@@ -329,7 +331,11 @@ export default async function Admin() {
             <OnlineAdmin />
             <BlogAdmin posts={blogRes.error ? [] : blogRes.data || []} missing={!!blogRes.error} />
             <ShopAdmin products={shopRes.error ? [] : shopRes.data || []} missing={!!shopRes.error} />
-            <CoursesAdmin />
+<EbookAdmin
+  ebooks={ebookRes?.error ? [] : ebookRes?.data || []}
+  missing={!!ebookRes?.error}
+/>
+<CoursesAdmin />
 
             <div className="card" id="export">
               <h3>Export to Excel</h3>
