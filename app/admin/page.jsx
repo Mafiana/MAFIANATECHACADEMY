@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Shell from "../../components/Shell";
+import EbookAdmin from "../../components/admin/EbookAdmin";
 import Greeting from "../../components/Greeting";
 import AdminMenuButton from "../../components/admin/AdminMenuButton";
 import Icon from "../../components/portal/Icons";
@@ -53,7 +54,7 @@ export default async function Admin() {
   const errors = [];
 
   // ---- Load data (tolerate missing tables) ----
-  const [profRes, enRes, payRes, attRes, lesRes, quizRes, annRes, cpRes, shopRes, blogRes, icRes, qaRes] = await Promise.all([
+  const [profRes, enRes, payRes, attRes, lesRes, quizRes, annRes, cpRes, shopRes, blogRes, icRes, qaRes, ebookRes] = await Promise.all([
     fetchAll(() => s.from("profiles").select("*").order("created_at", { ascending: false })),
     fetchAll(() => s.from("enrollments").select("*").order("id", { ascending: false })),
     fetchAll(() => s.from("payments").select("*").order("id", { ascending: false })),
